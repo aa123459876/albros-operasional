@@ -1,0 +1,27 @@
+name: Jaga Supabase tetap aktif
+
+# Project Supabase gratis tertidur jika tidak ada aktivitas sekitar seminggu.
+# Jadwal ini memanggil database setiap 2 hari agar tidak tertidur.
+on:
+  schedule:
+    - cron: '0 3 */2 * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Panggil database
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          set -e
+          test -n "$SUPABASE_URL" && test -n "$SUPABASE_ANON_KEY"
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+            "$SUPABASE_URL/rest/v1/rpc/ping" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            -H "Content-Type: application/json" -d '{}')
+          echo "Status: $code"
+          test "$code" = "200"
