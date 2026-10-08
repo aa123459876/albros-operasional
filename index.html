@@ -1,0 +1,1283 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#262624">
+<title>Albros Operasional</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23262624'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23d97757'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&family=Source+Serif+4:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #262624;
+  --surface: #30302e;
+  --surface-2: #3b3a37;
+  --line: #4a4944;
+  --fg: #f5f4ee;
+  --fg-2: #c2c0b6;
+  --fg-3: #96948a;
+  --accent: #d97757;
+  --ink: #1f1e1d;
+  --danger: #e5675d;
+  --warn: #e8c35a;
+  --t0: #8a887f;
+  --t1: #6fc58b;
+  --t2: #b8cc5c;
+  --t3: #e8c35a;
+  --t4: #e5675d;
+  --font-display: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  padding-inline: 16px;
+  -webkit-tap-highlight-color: transparent;
+}
+[hidden] { display: none !important; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:disabled { opacity: .55; cursor: default; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.app { max-width: 560px; margin: 0 auto; padding-bottom: 120px; }
+
+/* Login */
+.login { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding-block: 32px; }
+.login-card { width: 100%; max-width: 360px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
+.login-card h1 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 28px; line-height: 1.15; }
+.login-card .sub { margin: 4px 0 18px; color: var(--fg-2); font-size: 14px; }
+.login-card .btn { width: 100%; margin-top: 16px; }
+
+/* App bar */
+.appbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+  background: var(--bg);
+  display: flex; align-items: center; gap: 10px;
+  padding-block: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.back { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); flex: none; }
+.back:hover { background: var(--surface-2); }
+.titles { min-width: 0; flex: 1; }
+.titles small { display: block; font-size: 12px; color: var(--fg-3); letter-spacing: .04em; text-transform: uppercase; }
+.titles h1 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 22px; line-height: 1.2; text-wrap: balance; overflow-wrap: anywhere; }
+.live { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--fg-2); padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; flex: none; }
+.live i { width: 7px; height: 7px; border-radius: 50%; background: var(--warn); display: block; }
+.live.on i { background: var(--t1); }
+.live.off i { background: var(--danger); }
+
+/* Menu */
+.group-label { margin: 22px 0 8px; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-3); }
+.menu { display: flex; flex-direction: column; gap: 8px; }
+.menu-item, .prow {
+  width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px;
+  text-align: left; padding: 14px 16px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+}
+.menu-item:hover, .prow:hover { background: var(--surface-2); }
+.menu-item strong, .prow strong { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.menu-item span, .prow span.meta { display: block; font-size: 13px; color: var(--fg-2); }
+.chev { color: var(--fg-3); }
+.logout-row { margin-top: 28px; }
+
+/* Search */
+.search { position: relative; margin-top: 14px; }
+.search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--fg-3); pointer-events: none; }
+.search input { width: 100%; height: 46px; padding: 0 14px 0 38px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 12px; font: inherit; }
+.search input::placeholder { color: var(--fg-3); }
+.count { margin: 10px 2px 0; font-size: 13px; color: var(--fg-3); font-variant-numeric: tabular-nums; }
+.stack { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.none { padding: 24px 16px; text-align: center; color: var(--fg-2); border: 1px dashed var(--line); border-radius: 12px; }
+
+/* Daftar pangkalan */
+.drow { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 12px; padding: 12px 12px 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.drow strong { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.drow .note { margin: 2px 0 0; font-size: 13px; color: var(--fg-2); overflow-wrap: anywhere; }
+.drow .note.empty-note { color: var(--fg-3); font-style: italic; }
+.drow.ina strong { color: var(--fg-2); }
+.btn-edit { height: 38px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); font-weight: 500; font-size: 14px; }
+.btn-edit:hover { background: #45443f; }
+.btn-tiny { background: none; border: 0; padding: 6px 0; font-size: 12px; color: var(--fg-3); text-decoration: underline; text-underline-offset: 3px; }
+.btn-tiny:hover { color: var(--fg-2); }
+.btn-tiny.danger { color: var(--danger); }
+.toggle-ina { margin-top: 22px; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: transparent; border: 1px dashed var(--line); border-radius: 12px; color: var(--fg-2); font-size: 14px; }
+.toggle-ina:hover { background: var(--surface); }
+
+/* Hasil */
+.hrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 12px 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.hrow strong { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.hrow .meta { font-size: 13px; color: var(--fg-2); font-variant-numeric: tabular-nums; }
+.tag { display: inline-block; padding: 1px 8px; margin-left: 6px; border-radius: 999px; font-size: 12px; font-weight: 500; border: 1px solid var(--accent); color: var(--accent); }
+.tag.non { border-color: var(--fg-3); color: var(--fg-2); }
+
+/* Ringkasan putaran */
+.summary { margin-top: 16px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.summary-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.summary strong { font-family: var(--font-display); font-size: 18px; font-weight: 600; }
+.summary span.meta { color: var(--fg-2); font-size: 13px; font-variant-numeric: tabular-nums; }
+.bar { height: 6px; border-radius: 3px; background: var(--surface-2); margin-top: 10px; overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 3px; transition: width .25s ease; }
+
+/* Daftar kode */
+.list { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.row { --tone: var(--t0); display: grid; grid-template-columns: 24px minmax(0, 1fr) auto auto; align-items: center; gap: 10px; padding: 10px 12px 10px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; transition: border-color .2s ease; }
+.row.t0 { --tone: var(--t0); }
+.row.t1 { --tone: var(--t1); }
+.row.t2 { --tone: var(--t2); }
+.row.t3 { --tone: var(--t3); }
+.row.t4 { --tone: var(--t4); }
+.row.is-next { border-color: color-mix(in srgb, var(--accent) 65%, var(--line)); }
+.row.flash { animation: flash 1.1s ease-out; }
+@keyframes flash { 0% { background: color-mix(in srgb, var(--accent) 28%, var(--surface)); } 100% { background: var(--surface); } }
+.idx { color: var(--fg-3); font-size: 13px; font-variant-numeric: tabular-nums; }
+.code-wrap { min-width: 0; }
+.code { font-family: var(--font-mono); font-weight: 500; font-size: 15px; letter-spacing: .02em; overflow-wrap: anywhere; }
+.next-tag { display: none; margin-top: 2px; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.row.is-next .next-tag { display: block; }
+.btn-copy { height: 40px; min-width: 84px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); font-weight: 500; font-size: 14px; transition: background .15s ease, border-color .15s ease, color .15s ease; }
+.btn-copy:hover { background: #45443f; }
+.btn-copy:active { transform: scale(.97); }
+.btn-copy.copied { background: color-mix(in srgb, var(--t1) 22%, var(--surface-2)); border-color: var(--t1); color: var(--t1); }
+.badge { position: relative; width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--tone); background: color-mix(in srgb, var(--tone) 16%, transparent); color: var(--tone); font-weight: 600; font-size: 17px; font-variant-numeric: tabular-nums; transition: border-color .2s ease, background .2s ease, color .2s ease; }
+.num { position: absolute; inset: 0; display: grid; place-items: center; }
+.num.in { animation: rollIn .22s ease-out both; }
+.num.out { animation: rollOut .22s ease-in both; }
+@keyframes rollIn { from { transform: translateY(-110%); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes rollOut { from { transform: none; opacity: 1; } to { transform: translateY(110%); opacity: 0; } }
+
+/* Zona reset */
+.reset-zone { margin-top: 36px; padding-top: 20px; border-top: 1px dashed var(--line); display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.reset-zone p { margin: 0; font-size: 13px; color: var(--fg-3); max-width: 46ch; }
+.btn-reset { height: 44px; padding: 0 16px; border-radius: 10px; background: transparent; border: 1px solid color-mix(in srgb, var(--danger) 60%, var(--line)); color: var(--danger); font-weight: 500; }
+.btn-reset:hover { background: color-mix(in srgb, var(--danger) 12%, transparent); }
+
+/* Tombol mengambang */
+.fab { position: fixed; right: max(16px, calc((100vw - 560px) / 2)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 20; height: 54px; padding: 0 20px 0 16px; display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 27px; background: var(--accent); color: var(--ink); font-weight: 600; box-shadow: 0 6px 20px rgba(0,0,0,.45); transition: transform .12s ease, filter .15s ease; }
+.fab:hover { filter: brightness(1.06); }
+.fab:active { transform: scale(.96); }
+
+/* Dialog dan sheet */
+.overlay { position: fixed; inset: 0; z-index: 40; background: rgba(10,10,9,.6); display: grid; place-items: center; padding: 16px; animation: fade .15s ease-out; }
+.overlay.sheet-wrap { place-items: end center; padding: 0; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+.dialog { width: 100%; max-width: 380px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; animation: pop .18s ease-out; }
+.dialog.sheet { max-width: 560px; max-height: 92vh; max-height: 92dvh; overflow-y: auto; border-radius: 18px 18px 0 0; padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); animation: rise .22s ease-out; }
+@keyframes pop { from { transform: scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes rise { from { transform: translateY(100%); } to { transform: none; } }
+.dialog.shake { animation: shake .3s ease; }
+@keyframes shake { 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(4px); } }
+.dialog h2 { margin: 0 0 6px; font-family: var(--font-display); font-weight: 600; font-size: 20px; line-height: 1.25; text-wrap: balance; overflow-wrap: anywhere; }
+.dialog p { margin: 0 0 14px; color: var(--fg-2); font-size: 14px; }
+.dialog label, .lbl { display: block; font-size: 13px; color: var(--fg-2); margin: 12px 0 6px; }
+.dialog label:first-of-type { margin-top: 0; }
+.field { width: 100%; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-family: var(--font-mono); font-size: 15px; }
+.field.text { font-family: var(--font-body); }
+.field.bad { border-color: var(--danger); }
+textarea.field { min-height: 92px; resize: vertical; }
+.err { color: var(--danger); font-size: 13px; font-weight: 500; margin: 6px 0 0; min-height: 1.3em; }
+.err-list { margin: 2px 0 0; font-family: var(--font-mono); font-size: 13px; color: var(--danger); overflow-wrap: anywhere; }
+.hint { color: var(--fg-3); font-size: 12px; margin: 6px 0 0; }
+.actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; flex-wrap: wrap; }
+.btn { height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); font-weight: 500; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--ink); font-weight: 600; }
+.btn.danger { background: var(--danger); border-color: var(--danger); color: var(--ink); font-weight: 600; }
+.tiny-zone { margin-top: 18px; padding-top: 10px; border-top: 1px dashed var(--line); }
+.addrow { display: flex; gap: 8px; }
+.addrow .field { flex: 1; min-width: 0; }
+.addrow .btn { flex: none; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 6px 4px 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 999px; font-family: var(--font-mono); font-size: 14px; }
+.chip button { width: 24px; height: 24px; border-radius: 50%; border: 0; background: var(--surface-2); line-height: 1; }
+.staged-count { margin: 10px 0 0; font-size: 13px; color: var(--fg-2); }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.seg button { height: 44px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); font-weight: 500; }
+.seg button[aria-checked="true"] { background: color-mix(in srgb, var(--accent) 22%, var(--bg)); border-color: var(--accent); color: var(--fg); }
+.pickbtn { width: 100%; min-height: 46px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; text-align: left; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; }
+.pickbtn.placeholder { color: var(--fg-3); }
+.picklist { list-style: none; margin: 10px 0 0; padding: 0; max-height: 46vh; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+.picklist button { width: 100%; text-align: left; padding: 12px 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; overflow-wrap: anywhere; }
+.picklist button:hover { background: var(--surface-2); }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(86px + env(safe-area-inset-bottom, 0px)); z-index: 60; max-width: calc(100vw - 32px); background: var(--fg); color: var(--ink); padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 500; animation: pop .18s ease-out; }
+.toast.err { background: var(--danger); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+</style>
+</head>
+<body>
+<noscript>Website ini membutuhkan JavaScript.</noscript>
+
+<!-- Login -->
+<main class="login" id="login" hidden>
+  <form class="login-card" id="loginForm" autocomplete="on">
+    <h1>Albros</h1>
+    <p class="sub">Masuk untuk membuka alat operasional.</p>
+    <label class="lbl" for="loginUser" style="margin-top:0">User</label>
+    <input class="field text" id="loginUser" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+    <label class="lbl" for="loginPass">Password</label>
+    <input class="field text" id="loginPass" name="password" type="password" autocomplete="current-password" required>
+    <p class="err" id="loginErr" role="alert"></p>
+    <button class="btn primary" type="submit" id="loginBtn">Masuk</button>
+  </form>
+</main>
+
+<div class="app" id="appRoot" hidden>
+  <header class="appbar">
+    <button class="back" id="backBtn" type="button" aria-label="Kembali" hidden>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="titles">
+      <small id="barSmall">Albros</small>
+      <h1 id="barTitle">Menu</h1>
+    </div>
+    <span class="live" id="live"><i></i><span id="liveText">Menyambung</span></span>
+  </header>
+
+  <!-- Menu -->
+  <section id="vHome">
+    <p class="group-label">MAP</p>
+    <div class="menu">
+      <button class="menu-item" type="button" data-go="hasil">
+        <div><strong>Hasil Pengerjaan Map</strong><span>Catat stok tabung per pangkalan</span></div>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+      <button class="menu-item" type="button" data-go="pmList">
+        <div><strong>Pengerjaan Map</strong><span>Salin kode pelanggan per pangkalan</span></div>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+    <p class="group-label">Data</p>
+    <div class="menu">
+      <button class="menu-item" type="button" data-go="daftar">
+        <div><strong>Daftar Pangkalan</strong><span>Tambah dan edit pangkalan</span></div>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+      <button class="menu-item" type="button" id="backupBtn">
+        <div><strong>Unduh Cadangan</strong><span>Simpan semua data ke file Excel</span></div>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
+      </button>
+    </div>
+    <div class="logout-row"><button class="btn" type="button" id="logoutBtn">Keluar</button></div>
+  </section>
+
+  <!-- Pengerjaan Map: pilih pangkalan -->
+  <section id="vPmList" hidden>
+    <div class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="sPm" type="search" placeholder="Cari pangkalan" aria-label="Cari pangkalan" autocomplete="off">
+    </div>
+    <p class="count" id="cPm"></p>
+    <ul class="stack" id="lPm"></ul>
+  </section>
+
+  <!-- Pengerjaan Map: detail kode -->
+  <section id="vDetail" hidden>
+    <section class="summary" aria-live="polite">
+      <div class="summary-top">
+        <strong id="roundTitle"></strong>
+        <span class="meta" id="roundMeta"></span>
+      </div>
+      <div class="bar" aria-hidden="true"><i id="roundBar"></i></div>
+    </section>
+    <ul class="list" id="list"></ul>
+    <section class="reset-zone" id="resetZone">
+      <p>Setelah semua kode selesai dipakai, angka salin di pangkalan ini bisa dikembalikan ke 0. Pangkalan lain tidak terpengaruh.</p>
+      <button class="btn-reset" id="resetBtn" type="button">Reset angka salin</button>
+    </section>
+  </section>
+
+  <!-- Hasil Pengerjaan Map -->
+  <section id="vHasil" hidden>
+    <p class="count" id="cHasil"></p>
+    <ul class="stack" id="lHasil"></ul>
+  </section>
+
+  <!-- Daftar Pangkalan -->
+  <section id="vDaftar" hidden>
+    <div class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="sDaftar" type="search" placeholder="Cari pangkalan" aria-label="Cari pangkalan" autocomplete="off">
+    </div>
+    <p class="count" id="cDaftar"></p>
+    <ul class="stack" id="lDaftar"></ul>
+    <div id="inaBox" hidden>
+      <button class="toggle-ina" id="toggleIna" type="button" aria-expanded="false"><span id="inaLabel">Nonaktif</span><span id="inaArrow" aria-hidden="true">+</span></button>
+      <ul class="stack" id="lIna" hidden></ul>
+    </div>
+  </section>
+</div>
+
+<button class="fab" id="fab" type="button" hidden>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+  <span id="fabLabel">Input kode</span>
+</button>
+
+<!-- Peringatan salin ulang -->
+<div class="overlay" id="ovConfirm" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="cfTitle">
+    <h2 id="cfTitle">Apakah anda yakin ingin menyalin kode ini lagi?</h2>
+    <p id="cfText"></p>
+    <div class="actions">
+      <button class="btn" type="button" data-close>Tidak</button>
+      <button class="btn primary" type="button" id="cfYes">Iya</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reset -->
+<div class="overlay" id="ovReset" hidden>
+  <form class="dialog" id="resetForm" role="dialog" aria-modal="true" aria-labelledby="rsTitle">
+    <h2 id="rsTitle">Reset angka salin?</h2>
+    <p>Semua angka salin di pangkalan ini kembali ke 0. Masukkan kode reset untuk melanjutkan.</p>
+    <label for="resetCode">Kode reset</label>
+    <input class="field" id="resetCode" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+    <p class="err" id="resetErr" role="alert"></p>
+    <div class="actions">
+      <button class="btn" type="button" data-close>Batal</button>
+      <button class="btn danger" type="submit">Reset</button>
+    </div>
+  </form>
+</div>
+
+<!-- Input kode pelanggan -->
+<div class="overlay sheet-wrap" id="ovInput" hidden>
+  <form class="dialog sheet" id="inputForm" role="dialog" aria-modal="true" aria-labelledby="inTitle">
+    <h2 id="inTitle">Input kode pelanggan</h2>
+    <p id="inSub"></p>
+    <label for="codeField">Kode pelanggan</label>
+    <div class="addrow">
+      <input class="field" id="codeField" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" enterkeyhint="done" placeholder="Ketik kode">
+      <button class="btn" type="button" id="addCode">Tambah</button>
+    </div>
+    <p class="err" id="inErr" role="alert"></p>
+    <p class="err-list" id="inErrList"></p>
+    <p class="staged-count" id="stagedCount" hidden></p>
+    <div class="chips" id="chips"></div>
+    <div class="actions">
+      <button class="btn" type="button" data-close>Batal</button>
+      <button class="btn primary" type="submit">Simpan</button>
+    </div>
+  </form>
+</div>
+
+<!-- Input / edit hasil pengerjaan -->
+<div class="overlay sheet-wrap" id="ovHasil" hidden>
+  <form class="dialog sheet" id="hasilForm" role="dialog" aria-modal="true" aria-labelledby="hsTitle">
+    <h2 id="hsTitle">Input hasil pengerjaan</h2>
+    <p id="hsSub">Isi semua kolom lalu tekan Submit.</p>
+    <span class="lbl" id="lblPang">Pangkalan</span>
+    <button class="pickbtn placeholder" type="button" id="pickBtn" aria-labelledby="lblPang pickText">
+      <span id="pickText">Pilih pangkalan</span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <label for="stokField">Stok tabung</label>
+    <input class="field" id="stokField" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="Jumlah tabung">
+    <span class="lbl" id="lblPt">PT atau non PT</span>
+    <div class="seg" role="radiogroup" aria-labelledby="lblPt">
+      <button type="button" role="radio" aria-checked="false" data-pt="PT">PT</button>
+      <button type="button" role="radio" aria-checked="false" data-pt="Non PT">Non PT</button>
+    </div>
+    <p class="err" id="hsErr" role="alert"></p>
+    <div class="actions">
+      <button class="btn" type="button" data-close>Batal</button>
+      <button class="btn primary" type="submit">Submit</button>
+    </div>
+  </form>
+</div>
+
+<!-- Tambah / edit pangkalan -->
+<div class="overlay sheet-wrap" id="ovPang" hidden>
+  <form class="dialog sheet" id="pangForm" role="dialog" aria-modal="true" aria-labelledby="pgTitle">
+    <h2 id="pgTitle">Tambah pangkalan</h2>
+    <p id="pgSub">Pangkalan baru langsung muncul di semua menu.</p>
+    <label for="pgName">Nama pangkalan</label>
+    <input class="field text" id="pgName" type="text" autocomplete="off">
+    <label for="pgNote">Keterangan</label>
+    <textarea class="field text" id="pgNote" placeholder="Contoh: alamat, catatan khusus"></textarea>
+    <p class="hint">Keterangan hanya terlihat di Daftar Pangkalan.</p>
+    <p class="err" id="pgErr" role="alert"></p>
+    <div class="actions">
+      <button class="btn" type="button" data-close>Batal</button>
+      <button class="btn primary" type="submit">Simpan</button>
+    </div>
+    <div class="tiny-zone" id="pgTiny" hidden>
+      <button class="btn-tiny" type="button" id="pgDeactivate">Nonaktifkan pangkalan ini</button>
+    </div>
+  </form>
+</div>
+
+<!-- Pilih pangkalan -->
+<div class="overlay sheet-wrap" id="ovPick" hidden>
+  <div class="dialog sheet" role="dialog" aria-modal="true" aria-labelledby="pkTitle">
+    <h2 id="pkTitle">Pilih pangkalan</h2>
+    <div class="search" style="margin-top:8px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="sPick" type="search" placeholder="Cari pangkalan" aria-label="Cari pangkalan" autocomplete="off">
+    </div>
+    <p class="count" id="cPick"></p>
+    <ul class="picklist" id="lPick"></ul>
+    <div class="actions"><button class="btn" type="button" data-close>Tutup</button></div>
+  </div>
+</div>
+
+<!-- Konfirmasi nonaktifkan -->
+<div class="overlay" id="ovDeact" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dcTitle">
+    <h2 id="dcTitle">Nonaktifkan pangkalan?</h2>
+    <p id="dcText"></p>
+    <div class="actions">
+      <button class="btn" type="button" data-close>Batal</button>
+      <button class="btn primary" type="button" id="dcYes">Nonaktifkan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Hapus permanen -->
+<div class="overlay" id="ovHapus" hidden>
+  <form class="dialog" id="hapusForm" role="dialog" aria-modal="true" aria-labelledby="hpTitle">
+    <h2 id="hpTitle">Hapus permanen?</h2>
+    <p id="hpText"></p>
+    <label for="hapusCode">Kode hapus</label>
+    <input class="field" id="hapusCode" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+    <p class="err" id="hapusErr" role="alert"></p>
+    <p class="hint">Kode hapus sama dengan kode reset.</p>
+    <div class="actions">
+      <button class="btn" type="button" data-close>Batal</button>
+      <button class="btn danger" type="submit">Hapus permanen</button>
+    </div>
+  </form>
+</div>
+
+<!-- Stok 0 -->
+<div class="overlay" id="ovDone" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dnTitle">
+    <h2 id="dnTitle">Done ya</h2>
+    <p id="dnText"></p>
+    <div class="actions">
+      <button class="btn" type="button" data-close>Batal</button>
+      <button class="btn primary" type="button" id="dnYes">Iya</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+(function () {
+  'use strict';
+  var LIMIT = 4;
+  var EMAIL_DOMAIN = '@albros.app';
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function norm(s) { return String(s).toLowerCase().replace(/[^a-z0-9]/g, ''); }
+  function digits(inp) { inp.addEventListener('input', function () { inp.value = inp.value.replace(/[^0-9]/g, ''); }); }
+  function byName(a, b) { return a.name.localeCompare(b.name, 'id'); }
+  function tone(n) { return 't' + Math.min(n, LIMIT); }
+
+  /* ---------- Supabase ---------- */
+  var CFG = window.APP_CONFIG || {};
+  var configured = /^https?:\/\//.test(CFG.SUPABASE_URL || '') && CFG.SUPABASE_ANON_KEY && String(CFG.SUPABASE_ANON_KEY).indexOf('ISI_') !== 0;
+  var sb = null;
+  if (configured && window.supabase && window.supabase.createClient) {
+    sb = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true }
+    });
+  }
+
+  /* ---------- Data (salinan dari server) ---------- */
+  var DB = { pangkalan: [], kode: [], hasil: [] };
+  var PMAP = {};
+  function rebuild() {
+    PMAP = {};
+    DB.pangkalan.forEach(function (p) { p.codes = []; PMAP[p.id] = p; });
+    DB.kode.slice().sort(function (a, b) { return a.urut - b.urut; }).forEach(function (k) {
+      var p = PMAP[k.pangkalan_id];
+      if (p) p.codes.push(k);
+    });
+  }
+  function upsertRow(table, row) {
+    var arr = DB[table], i = -1, k;
+    for (k = 0; k < arr.length; k++) { if (arr[k].id === row.id) { i = k; break; } }
+    if (i < 0) arr.push(row); else arr[i] = row;
+  }
+  function removeRow(table, id) { DB[table] = DB[table].filter(function (r) { return r.id !== id; }); }
+  function minCount(p) { return p.codes.length ? Math.min.apply(null, p.codes.map(function (c) { return c.n; })) : 0; }
+  function filtered(q, aktif) {
+    var nq = norm(q);
+    return DB.pangkalan.filter(function (p) {
+      return p.aktif === aktif && (!nq || norm(p.name).indexOf(nq) > -1);
+    }).sort(byName);
+  }
+  function countAktif() { return DB.pangkalan.filter(function (p) { return p.aktif; }).length; }
+  function countText(shown, total) { return shown === total ? total + ' pangkalan' : shown + ' dari ' + total + ' pangkalan'; }
+
+  async function fetchAll(table, col, asc) {
+    var out = [], from = 0, size = 1000;
+    for (;;) {
+      var r = await sb.from(table).select('*').order(col, { ascending: asc }).range(from, from + size - 1);
+      if (r.error) throw r.error;
+      out = out.concat(r.data);
+      if (r.data.length < size) break;
+      from += size;
+    }
+    return out;
+  }
+  async function loadAll() {
+    var res = await Promise.all([
+      fetchAll('pangkalan', 'name', true),
+      fetchAll('kode', 'urut', true),
+      fetchAll('hasil', 'created_at', false)
+    ]);
+    DB.pangkalan = res[0]; DB.kode = res[1]; DB.hasil = res[2];
+    rebuild();
+    scheduleRender();
+  }
+
+  /* ---------- Realtime ---------- */
+  var channel = null, everSubscribed = false;
+  function setLive(state) {
+    var live = $('live');
+    live.className = 'live' + (state === 'on' ? ' on' : state === 'off' ? ' off' : '');
+    $('liveText').textContent = state === 'on' ? 'Realtime' : state === 'off' ? 'Terputus' : 'Menyambung';
+  }
+  function applyChange(table, payload) {
+    if (payload.eventType === 'DELETE') removeRow(table, payload.old.id);
+    else upsertRow(table, payload.new);
+    rebuild();
+    scheduleRender();
+  }
+  function subscribe() {
+    if (channel) return;
+    channel = sb.channel('albros-app');
+    ['pangkalan', 'kode', 'hasil'].forEach(function (t) {
+      channel.on('postgres_changes', { event: '*', schema: 'public', table: t }, function (payload) { applyChange(t, payload); });
+    });
+    channel.subscribe(function (status) {
+      if (status === 'SUBSCRIBED') {
+        setLive('on');
+        if (everSubscribed) loadAll().catch(function () {});
+        everSubscribed = true;
+      } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
+        setLive('off');
+      }
+    });
+  }
+  function unsubscribe() {
+    if (channel && sb) { try { sb.removeChannel(channel); } catch (e) {} }
+    channel = null; everSubscribed = false;
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && sb && !$('appRoot').hidden) loadAll().catch(function () {});
+  });
+  window.addEventListener('online', function () {
+    if (sb && !$('appRoot').hidden) loadAll().catch(function () {});
+  });
+
+  /* ---------- Toast ---------- */
+  var toastTimer;
+  function toast(msg, isErr) {
+    var t = $('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isErr ? ' err' : '');
+    t.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.hidden = true; }, isErr ? 4200 : 2200);
+  }
+  var NET_ERR = 'Gagal terhubung ke server. Data belum tersimpan, coba lagi.';
+  var busy = false;
+  async function guarded(fn) {
+    if (busy) return;
+    busy = true;
+    try { await fn(); } catch (e) { console.error(e); toast(NET_ERR, true); } finally { busy = false; }
+  }
+  function codeMsg(s) {
+    if (s === 'salah') return 'Kode salah. Periksa lagi lalu coba kembali.';
+    if (s === 'terlalu_banyak') return 'Terlalu banyak percobaan salah. Coba lagi dalam 10 menit.';
+    if (s === 'belum_diatur') return 'Kode belum diatur di database. Lihat panduan pemasangan.';
+    if (s === 'masih_aktif') return 'Pangkalan harus dinonaktifkan dulu.';
+    return 'Gagal. Coba lagi.';
+  }
+  function shake(dlg) { dlg.classList.remove('shake'); void dlg.offsetWidth; dlg.classList.add('shake'); }
+
+  /* ---------- Login ---------- */
+  function showLogin(msg) {
+    $('appRoot').hidden = true; $('fab').hidden = true;
+    $('login').hidden = false;
+    $('loginErr').textContent = msg || '';
+    $('loginBtn').disabled = !sb;
+  }
+  $('loginForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    if (!sb) return;
+    var user = $('loginUser').value.trim().toLowerCase().replace(/\s+/g, '');
+    var pass = $('loginPass').value;
+    if (!user || !pass) { $('loginErr').textContent = 'Isi user dan password.'; return; }
+    $('loginBtn').disabled = true; $('loginErr').textContent = '';
+    try {
+      var r = await sb.auth.signInWithPassword({ email: user + EMAIL_DOMAIN, password: pass });
+      if (r.error) {
+        var bad = r.error.status === 400 || /invalid/i.test(r.error.message || '');
+        $('loginErr').textContent = bad ? 'User atau password salah.' : 'Tidak bisa masuk. Periksa koneksi lalu coba lagi.';
+      } else {
+        $('loginPass').value = '';
+        startApp();
+      }
+    } catch (err) {
+      $('loginErr').textContent = 'Tidak bisa masuk. Periksa koneksi lalu coba lagi.';
+    }
+    $('loginBtn').disabled = false;
+  });
+  $('logoutBtn').addEventListener('click', async function () {
+    try { await sb.auth.signOut(); } catch (e) {}
+    stopApp();
+  });
+
+  async function startApp() {
+    $('login').hidden = true;
+    $('appRoot').hidden = false;
+    setLive('connecting');
+    go('home');
+    try { await loadAll(); } catch (e) { console.error(e); toast('Gagal memuat data. Periksa koneksi lalu muat ulang.', true); }
+    subscribe();
+  }
+  function stopApp() {
+    unsubscribe();
+    DB = { pangkalan: [], kode: [], hasil: [] };
+    rebuild();
+    ORDER.forEach(function (id) { $(id).hidden = true; });
+    showLogin();
+  }
+
+  /* ---------- Navigasi ---------- */
+  var view = 'home', curId = null;
+  var VIEWS = { home: 'vHome', pmList: 'vPmList', detail: 'vDetail', hasil: 'vHasil', daftar: 'vDaftar' };
+  var PARENT = { pmList: 'home', detail: 'pmList', hasil: 'home', daftar: 'home' };
+  var CHEV = '<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+
+  function go(v, id) {
+    view = v;
+    if (id) curId = id;
+    Object.keys(VIEWS).forEach(function (k) { $(VIEWS[k]).hidden = (k !== v); });
+    $('backBtn').hidden = (v === 'home');
+    var small = 'Albros', title = 'Menu', fab = null;
+    if (v === 'pmList') { small = 'MAP'; title = 'Pengerjaan Map'; $('sPm').value = ''; }
+    if (v === 'detail') { small = 'Pengerjaan Map'; title = PMAP[curId] ? PMAP[curId].name : ''; fab = 'Input kode'; listEl.removeAttribute('data-pid'); }
+    if (v === 'hasil') { small = 'MAP'; title = 'Hasil Pengerjaan Map'; fab = 'Input hasil'; }
+    if (v === 'daftar') { small = 'Data'; title = 'Daftar Pangkalan'; fab = 'Tambah pangkalan'; $('sDaftar').value = ''; showIna = false; }
+    $('barSmall').textContent = small;
+    $('barTitle').textContent = title;
+    $('fab').hidden = !fab;
+    if (fab) $('fabLabel').textContent = fab;
+    renderAll();
+    window.scrollTo(0, 0);
+  }
+  $('backBtn').addEventListener('click', function () { go(PARENT[view]); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-go]'), function (b) {
+    b.addEventListener('click', function () { go(b.getAttribute('data-go')); });
+  });
+
+  var raf = 0;
+  function scheduleRender() {
+    if (raf) return;
+    raf = requestAnimationFrame(function () { raf = 0; renderAll(); });
+  }
+  function renderAll() {
+    if (view === 'pmList') renderPmList();
+    if (view === 'detail') renderDetail();
+    if (view === 'hasil') renderHasil();
+    if (view === 'daftar') renderDaftar();
+    if (!$('ovPick').hidden) renderPick();
+  }
+
+  /* ---------- Pengerjaan Map: daftar pangkalan ---------- */
+  function renderPmList() {
+    var items = filtered($('sPm').value, true), ul = $('lPm');
+    ul.textContent = '';
+    $('cPm').textContent = countText(items.length, countAktif());
+    if (!items.length) { ul.appendChild(el('li', 'none', countAktif() ? 'Pangkalan tidak ditemukan. Coba kata lain.' : 'Belum ada pangkalan aktif.')); return; }
+    items.forEach(function (p) {
+      var li = el('li');
+      var b = el('button', 'prow'); b.type = 'button';
+      var d = el('div');
+      d.appendChild(el('strong', null, p.name));
+      d.appendChild(el('span', 'meta', p.codes.length ? p.codes.length + ' kode · putaran ' + Math.min(minCount(p) + 1, LIMIT + 1) : 'Belum ada kode'));
+      b.appendChild(d);
+      b.insertAdjacentHTML('beforeend', CHEV);
+      b.addEventListener('click', function () { go('detail', p.id); });
+      li.appendChild(b);
+      ul.appendChild(li);
+    });
+  }
+  $('sPm').addEventListener('input', renderPmList);
+
+  /* ---------- Pengerjaan Map: detail kode ---------- */
+  var listEl = $('list');
+  var ownMark = {};
+  function renderDetail() {
+    var p = PMAP[curId];
+    if (!p || !p.aktif) { toast('Pangkalan ini sudah tidak aktif.', true); go('pmList'); return; }
+    $('barTitle').textContent = p.name;
+    var rows = listEl.querySelectorAll('.row');
+    var same = listEl.getAttribute('data-pid') === p.id && p.codes.length > 0 && rows.length === p.codes.length &&
+      p.codes.every(function (c, i) { return rows[i].getAttribute('data-id') === c.id; });
+    if (same) {
+      p.codes.forEach(function (c, i) {
+        var row = rows[i];
+        if (row.getAttribute('data-n') !== String(c.n)) {
+          row.setAttribute('data-n', c.n);
+          setBadge(row, c.n);
+          if (ownMark[c.id]) { delete ownMark[c.id]; }
+          else { row.classList.remove('flash'); void row.offsetWidth; row.classList.add('flash'); }
+        }
+      });
+    } else {
+      listEl.textContent = '';
+      listEl.setAttribute('data-pid', p.id);
+      if (!p.codes.length) {
+        listEl.appendChild(el('li', 'none', 'Belum ada kode. Tekan Input kode untuk menambahkan.'));
+      } else {
+        p.codes.forEach(function (c, i) {
+          var li = el('li', 'row ' + tone(c.n));
+          li.setAttribute('data-id', c.id); li.setAttribute('data-n', c.n);
+          li.appendChild(el('span', 'idx', String(i + 1)));
+          var cw = el('div', 'code-wrap');
+          cw.appendChild(el('div', 'code', c.code));
+          cw.appendChild(el('div', 'next-tag', 'Berikutnya'));
+          li.appendChild(cw);
+          var b = el('button', 'btn-copy', 'Salin'); b.type = 'button'; b.setAttribute('data-copy', i);
+          li.appendChild(b);
+          var badge = el('span', 'badge'); badge.setAttribute('role', 'img'); badge.setAttribute('aria-label', 'Disalin ' + c.n + ' kali');
+          var roll = el('span', 'roll'); roll.appendChild(el('span', 'num', String(c.n)));
+          badge.appendChild(roll); li.appendChild(badge);
+          listEl.appendChild(li);
+        });
+      }
+    }
+    $('resetZone').hidden = !p.codes.length;
+    refresh(p);
+  }
+  function refresh(p) {
+    var min = minCount(p), total = p.codes.length;
+    var done = p.codes.filter(function (c) { return c.n > min; }).length;
+    var nextSet = false;
+    Array.prototype.forEach.call(listEl.querySelectorAll('.row'), function (row, i) {
+      var isNext = !nextSet && p.codes[i] && p.codes[i].n === min && min < LIMIT;
+      if (isNext) nextSet = true;
+      row.classList.toggle('is-next', !!isNext);
+    });
+    if (!total) {
+      $('roundTitle').textContent = 'Belum ada kode';
+      $('roundMeta').textContent = '';
+      $('roundBar').style.width = '0%';
+    } else if (min >= LIMIT) {
+      $('roundTitle').textContent = 'Semua kode sudah ' + LIMIT + '×';
+      $('roundMeta').textContent = 'Saatnya reset';
+      $('roundBar').style.width = '100%';
+    } else {
+      $('roundTitle').textContent = 'Putaran ' + (min + 1);
+      $('roundMeta').textContent = done + ' dari ' + total + ' kode sudah disalin';
+      $('roundBar').style.width = Math.round((done / total) * 100) + '%';
+    }
+  }
+  function setBadge(row, n) {
+    var badge = row.querySelector('.badge'), roll = badge.querySelector('.roll');
+    var olds = roll.querySelectorAll('.num:not(.out)');
+    var old = olds[olds.length - 1];
+    row.className = row.className.replace(/\bt\d\b/g, '').trim() + ' ' + tone(n);
+    badge.setAttribute('aria-label', 'Disalin ' + n + ' kali');
+    if (old && old.textContent === String(n)) return;
+    var nu = el('span', 'num in', String(n));
+    roll.appendChild(nu);
+    if (old) {
+      old.classList.add('out');
+      setTimeout(function () { if (old.parentNode) old.parentNode.removeChild(old); }, 240);
+    }
+    setTimeout(function () { nu.classList.remove('in'); }, 240);
+  }
+  function writeClip(text) {
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      return ok;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).then(function () { return true; }, function () { return fallback(); });
+    }
+    return Promise.resolve(fallback());
+  }
+  var copying = {}, pendingCopy = -1;
+  async function doCopy(i) {
+    var p = PMAP[curId], c = p && p.codes[i];
+    if (!c || copying[c.id]) return;
+    copying[c.id] = true;
+    try {
+      var ok = await writeClip(c.code);
+      if (!ok) { toast('Tidak bisa menyalin otomatis. Angka tidak bertambah.', true); return; }
+      var r = await sb.rpc('salin_kode', { p_id: c.id });
+      if (r.error || r.data == null) {
+        toast('Kode tersalin, tapi angka belum tercatat di server. Tekan Salin lagi.', true);
+        return;
+      }
+      ownMark[c.id] = true;
+      c.n = r.data;
+      renderDetail();
+      var btn = listEl.querySelector('.row[data-id="' + c.id + '"] .btn-copy');
+      if (btn) {
+        btn.textContent = 'Tersalin ✓'; btn.classList.add('copied');
+        setTimeout(function () { btn.textContent = 'Salin'; btn.classList.remove('copied'); }, 1200);
+      }
+    } catch (e) {
+      console.error(e);
+      toast(NET_ERR, true);
+    } finally { delete copying[c.id]; }
+  }
+  function tryCopy(i) {
+    var p = PMAP[curId], min = minCount(p);
+    if (p.codes[i].n > min) {
+      pendingCopy = i;
+      $('cfText').textContent = 'Kode ini sudah disalin ' + p.codes[i].n + '×, sedangkan ada kode lain yang baru ' + min + '×. Salin kode yang di bawah dulu agar merata.';
+      openOv('ovConfirm');
+      $('cfYes').focus();
+    } else { doCopy(i); }
+  }
+  listEl.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-copy]');
+    if (b) tryCopy(Number(b.getAttribute('data-copy')));
+  });
+  $('cfYes').addEventListener('click', function () {
+    var i = pendingCopy;
+    closeOv('ovConfirm');
+    if (i > -1) doCopy(i);
+  });
+
+  /* Reset */
+  digits($('resetCode'));
+  $('resetBtn').addEventListener('click', function () {
+    $('rsTitle').textContent = 'Reset angka salin ' + PMAP[curId].name + '?';
+    $('resetCode').value = ''; $('resetErr').textContent = '';
+    openOv('ovReset'); $('resetCode').focus();
+  });
+  $('resetForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    guarded(async function () {
+      var code = $('resetCode').value.trim();
+      if (!code) { $('resetErr').textContent = 'Masukkan kode reset.'; shake($('resetForm')); return; }
+      var r = await sb.rpc('reset_salinan', { p_pangkalan: curId, p_code: code });
+      if (r.error) throw r.error;
+      if (r.data !== 'ok') { $('resetErr').textContent = codeMsg(r.data); shake($('resetForm')); return; }
+      var p = PMAP[curId];
+      p.codes.forEach(function (c) { c.n = 0; ownMark[c.id] = true; });
+      closeOv('ovReset');
+      renderDetail();
+      toast('Angka salin ' + p.name + ' direset');
+    });
+  });
+
+  /* ---------- Input kode (keyboard angka) ---------- */
+  var staged = [];
+  function renderStaged() {
+    var box = $('chips');
+    box.textContent = '';
+    staged.forEach(function (c, i) {
+      var chip = el('span', 'chip');
+      chip.appendChild(el('span', null, c));
+      var x = el('button', null, '×'); x.type = 'button'; x.setAttribute('aria-label', 'Hapus kode ' + c);
+      x.addEventListener('click', function () { staged.splice(i, 1); renderStaged(); });
+      chip.appendChild(x);
+      box.appendChild(chip);
+    });
+    $('stagedCount').hidden = !staged.length;
+    $('stagedCount').textContent = staged.length + ' kode siap disimpan';
+  }
+  function clearInErr() { $('inErr').textContent = ''; $('inErrList').textContent = ''; $('codeField').classList.remove('bad'); }
+  function showDup(dups) {
+    $('inErr').textContent = 'Kode sudah di input (duplikat)';
+    $('inErrList').textContent = dups.join(', ');
+    $('codeField').classList.add('bad');
+  }
+  function addTokens(raw) {
+    var tokens = raw.split(/[\s,;]+/).filter(Boolean), dups = [];
+    var existing = PMAP[curId].codes.map(function (c) { return c.code; });
+    tokens.forEach(function (t) {
+      if (existing.indexOf(t) > -1 || staged.indexOf(t) > -1) { if (dups.indexOf(t) < 0) dups.push(t); }
+      else staged.push(t);
+    });
+    $('codeField').value = '';
+    renderStaged();
+    if (dups.length) showDup(dups); else clearInErr();
+    return dups.length === 0;
+  }
+  $('codeField').addEventListener('input', function () { this.value = this.value.replace(/[^0-9\s,;]/g, ''); clearInErr(); });
+  $('codeField').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); if (this.value.trim()) addTokens(this.value); }
+  });
+  $('addCode').addEventListener('click', function () {
+    var v = $('codeField').value.trim();
+    if (v) addTokens(v);
+    $('codeField').focus();
+  });
+  function openInput() {
+    staged = []; renderStaged(); clearInErr();
+    $('codeField').value = '';
+    $('inSub').textContent = 'Untuk pangkalan ' + PMAP[curId].name + '. Tekan Tambah setelah tiap kode.';
+    openOv('ovInput'); $('codeField').focus();
+  }
+  $('inputForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    guarded(async function () {
+      var v = $('codeField').value.trim();
+      if (v && !addTokens(v)) return;
+      if (!staged.length) { $('inErr').textContent = 'Isi minimal satu kode.'; return; }
+      var rows = staged.map(function (c) { return { pangkalan_id: curId, code: c }; });
+      var r = await sb.from('kode').insert(rows).select();
+      if (r.error) {
+        if (r.error.code === '23505') {
+          await loadAll();
+          var existing = PMAP[curId].codes.map(function (c) { return c.code; });
+          var dups = staged.filter(function (c) { return existing.indexOf(c) > -1; });
+          staged = staged.filter(function (c) { return existing.indexOf(c) < 0; });
+          renderStaged();
+          showDup(dups.length ? dups : ['(kode sudah ada)']);
+          return;
+        }
+        throw r.error;
+      }
+      r.data.forEach(function (row) { upsertRow('kode', row); });
+      rebuild();
+      var n = r.data.length;
+      closeOv('ovInput');
+      renderDetail();
+      toast(n + ' kode ditambahkan');
+    });
+  });
+
+  /* ---------- Hasil Pengerjaan Map ---------- */
+  function renderHasil() {
+    var ul = $('lHasil');
+    var rows = DB.hasil.filter(function (h) { return PMAP[h.pangkalan_id] && PMAP[h.pangkalan_id].aktif; })
+      .sort(function (a, b) { return String(b.created_at).localeCompare(String(a.created_at)); });
+    ul.textContent = '';
+    $('cHasil').textContent = rows.length ? rows.length + ' hasil tersimpan' : '';
+    if (!rows.length) { ul.appendChild(el('li', 'none', 'Belum ada hasil. Tekan Input hasil untuk menambahkan.')); return; }
+    rows.forEach(function (h) {
+      var p = PMAP[h.pangkalan_id];
+      var li = el('li', 'hrow');
+      var d = el('div');
+      d.appendChild(el('strong', null, p.name));
+      var m = el('span', 'meta', 'Stok ' + h.stok + ' tabung');
+      m.appendChild(el('span', 'tag' + (h.pt === 'Non PT' ? ' non' : ''), h.pt));
+      d.appendChild(m);
+      li.appendChild(d);
+      var b = el('button', 'btn-edit', 'Edit'); b.type = 'button';
+      b.setAttribute('aria-label', 'Edit hasil ' + p.name);
+      b.addEventListener('click', function () { openHasil(h); });
+      li.appendChild(b);
+      ul.appendChild(li);
+    });
+  }
+  var hsPid = null, hsPt = null, hsEditId = null;
+  digits($('stokField'));
+  function setPt(v) {
+    hsPt = v;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-pt]'), function (b) {
+      b.setAttribute('aria-checked', String(b.getAttribute('data-pt') === v));
+    });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-pt]'), function (b) {
+    b.addEventListener('click', function () { setPt(b.getAttribute('data-pt')); $('hsErr').textContent = ''; });
+  });
+  function setPick(pid) {
+    hsPid = pid;
+    var p = pid ? PMAP[pid] : null;
+    $('pickText').textContent = p ? p.name : 'Pilih pangkalan';
+    $('pickBtn').classList.toggle('placeholder', !p);
+  }
+  function openHasil(h) {
+    hsEditId = h ? h.id : null;
+    $('hsErr').textContent = '';
+    $('hsTitle').textContent = h ? 'Edit hasil pengerjaan' : 'Input hasil pengerjaan';
+    $('hsSub').textContent = h ? 'Sesuaikan stok. Stok 0 atau kosong menandakan pekerjaan selesai.' : 'Isi semua kolom lalu tekan Submit.';
+    setPick(h ? h.pangkalan_id : null);
+    $('pickBtn').disabled = !!h;
+    $('stokField').value = h ? String(h.stok) : '';
+    setPt(h ? h.pt : null);
+    openOv('ovHasil');
+    if (h) $('stokField').focus();
+  }
+  $('hasilForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    guarded(async function () {
+      var stok = parseInt($('stokField').value, 10) || 0;
+      if (!hsPid) { $('hsErr').textContent = 'Pilih pangkalan dulu.'; return; }
+      if (!hsPt) { $('hsErr').textContent = 'Pilih PT atau non PT.'; return; }
+      if (hsEditId && stok === 0) {
+        $('dnText').textContent = 'Stok ' + PMAP[hsPid].name + ' sudah 0. Hasil ini akan dihapus dari daftar.';
+        openOv('ovDone'); $('dnYes').focus();
+        return;
+      }
+      if (!hsEditId && stok === 0) { $('hsErr').textContent = 'Isi stok tabung lebih dari 0.'; return; }
+      var r;
+      if (hsEditId) r = await sb.from('hasil').update({ stok: stok, pt: hsPt }).eq('id', hsEditId).select().single();
+      else r = await sb.from('hasil').insert({ pangkalan_id: hsPid, stok: stok, pt: hsPt }).select().single();
+      if (r.error) {
+        if (hsEditId) { await loadAll(); closeOv('ovHasil'); toast('Hasil ini sudah berubah di perangkat lain. Data dimuat ulang.', true); return; }
+        throw r.error;
+      }
+      upsertRow('hasil', r.data);
+      var wasEdit = !!hsEditId;
+      closeOv('ovHasil');
+      renderHasil();
+      toast(wasEdit ? 'Hasil diperbarui' : 'Hasil disimpan');
+    });
+  });
+  $('dnYes').addEventListener('click', function () {
+    guarded(async function () {
+      var r = await sb.from('hasil').delete().eq('id', hsEditId);
+      if (r.error) throw r.error;
+      removeRow('hasil', hsEditId);
+      closeOv('ovDone'); closeOv('ovHasil');
+      renderHasil();
+      toast('Done, hasil dihapus');
+    });
+  });
+
+  /* Pemilih pangkalan dengan pencarian */
+  function renderPick() {
+    var items = filtered($('sPick').value, true), ul = $('lPick');
+    ul.textContent = '';
+    $('cPick').textContent = countText(items.length, countAktif());
+    if (!items.length) { ul.appendChild(el('li', 'none', 'Pangkalan tidak ditemukan. Coba kata lain.')); return; }
+    items.forEach(function (p) {
+      var li = el('li');
+      var b = el('button', null, p.name); b.type = 'button';
+      b.addEventListener('click', function () { setPick(p.id); closeOv('ovPick'); $('hsErr').textContent = ''; });
+      li.appendChild(b); ul.appendChild(li);
+    });
+  }
+  $('pickBtn').addEventListener('click', function () { $('sPick').value = ''; renderPick(); openOv('ovPick'); $('sPick').focus(); });
+  $('sPick').addEventListener('input', renderPick);
+
+  /* ---------- Daftar Pangkalan ---------- */
+  var showIna = false;
+  function noteEl(p) { return el('p', 'note' + (p.note ? '' : ' empty-note'), p.note || 'Tanpa keterangan'); }
+  function renderDaftar() {
+    var q = $('sDaftar').value;
+    var items = filtered(q, true), ul = $('lDaftar');
+    ul.textContent = '';
+    $('cDaftar').textContent = countText(items.length, countAktif());
+    if (!items.length) { ul.appendChild(el('li', 'none', 'Pangkalan tidak ditemukan. Coba kata lain, atau tambahkan lewat tombol di bawah.')); }
+    items.forEach(function (p) {
+      var li = el('li', 'drow');
+      var d = el('div');
+      d.appendChild(el('strong', null, p.name));
+      d.appendChild(noteEl(p));
+      li.appendChild(d);
+      var b = el('button', 'btn-edit', 'Edit'); b.type = 'button';
+      b.setAttribute('aria-label', 'Edit ' + p.name);
+      b.addEventListener('click', function () { openPang(p); });
+      li.appendChild(b);
+      ul.appendChild(li);
+    });
+    var allIna = DB.pangkalan.filter(function (p) { return !p.aktif; });
+    var ina = filtered(q, false);
+    $('inaBox').hidden = !allIna.length;
+    var open = showIna || (!!q && ina.length > 0);
+    $('inaLabel').textContent = 'Nonaktif (' + (q ? ina.length + ' dari ' + allIna.length : allIna.length) + ')';
+    $('inaArrow').textContent = open ? '−' : '+';
+    $('toggleIna').setAttribute('aria-expanded', String(open));
+    var ul2 = $('lIna');
+    ul2.hidden = !open;
+    ul2.textContent = '';
+    if (open && !ina.length) ul2.appendChild(el('li', 'none', 'Tidak ada pangkalan nonaktif yang cocok.'));
+    if (open) ina.forEach(function (p) {
+      var li = el('li', 'drow ina');
+      var d = el('div');
+      d.appendChild(el('strong', null, p.name));
+      d.appendChild(noteEl(p));
+      var del = el('button', 'btn-tiny danger', 'Hapus permanen'); del.type = 'button';
+      del.addEventListener('click', function () { openHapus(p); });
+      d.appendChild(del);
+      li.appendChild(d);
+      var b = el('button', 'btn-edit', 'Aktifkan'); b.type = 'button';
+      b.setAttribute('aria-label', 'Aktifkan ' + p.name);
+      b.addEventListener('click', function () { setAktif(p, true); });
+      li.appendChild(b);
+      ul2.appendChild(li);
+    });
+  }
+  $('sDaftar').addEventListener('input', renderDaftar);
+  $('toggleIna').addEventListener('click', function () { showIna = !showIna; renderDaftar(); });
+
+  var pgEditId = null;
+  function openPang(p) {
+    pgEditId = p ? p.id : null;
+    $('pgErr').textContent = ''; $('pgName').classList.remove('bad');
+    $('pgTitle').textContent = p ? 'Edit pangkalan' : 'Tambah pangkalan';
+    $('pgSub').textContent = p ? 'Ubah nama atau keterangan pangkalan.' : 'Pangkalan baru langsung muncul di semua menu.';
+    $('pgName').value = p ? p.name : '';
+    $('pgNote').value = p ? p.note : '';
+    $('pgTiny').hidden = !p;
+    openOv('ovPang'); $('pgName').focus();
+  }
+  $('pgName').addEventListener('input', function () { $('pgErr').textContent = ''; this.classList.remove('bad'); });
+  $('pangForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    guarded(async function () {
+      var name = $('pgName').value.trim().replace(/\s+/g, ' '), note = $('pgNote').value.trim();
+      if (!name) { $('pgErr').textContent = 'Nama pangkalan wajib diisi.'; $('pgName').classList.add('bad'); return; }
+      var clash = DB.pangkalan.some(function (p) { return p.id !== pgEditId && norm(p.name) === norm(name); });
+      var dupMsg = 'Nama pangkalan sudah ada (duplikat)';
+      if (clash) { $('pgErr').textContent = dupMsg; $('pgName').classList.add('bad'); return; }
+      var r;
+      if (pgEditId) r = await sb.from('pangkalan').update({ name: name, note: note }).eq('id', pgEditId).select().single();
+      else r = await sb.from('pangkalan').insert({ name: name, note: note }).select().single();
+      if (r.error) {
+        if (r.error.code === '23505') { $('pgErr').textContent = dupMsg; $('pgName').classList.add('bad'); return; }
+        throw r.error;
+      }
+      upsertRow('pangkalan', r.data);
+      rebuild();
+      var wasEdit = !!pgEditId;
+      closeOv('ovPang');
+      renderAll();
+      toast(wasEdit ? 'Perubahan disimpan' : name + ' ditambahkan');
+    });
+  });
+
+  async function setAktif(p, aktif) {
+    await guarded(async function () {
+      var r = await sb.from('pangkalan').update({ aktif: aktif }).eq('id', p.id).select().single();
+      if (r.error) throw r.error;
+      upsertRow('pangkalan', r.data);
+      rebuild();
+      closeOv('ovDeact'); closeOv('ovPang');
+      renderAll();
+      toast(p.name + (aktif ? ' diaktifkan' : ' dinonaktifkan'));
+    });
+  }
+  $('pgDeactivate').addEventListener('click', function () {
+    var p = PMAP[pgEditId];
+    if (!p) return;
+    $('dcTitle').textContent = 'Nonaktifkan ' + p.name + '?';
+    $('dcText').textContent = 'Pangkalan disembunyikan dari menu lain. Kode dan hasilnya tetap tersimpan, dan bisa diaktifkan lagi kapan saja.';
+    openOv('ovDeact');
+  });
+  $('dcYes').addEventListener('click', function () { var p = PMAP[pgEditId]; if (p) setAktif(p, false); });
+
+  var hapusId = null;
+  digits($('hapusCode'));
+  function openHapus(p) {
+    hapusId = p.id;
+    $('hpTitle').textContent = 'Hapus ' + p.name + ' permanen?';
+    $('hpText').textContent = 'Kode pelanggan dan hasil pengerjaan pangkalan ini ikut terhapus dan tidak bisa dikembalikan. Masukkan kode hapus untuk melanjutkan.';
+    $('hapusCode').value = ''; $('hapusErr').textContent = '';
+    openOv('ovHapus'); $('hapusCode').focus();
+  }
+  $('hapusForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    guarded(async function () {
+      var code = $('hapusCode').value.trim();
+      if (!code) { $('hapusErr').textContent = 'Masukkan kode hapus.'; shake($('hapusForm')); return; }
+      var r = await sb.rpc('hapus_pangkalan', { p_id: hapusId, p_code: code });
+      if (r.error) throw r.error;
+      if (r.data !== 'ok') { $('hapusErr').textContent = codeMsg(r.data); shake($('hapusForm')); return; }
+      var gone = PMAP[hapusId];
+      removeRow('pangkalan', hapusId);
+      DB.kode = DB.kode.filter(function (k) { return k.pangkalan_id !== hapusId; });
+      DB.hasil = DB.hasil.filter(function (h) { return h.pangkalan_id !== hapusId; });
+      rebuild();
+      closeOv('ovHapus');
+      renderAll();
+      toast((gone ? gone.name : 'Pangkalan') + ' dihapus permanen');
+    });
+  });
+
+  /* ---------- Cadangan Excel ---------- */
+  function loadScript(src) {
+    return new Promise(function (res, rej) {
+      var s = document.createElement('script');
+      s.src = src; s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+  $('backupBtn').addEventListener('click', async function () {
+    var btn = this;
+    if (btn.disabled) return;
+    btn.disabled = true;
+    try {
+      if (!window.XLSX) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');
+      await loadAll();
+      var sheetP = [['Nama pangkalan', 'Keterangan', 'Status']];
+      DB.pangkalan.slice().sort(byName).forEach(function (p) { sheetP.push([p.name, p.note, p.aktif ? 'Aktif' : 'Nonaktif']); });
+      var sheetK = [['Pangkalan', 'Kode pelanggan', 'Jumlah salin']];
+      DB.pangkalan.slice().sort(byName).forEach(function (p) { p.codes.forEach(function (c) { sheetK.push([p.name, String(c.code), c.n]); }); });
+      var sheetH = [['Pangkalan', 'Stok tabung', 'PT / Non PT', 'Dicatat']];
+      DB.hasil.forEach(function (h) { var p = PMAP[h.pangkalan_id]; sheetH.push([p ? p.name : '', h.stok, h.pt, h.created_at]); });
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sheetP), 'Pangkalan');
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sheetK), 'Kode Pelanggan');
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sheetH), 'Hasil Pengerjaan');
+      var d = new Date(), pad = function (n) { return String(n).padStart(2, '0'); };
+      XLSX.writeFile(wb, 'cadangan-albros-' + d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + '.xlsx');
+      toast('Cadangan diunduh');
+    } catch (e) {
+      console.error(e);
+      toast('Gagal membuat cadangan. Periksa koneksi lalu coba lagi.', true);
+    }
+    btn.disabled = false;
+  });
+
+  /* ---------- FAB ---------- */
+  $('fab').addEventListener('click', function () {
+    if (view === 'detail') openInput();
+    else if (view === 'hasil') openHasil(null);
+    else if (view === 'daftar') openPang(null);
+  });
+
+  /* ---------- Overlay ---------- */
+  var ORDER = ['ovDone', 'ovDeact', 'ovHapus', 'ovPick', 'ovConfirm', 'ovReset', 'ovInput', 'ovHasil', 'ovPang'];
+  function openOv(id) { $(id).hidden = false; }
+  function closeOv(id) { $(id).hidden = true; if (id === 'ovConfirm') pendingCopy = -1; }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-close]'), function (b) {
+    b.addEventListener('click', function () { closeOv(b.closest('.overlay').id); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.overlay'), function (ov) {
+    ov.addEventListener('click', function (e) { if (e.target === ov) closeOv(ov.id); });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    for (var i = 0; i < ORDER.length; i++) { if (!$(ORDER[i]).hidden) { closeOv(ORDER[i]); return; } }
+  });
+
+  /* ---------- Mulai ---------- */
+  async function boot() {
+    if (!configured) { showLogin('Website belum disambungkan ke Supabase. Isi config.js sesuai panduan.'); return; }
+    if (!sb) { showLogin('Pustaka gagal dimuat. Periksa koneksi internet lalu muat ulang halaman.'); return; }
+    sb.auth.onAuthStateChange(function (event) { if (event === 'SIGNED_OUT' && !$('appRoot').hidden) stopApp(); });
+    var r;
+    try { r = await sb.auth.getSession(); } catch (e) { r = null; }
+    if (r && r.data && r.data.session) startApp(); else showLogin();
+  }
+  boot();
+})();
+</script>
+</body>
+</html>
