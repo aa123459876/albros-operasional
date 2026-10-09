@@ -154,6 +154,31 @@ button:disabled { opacity: .55; cursor: default; }
 @keyframes rollIn { from { transform: translateY(-110%); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes rollOut { from { transform: none; opacity: 1; } to { transform: translateY(110%); opacity: 0; } }
 
+/* Cahaya pada kode berikutnya */
+.row.glow { animation: glow 1.5s ease-out; }
+@keyframes glow {
+  0% { background: color-mix(in srgb, var(--accent) 30%, var(--surface)); box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent); }
+  30% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 35%, transparent), 0 0 24px color-mix(in srgb, var(--accent) 55%, transparent); }
+  100% { background: var(--surface); box-shadow: 0 0 0 0 transparent; }
+}
+.jump {
+  position: fixed;
+  right: max(16px, calc((100vw - 560px) / 2));
+  bottom: calc(16px + 54px + 12px + env(safe-area-inset-bottom, 0px));
+  z-index: 20;
+  height: 44px; padding: 0 16px 0 12px;
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--accent); border-radius: 22px;
+  background: var(--surface-2); color: var(--fg); font-weight: 500; font-size: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.4);
+}
+.jump.low { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+.jump svg { color: var(--accent); transition: transform .15s ease; }
+.jump[data-dir="up"] svg { transform: rotate(180deg); }
+.jump:active { transform: scale(.97); }
+.detail-sub { margin: 0 0 6px; font-size: 13px; color: var(--accent); font-weight: 500; overflow-wrap: anywhere; }
+.pm { display: block; font-size: 12px; color: var(--fg-3); }
+
 /* Zona reset */
 .reset-zone { margin-top: 36px; padding-top: 20px; border-top: 1px dashed var(--line); display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
 .reset-zone p { margin: 0; font-size: 13px; color: var(--fg-3); max-width: 46ch; }
@@ -252,6 +277,10 @@ textarea.field { min-height: 92px; resize: vertical; }
         <div><strong>Pengerjaan Map</strong><span>Salin kode pelanggan per pangkalan</span></div>
         <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
       </button>
+      <button class="menu-item" type="button" data-go="pjList">
+        <div><strong>Pinjaman Data Pelanggan</strong><span>Pinjam kode dari pangkalan lain</span></div>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
     </div>
     <p class="group-label">Data</p>
     <div class="menu">
@@ -277,9 +306,20 @@ textarea.field { min-height: 92px; resize: vertical; }
     <ul class="stack" id="lPm"></ul>
   </section>
 
-  <!-- Pengerjaan Map: detail kode -->
+  <!-- Pinjaman Data Pelanggan: daftar -->
+  <section id="vPjList" hidden>
+    <div class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="sPj" type="search" placeholder="Cari pinjaman" aria-label="Cari pinjaman" autocomplete="off">
+    </div>
+    <p class="count" id="cPj"></p>
+    <ul class="stack" id="lPj"></ul>
+  </section>
+
+  <!-- Detail kode (pangkalan asli dan pangkalan pinjaman) -->
   <section id="vDetail" hidden>
     <section class="summary" aria-live="polite">
+      <p class="detail-sub" id="detailSub" hidden></p>
       <div class="summary-top">
         <strong id="roundTitle"></strong>
         <span class="meta" id="roundMeta"></span>
@@ -290,6 +330,10 @@ textarea.field { min-height: 92px; resize: vertical; }
     <section class="reset-zone" id="resetZone">
       <p>Setelah semua kode selesai dipakai, angka salin di pangkalan ini bisa dikembalikan ke 0. Pangkalan lain tidak terpengaruh.</p>
       <button class="btn-reset" id="resetBtn" type="button">Reset angka salin</button>
+    </section>
+    <section class="reset-zone" id="loanZone" hidden>
+      <p>Setelah selesai meminjam, hapus pangkalan pinjaman ini. Kode dan angka salin asli pangkalan sumber tidak berubah.</p>
+      <button class="btn-reset" id="hapusPjBtn" type="button">Hapus pangkalan pinjaman</button>
     </section>
   </section>
 
@@ -313,6 +357,11 @@ textarea.field { min-height: 92px; resize: vertical; }
     </div>
   </section>
 </div>
+
+<button class="jump" id="jumpBtn" type="button" hidden>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+  Kode berikutnya
+</button>
 
 <button class="fab" id="fab" type="button" hidden>
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -413,6 +462,29 @@ textarea.field { min-height: 92px; resize: vertical; }
   </form>
 </div>
 
+<!-- Buat pinjaman -->
+<div class="overlay sheet-wrap" id="ovPinjam" hidden>
+  <form class="dialog sheet" id="pinjamForm" role="dialog" aria-modal="true" aria-labelledby="pjTitle">
+    <h2 id="pjTitle">Buat pinjaman data pelanggan</h2>
+    <p>Semua kode pangkalan sumber disalin sebagai kode pinjaman baru dengan angka salin 0. Angka salin kode asli tidak berubah.</p>
+    <span class="lbl" id="lblPeminjam">Pangkalan yang meminjam</span>
+    <button class="pickbtn placeholder" type="button" id="pickPeminjam" aria-labelledby="lblPeminjam pjPeminjamText">
+      <span id="pjPeminjamText">Pilih pangkalan</span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <span class="lbl" id="lblSumber">Pinjam kode dari</span>
+    <button class="pickbtn placeholder" type="button" id="pickSumber" aria-labelledby="lblSumber pjSumberText">
+      <span id="pjSumberText">Pilih pangkalan</span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <p class="err" id="pjErr" role="alert"></p>
+    <div class="actions">
+      <button class="btn" type="button" data-close>Batal</button>
+      <button class="btn primary" type="submit">Buat pinjaman</button>
+    </div>
+  </form>
+</div>
+
 <!-- Pilih pangkalan -->
 <div class="overlay sheet-wrap" id="ovPick" hidden>
   <div class="dialog sheet" role="dialog" aria-modal="true" aria-labelledby="pkTitle">
@@ -499,14 +571,28 @@ textarea.field { min-height: 92px; resize: vertical; }
   }
 
   /* ---------- Data (salinan dari server) ---------- */
-  var DB = { pangkalan: [], kode: [], hasil: [] };
-  var PMAP = {};
+  function emptyDB() { return { pangkalan: [], kode: [], hasil: [], pinjaman: [], kode_pinjaman: [] }; }
+  var DB = emptyDB();
+  var PMAP = {}, LMAP = {};
   function rebuild() {
-    PMAP = {};
+    PMAP = {}; LMAP = {};
     DB.pangkalan.forEach(function (p) { p.codes = []; PMAP[p.id] = p; });
     DB.kode.slice().sort(function (a, b) { return a.urut - b.urut; }).forEach(function (k) {
       var p = PMAP[k.pangkalan_id];
       if (p) p.codes.push(k);
+    });
+    DB.pinjaman.forEach(function (j) {
+      var peminjam = PMAP[j.peminjam_id], sumber = j.sumber_id ? PMAP[j.sumber_id] : null;
+      LMAP[j.id] = {
+        id: j.id, kind: 'j', row: j, codes: [],
+        name: peminjam ? peminjam.name : '',
+        aktif: !!(peminjam && peminjam.aktif),
+        sumberName: sumber ? sumber.name : j.sumber_nama
+      };
+    });
+    DB.kode_pinjaman.slice().sort(function (a, b) { return a.urut - b.urut; }).forEach(function (k) {
+      var l = LMAP[k.pinjaman_id];
+      if (l) l.codes.push(k);
     });
   }
   function upsertRow(table, row) {
@@ -540,9 +626,11 @@ textarea.field { min-height: 92px; resize: vertical; }
     var res = await Promise.all([
       fetchAll('pangkalan', 'name', true),
       fetchAll('kode', 'urut', true),
-      fetchAll('hasil', 'created_at', false)
+      fetchAll('hasil', 'created_at', false),
+      fetchAll('pinjaman', 'created_at', true),
+      fetchAll('kode_pinjaman', 'urut', true)
     ]);
-    DB.pangkalan = res[0]; DB.kode = res[1]; DB.hasil = res[2];
+    DB.pangkalan = res[0]; DB.kode = res[1]; DB.hasil = res[2]; DB.pinjaman = res[3]; DB.kode_pinjaman = res[4];
     rebuild();
     scheduleRender();
   }
@@ -563,7 +651,7 @@ textarea.field { min-height: 92px; resize: vertical; }
   function subscribe() {
     if (channel) return;
     channel = sb.channel('albros-app');
-    ['pangkalan', 'kode', 'hasil'].forEach(function (t) {
+    ['pangkalan', 'kode', 'hasil', 'pinjaman', 'kode_pinjaman'].forEach(function (t) {
       channel.on('postgres_changes', { event: '*', schema: 'public', table: t }, function (payload) { applyChange(t, payload); });
     });
     channel.subscribe(function (status) {
@@ -656,34 +744,45 @@ textarea.field { min-height: 92px; resize: vertical; }
   }
   function stopApp() {
     unsubscribe();
-    DB = { pangkalan: [], kode: [], hasil: [] };
+    DB = emptyDB();
     rebuild();
+    stopWatch();
     ORDER.forEach(function (id) { $(id).hidden = true; });
     showLogin();
   }
 
   /* ---------- Navigasi ---------- */
   var view = 'home', curId = null;
-  var VIEWS = { home: 'vHome', pmList: 'vPmList', detail: 'vDetail', hasil: 'vHasil', daftar: 'vDaftar' };
-  var PARENT = { pmList: 'home', detail: 'pmList', hasil: 'home', daftar: 'home' };
+  var VIEWS = { home: 'vHome', pmList: 'vPmList', pjList: 'vPjList', detail: 'vDetail', pjDetail: 'vDetail', hasil: 'vHasil', daftar: 'vDaftar' };
+  var SECTIONS = ['vHome', 'vPmList', 'vPjList', 'vDetail', 'vHasil', 'vDaftar'];
+  var PARENT = { pmList: 'home', pjList: 'home', detail: 'pmList', pjDetail: 'pjList', hasil: 'home', daftar: 'home' };
+  function isDetail(v) { return v === 'detail' || v === 'pjDetail'; }
+  function cur() { return view === 'pjDetail' ? LMAP[curId] : PMAP[curId]; }
   var CHEV = '<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
 
   function go(v, id) {
     view = v;
     if (id) curId = id;
-    Object.keys(VIEWS).forEach(function (k) { $(VIEWS[k]).hidden = (k !== v); });
+    SECTIONS.forEach(function (s) { $(s).hidden = (VIEWS[v] !== s); });
     $('backBtn').hidden = (v === 'home');
     var small = 'Albros', title = 'Menu', fab = null;
+    if (!isDetail(v)) stopWatch();
     if (v === 'pmList') { small = 'MAP'; title = 'Pengerjaan Map'; $('sPm').value = ''; }
+    if (v === 'pjList') { small = 'MAP'; title = 'Pinjaman Data Pelanggan'; fab = 'Buat pinjaman'; $('sPj').value = ''; }
     if (v === 'detail') { small = 'Pengerjaan Map'; title = PMAP[curId] ? PMAP[curId].name : ''; fab = 'Input kode'; listEl.removeAttribute('data-pid'); }
+    if (v === 'pjDetail') { small = 'Pinjaman'; title = LMAP[curId] ? LMAP[curId].name : ''; listEl.removeAttribute('data-pid'); }
     if (v === 'hasil') { small = 'MAP'; title = 'Hasil Pengerjaan Map'; fab = 'Input hasil'; }
     if (v === 'daftar') { small = 'Data'; title = 'Daftar Pangkalan'; fab = 'Tambah pangkalan'; $('sDaftar').value = ''; showIna = false; }
     $('barSmall').textContent = small;
     $('barTitle').textContent = title;
     $('fab').hidden = !fab;
     if (fab) $('fabLabel').textContent = fab;
+    $('jumpBtn').classList.toggle('low', !fab);
     renderAll();
     window.scrollTo(0, 0);
+    if (isDetail(v)) {
+      setTimeout(function () { if (view === v && nextEl && !nextVisible) jumpToNext(); }, 150);
+    }
   }
   $('backBtn').addEventListener('click', function () { go(PARENT[view]); });
   Array.prototype.forEach.call(document.querySelectorAll('[data-go]'), function (b) {
@@ -697,7 +796,8 @@ textarea.field { min-height: 92px; resize: vertical; }
   }
   function renderAll() {
     if (view === 'pmList') renderPmList();
-    if (view === 'detail') renderDetail();
+    if (view === 'pjList') renderPjList();
+    if (isDetail(view)) renderDetail();
     if (view === 'hasil') renderHasil();
     if (view === 'daftar') renderDaftar();
     if (!$('ovPick').hidden) renderPick();
@@ -728,9 +828,16 @@ textarea.field { min-height: 92px; resize: vertical; }
   var listEl = $('list');
   var ownMark = {};
   function renderDetail() {
-    var p = PMAP[curId];
-    if (!p || !p.aktif) { toast('Pangkalan ini sudah tidak aktif.', true); go('pmList'); return; }
+    var p = cur();
+    if (!p || !p.aktif) {
+      var wasLoan = view === 'pjDetail';
+      toast(wasLoan ? 'Pinjaman ini sudah tidak ada atau tidak aktif.' : 'Pangkalan ini sudah tidak aktif.', true);
+      go(wasLoan ? 'pjList' : 'pmList');
+      return;
+    }
     $('barTitle').textContent = p.name;
+    $('detailSub').hidden = p.kind !== 'j';
+    if (p.kind === 'j') $('detailSub').textContent = 'Dipinjam dari ' + p.sumberName;
     var rows = listEl.querySelectorAll('.row');
     var same = listEl.getAttribute('data-pid') === p.id && p.codes.length > 0 && rows.length === p.codes.length &&
       p.codes.every(function (c, i) { return rows[i].getAttribute('data-id') === c.id; });
@@ -767,8 +874,10 @@ textarea.field { min-height: 92px; resize: vertical; }
         });
       }
     }
-    $('resetZone').hidden = !p.codes.length;
+    $('resetZone').hidden = !p.codes.length || p.kind === 'j';
+    $('loanZone').hidden = p.kind !== 'j';
     refresh(p);
+    watchNext();
   }
   function refresh(p) {
     var min = minCount(p), total = p.codes.length;
@@ -785,7 +894,7 @@ textarea.field { min-height: 92px; resize: vertical; }
       $('roundBar').style.width = '0%';
     } else if (min >= LIMIT) {
       $('roundTitle').textContent = 'Semua kode sudah ' + LIMIT + '×';
-      $('roundMeta').textContent = 'Saatnya reset';
+      $('roundMeta').textContent = p.kind === 'j' ? 'Hapus pinjaman atau pinjam dari pangkalan lain' : 'Saatnya reset atau pinjam kode';
       $('roundBar').style.width = '100%';
     } else {
       $('roundTitle').textContent = 'Putaran ' + (min + 1);
@@ -823,15 +932,61 @@ textarea.field { min-height: 92px; resize: vertical; }
     }
     return Promise.resolve(fallback());
   }
+  /* Kode berikutnya: tombol scroll dan cahaya saat terlihat */
+  var io = null, nextEl = null, nextVisible = false;
+  function glow(row) {
+    row.classList.remove('flash', 'glow');
+    void row.offsetWidth;
+    row.classList.add('glow');
+    row.addEventListener('animationend', function done(ev) {
+      if (ev.animationName !== 'glow') return;
+      row.classList.remove('glow');
+      row.removeEventListener('animationend', done);
+    });
+  }
+  function stopWatch() {
+    if (io) { io.disconnect(); io = null; }
+    nextEl = null; nextVisible = false;
+    $('jumpBtn').hidden = true;
+  }
+  function watchNext() {
+    var row = listEl.querySelector('.row.is-next');
+    if (row === nextEl) return;
+    if (io) { io.disconnect(); io = null; }
+    nextEl = row; nextVisible = false;
+    $('jumpBtn').hidden = true;
+    if (!row || !('IntersectionObserver' in window)) return;
+    io = new IntersectionObserver(function (entries) {
+      var e = entries[entries.length - 1];
+      var vis = e.intersectionRatio >= 0.9;
+      var was = nextVisible;
+      nextVisible = vis;
+      if (vis && !was) glow(e.target);
+      var jb = $('jumpBtn');
+      jb.hidden = vis;
+      if (!vis) {
+        var top = e.rootBounds ? e.rootBounds.top : 0;
+        jb.setAttribute('data-dir', e.boundingClientRect.top < top ? 'up' : 'down');
+      }
+    }, { threshold: [0, 0.9, 1], rootMargin: '-72px 0px -96px 0px' });
+    io.observe(row);
+  }
+  function jumpToNext() {
+    if (!nextEl) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    nextEl.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' });
+  }
+  $('jumpBtn').addEventListener('click', jumpToNext);
+
   var copying = {}, pendingCopy = -1;
   async function doCopy(i) {
-    var p = PMAP[curId], c = p && p.codes[i];
+    var p = cur(), c = p && p.codes[i];
     if (!c || copying[c.id]) return;
     copying[c.id] = true;
     try {
       var ok = await writeClip(c.code);
       if (!ok) { toast('Tidak bisa menyalin otomatis. Angka tidak bertambah.', true); return; }
-      var r = await sb.rpc('salin_kode', { p_id: c.id });
+      var r = await sb.rpc(p.kind === 'j' ? 'salin_kode_pinjaman' : 'salin_kode', { p_id: c.id });
       if (r.error || r.data == null) {
         toast('Kode tersalin, tapi angka belum tercatat di server. Tekan Salin lagi.', true);
         return;
@@ -850,7 +1005,7 @@ textarea.field { min-height: 92px; resize: vertical; }
     } finally { delete copying[c.id]; }
   }
   function tryCopy(i) {
-    var p = PMAP[curId], min = minCount(p);
+    var p = cur(), min = minCount(p);
     if (p.codes[i].n > min) {
       pendingCopy = i;
       $('cfText').textContent = 'Kode ini sudah disalin ' + p.codes[i].n + '×, sedangkan ada kode lain yang baru ' + min + '×. Salin kode yang di bawah dulu agar merata.';
@@ -1060,20 +1215,107 @@ textarea.field { min-height: 92px; resize: vertical; }
   });
 
   /* Pemilih pangkalan dengan pencarian */
+  var pickCfg = { onPick: function () {} };
   function renderPick() {
-    var items = filtered($('sPick').value, true), ul = $('lPick');
+    var ex = pickCfg.exclude;
+    var base = filtered('', true).filter(function (p) { return p.id !== ex; });
+    var nq = norm($('sPick').value);
+    var items = base.filter(function (p) { return !nq || norm(p.name).indexOf(nq) > -1; });
+    var ul = $('lPick');
     ul.textContent = '';
-    $('cPick').textContent = countText(items.length, countAktif());
+    $('cPick').textContent = countText(items.length, base.length);
     if (!items.length) { ul.appendChild(el('li', 'none', 'Pangkalan tidak ditemukan. Coba kata lain.')); return; }
     items.forEach(function (p) {
       var li = el('li');
-      var b = el('button', null, p.name); b.type = 'button';
-      b.addEventListener('click', function () { setPick(p.id); closeOv('ovPick'); $('hsErr').textContent = ''; });
+      var b = el('button', null); b.type = 'button';
+      b.appendChild(el('span', null, p.name));
+      if (pickCfg.meta) b.appendChild(el('span', 'pm', pickCfg.meta(p)));
+      b.addEventListener('click', function () { closeOv('ovPick'); pickCfg.onPick(p); });
       li.appendChild(b); ul.appendChild(li);
     });
   }
-  $('pickBtn').addEventListener('click', function () { $('sPick').value = ''; renderPick(); openOv('ovPick'); $('sPick').focus(); });
+  function openPicker(cfg) {
+    pickCfg = cfg;
+    $('pkTitle').textContent = cfg.title || 'Pilih pangkalan';
+    $('sPick').value = '';
+    renderPick(); openOv('ovPick'); $('sPick').focus();
+  }
+  $('pickBtn').addEventListener('click', function () {
+    openPicker({ onPick: function (p) { setPick(p.id); $('hsErr').textContent = ''; } });
+  });
   $('sPick').addEventListener('input', renderPick);
+
+  /* ---------- Pinjaman Data Pelanggan ---------- */
+  function loanList() {
+    return Object.keys(LMAP).map(function (k) { return LMAP[k]; }).filter(function (l) { return l.aktif; });
+  }
+  function renderPjList() {
+    var all = loanList(), nq = norm($('sPj').value), ul = $('lPj');
+    var items = all.filter(function (l) {
+      return !nq || norm(l.name).indexOf(nq) > -1 || norm(l.sumberName).indexOf(nq) > -1;
+    }).sort(byName);
+    ul.textContent = '';
+    $('cPj').textContent = items.length === all.length ? all.length + ' pinjaman' : items.length + ' dari ' + all.length + ' pinjaman';
+    if (!items.length) {
+      ul.appendChild(el('li', 'none', all.length ? 'Pinjaman tidak ditemukan. Coba kata lain.' : 'Belum ada pinjaman. Tekan Buat pinjaman untuk memulai.'));
+      return;
+    }
+    items.forEach(function (l) {
+      var li = el('li');
+      var b = el('button', 'prow'); b.type = 'button';
+      var d = el('div');
+      d.appendChild(el('strong', null, l.name));
+      d.appendChild(el('span', 'meta', 'Pinjam dari ' + l.sumberName + ' · ' + l.codes.length + ' kode · putaran ' + Math.min(minCount(l) + 1, LIMIT + 1)));
+      b.appendChild(d);
+      b.insertAdjacentHTML('beforeend', CHEV);
+      b.addEventListener('click', function () { go('pjDetail', l.id); });
+      li.appendChild(b);
+      ul.appendChild(li);
+    });
+  }
+  $('sPj').addEventListener('input', renderPjList);
+
+  var pjPeminjam = null, pjSumber = null;
+  function setPj(which, p) {
+    if (which === 'peminjam') { pjPeminjam = p ? p.id : null; $('pjPeminjamText').textContent = p ? p.name : 'Pilih pangkalan'; $('pickPeminjam').classList.toggle('placeholder', !p); }
+    else { pjSumber = p ? p.id : null; $('pjSumberText').textContent = p ? p.name : 'Pilih pangkalan'; $('pickSumber').classList.toggle('placeholder', !p); }
+    $('pjErr').textContent = '';
+  }
+  function openPinjam() {
+    setPj('peminjam', null); setPj('sumber', null);
+    openOv('ovPinjam');
+  }
+  $('pickPeminjam').addEventListener('click', function () {
+    openPicker({ title: 'Pangkalan yang meminjam', exclude: pjSumber, onPick: function (p) { setPj('peminjam', p); } });
+  });
+  $('pickSumber').addEventListener('click', function () {
+    openPicker({
+      title: 'Pinjam kode dari', exclude: pjPeminjam,
+      meta: function (p) { return p.codes.length ? p.codes.length + ' kode' : 'Belum ada kode'; },
+      onPick: function (p) { setPj('sumber', p); }
+    });
+  });
+  var PJ_MSG = {
+    sama: 'Pangkalan peminjam dan sumber tidak boleh sama.',
+    sudah_ada: 'Pinjaman dari pangkalan ini sudah ada. Hapus pinjaman lama dulu jika ingin memulai baru.',
+    kosong: 'Pangkalan sumber belum punya kode pelanggan.',
+    tidak_aktif: 'Salah satu pangkalan tidak aktif.'
+  };
+  $('pinjamForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    guarded(async function () {
+      if (!pjPeminjam) { $('pjErr').textContent = 'Pilih pangkalan yang meminjam.'; return; }
+      if (!pjSumber) { $('pjErr').textContent = 'Pilih pangkalan sumber kode.'; return; }
+      var r = await sb.rpc('buat_pinjaman', { p_peminjam: pjPeminjam, p_sumber: pjSumber });
+      if (r.error) throw r.error;
+      var res = r.data || {};
+      if (res.status !== 'ok') { $('pjErr').textContent = PJ_MSG[res.status] || 'Gagal membuat pinjaman. Coba lagi.'; return; }
+      await loadAll();
+      closeOv('ovPinjam');
+      go('pjDetail', res.id);
+      toast('Pinjaman dibuat: ' + res.jumlah + ' kode baru, angka salin 0');
+    });
+  });
 
   /* ---------- Daftar Pangkalan ---------- */
   var showIna = false;
@@ -1182,23 +1424,41 @@ textarea.field { min-height: 92px; resize: vertical; }
   });
   $('dcYes').addEventListener('click', function () { var p = PMAP[pgEditId]; if (p) setAktif(p, false); });
 
-  var hapusId = null;
+  var hapusId = null, hapusKind = 'pangkalan';
   digits($('hapusCode'));
   function openHapus(p) {
-    hapusId = p.id;
+    hapusId = p.id; hapusKind = 'pangkalan';
     $('hpTitle').textContent = 'Hapus ' + p.name + ' permanen?';
-    $('hpText').textContent = 'Kode pelanggan dan hasil pengerjaan pangkalan ini ikut terhapus dan tidak bisa dikembalikan. Masukkan kode hapus untuk melanjutkan.';
+    $('hpText').textContent = 'Kode pelanggan, hasil pengerjaan, dan pinjaman pangkalan ini ikut terhapus dan tidak bisa dikembalikan. Masukkan kode hapus untuk melanjutkan.';
     $('hapusCode').value = ''; $('hapusErr').textContent = '';
     openOv('ovHapus'); $('hapusCode').focus();
   }
+  function openHapusPinjaman(l) {
+    hapusId = l.id; hapusKind = 'pinjaman';
+    $('hpTitle').textContent = 'Hapus pinjaman ' + l.name + '?';
+    $('hpText').textContent = 'Semua kode pinjaman dari ' + l.sumberName + ' dan angka salinnya dihapus. Kode asli ' + l.sumberName + ' tidak berubah. Masukkan kode hapus untuk melanjutkan.';
+    $('hapusCode').value = ''; $('hapusErr').textContent = '';
+    openOv('ovHapus'); $('hapusCode').focus();
+  }
+  $('hapusPjBtn').addEventListener('click', function () { var l = LMAP[curId]; if (l) openHapusPinjaman(l); });
   $('hapusForm').addEventListener('submit', function (e) {
     e.preventDefault();
     guarded(async function () {
       var code = $('hapusCode').value.trim();
       if (!code) { $('hapusErr').textContent = 'Masukkan kode hapus.'; shake($('hapusForm')); return; }
-      var r = await sb.rpc('hapus_pangkalan', { p_id: hapusId, p_code: code });
+      var isLoan = hapusKind === 'pinjaman';
+      var r = await sb.rpc(isLoan ? 'hapus_pinjaman' : 'hapus_pangkalan', { p_id: hapusId, p_code: code });
       if (r.error) throw r.error;
       if (r.data !== 'ok') { $('hapusErr').textContent = codeMsg(r.data); shake($('hapusForm')); return; }
+      if (isLoan) {
+        removeRow('pinjaman', hapusId);
+        DB.kode_pinjaman = DB.kode_pinjaman.filter(function (k) { return k.pinjaman_id !== hapusId; });
+        rebuild();
+        closeOv('ovHapus');
+        go('pjList');
+        toast('Pangkalan pinjaman dihapus');
+        return;
+      }
       var gone = PMAP[hapusId];
       removeRow('pangkalan', hapusId);
       DB.kode = DB.kode.filter(function (k) { return k.pangkalan_id !== hapusId; });
@@ -1207,6 +1467,7 @@ textarea.field { min-height: 92px; resize: vertical; }
       closeOv('ovHapus');
       renderAll();
       toast((gone ? gone.name : 'Pangkalan') + ' dihapus permanen');
+      loadAll().catch(function () {});
     });
   });
 
@@ -1231,10 +1492,15 @@ textarea.field { min-height: 92px; resize: vertical; }
       DB.pangkalan.slice().sort(byName).forEach(function (p) { p.codes.forEach(function (c) { sheetK.push([p.name, String(c.code), c.n]); }); });
       var sheetH = [['Pangkalan', 'Stok tabung', 'PT / Non PT', 'Dicatat']];
       DB.hasil.forEach(function (h) { var p = PMAP[h.pangkalan_id]; sheetH.push([p ? p.name : '', h.stok, h.pt, h.created_at]); });
+      var sheetJ = [['Peminjam', 'Dipinjam dari', 'Kode pelanggan', 'Jumlah salin']];
+      Object.keys(LMAP).map(function (k) { return LMAP[k]; }).sort(byName).forEach(function (l) {
+        l.codes.forEach(function (c) { sheetJ.push([l.name, l.sumberName, String(c.code), c.n]); });
+      });
       var wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sheetP), 'Pangkalan');
       XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sheetK), 'Kode Pelanggan');
       XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sheetH), 'Hasil Pengerjaan');
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sheetJ), 'Pinjaman');
       var d = new Date(), pad = function (n) { return String(n).padStart(2, '0'); };
       XLSX.writeFile(wb, 'cadangan-albros-' + d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + '.xlsx');
       toast('Cadangan diunduh');
@@ -1248,12 +1514,13 @@ textarea.field { min-height: 92px; resize: vertical; }
   /* ---------- FAB ---------- */
   $('fab').addEventListener('click', function () {
     if (view === 'detail') openInput();
+    else if (view === 'pjList') openPinjam();
     else if (view === 'hasil') openHasil(null);
     else if (view === 'daftar') openPang(null);
   });
 
   /* ---------- Overlay ---------- */
-  var ORDER = ['ovDone', 'ovDeact', 'ovHapus', 'ovPick', 'ovConfirm', 'ovReset', 'ovInput', 'ovHasil', 'ovPang'];
+  var ORDER = ['ovDone', 'ovDeact', 'ovHapus', 'ovPick', 'ovConfirm', 'ovReset', 'ovInput', 'ovHasil', 'ovPang', 'ovPinjam'];
   function openOv(id) { $(id).hidden = false; }
   function closeOv(id) { $(id).hidden = true; if (id === 'ovConfirm') pendingCopy = -1; }
   Array.prototype.forEach.call(document.querySelectorAll('[data-close]'), function (b) {
