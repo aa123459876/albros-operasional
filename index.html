@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#262624">
-<title>Albros Operasional</title>
+<title>Altan Operasional</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23262624'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23d97757'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,11 +51,36 @@ button:disabled { opacity: .55; cursor: default; }
 .app { max-width: 560px; margin: 0 auto; padding-bottom: 120px; }
 
 /* Login */
-.login { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding-block: 32px; }
-.login-card { width: 100%; max-width: 360px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
-.login-card h1 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 28px; line-height: 1.15; }
-.login-card .sub { margin: 4px 0 18px; color: var(--fg-2); font-size: 14px; }
-.login-card .btn { width: 100%; margin-top: 16px; }
+.login { min-height: 100vh; min-height: 100dvh; max-width: 960px; margin: 0 auto; display: grid; align-content: center; justify-items: center; row-gap: 6px; padding: 28px 0 56px; transition: opacity .22s ease; }
+.login.leaving { opacity: 0; }
+.login-art { position: relative; width: min(44vw, 176px); aspect-ratio: 200 / 320; color: #6d6c65; --tank-fill: #30302e; --flame: var(--accent); }
+.login-art::before { content: ""; position: absolute; inset: -28% -70%; background: radial-gradient(closest-side, rgba(217, 119, 87, .26), rgba(217, 119, 87, 0)); pointer-events: none; }
+.login-art svg { position: relative; display: block; width: 100%; height: 100%; }
+.login-form { width: 100%; max-width: 380px; margin-top: 10px; text-align: center; }
+.login-title { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: clamp(34px, 10vw, 46px); line-height: 1.05; letter-spacing: -.02em; text-wrap: balance; }
+.fade-in { animation: titleIn 1.6s ease-out both; }
+@keyframes titleIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.login-hello { margin: 10px 0 24px; min-height: 1.7em; font-size: 18px; color: var(--fg-2); }
+.caret { display: inline-block; width: 2px; height: 1.05em; margin-left: 2px; vertical-align: -.16em; background: var(--accent); animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.fields { text-align: left; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); overflow: hidden; transition: border-color .15s ease; }
+.fields:focus-within { border-color: var(--accent); }
+.fld { display: block; padding: 10px 16px 9px; }
+.fld + .fld { border-top: 1px solid var(--line); }
+.fld > span { display: block; font-size: 12px; color: var(--fg-3); }
+.fld input { width: 100%; margin: 2px 0 0; padding: 0; border: 0; outline: 0; background: transparent; color: var(--fg); font: inherit; font-size: 17px; }
+.login-form .err { text-align: left; }
+.login-form .pill { margin-top: 10px; }
+@media (max-height: 700px) { .login-art { width: 112px; } }
+@media (min-width: 860px) {
+  .login { grid-template-columns: 1fr 1fr; column-gap: 56px; }
+  .login-art { width: 210px; justify-self: end; }
+  .login-form { justify-self: start; text-align: left; }
+}
+.wm { position: fixed; left: max(16px, calc((100vw - 560px) / 2)); bottom: calc(8px + env(safe-area-inset-bottom, 0px)); z-index: 15; font-size: 12px; letter-spacing: .02em; color: var(--fg); opacity: .2; pointer-events: none; user-select: none; -webkit-user-select: none; }
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.ic { width: 22px; height: 22px; display: block; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
 /* App bar */
 .appbar {
@@ -68,7 +93,7 @@ button:disabled { opacity: .55; cursor: default; }
 .back { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); flex: none; }
 .back:hover { background: var(--surface-2); }
 .titles { min-width: 0; flex: 1; }
-.titles small { display: block; font-size: 12px; color: var(--fg-3); letter-spacing: .04em; text-transform: uppercase; }
+.titles small { display: block; font-size: 12px; color: var(--fg-3); }
 .titles h1 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 22px; line-height: 1.2; text-wrap: balance; overflow-wrap: anywhere; }
 .live { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--fg-2); padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; flex: none; }
 .live i { width: 7px; height: 7px; border-radius: 50%; background: var(--warn); display: block; }
@@ -76,18 +101,43 @@ button:disabled { opacity: .55; cursor: default; }
 .live.off i { background: var(--danger); }
 
 /* Menu */
-.group-label { margin: 22px 0 8px; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-3); }
-.menu { display: flex; flex-direction: column; gap: 8px; }
-.menu-item, .prow {
-  width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px;
-  text-align: left; padding: 14px 16px;
-  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
-}
-.menu-item:hover, .prow:hover { background: var(--surface-2); }
-.menu-item strong, .prow strong { display: block; font-weight: 600; overflow-wrap: anywhere; }
-.menu-item span, .prow span.meta { display: block; font-size: 13px; color: var(--fg-2); }
+.prow { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; text-align: left; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.prow:hover { background: var(--surface-2); }
+.prow strong { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.prow span.meta { display: block; font-size: 13px; color: var(--fg-2); }
 .chev { color: var(--fg-3); }
-.logout-row { margin-top: 28px; }
+.is-home .appbar { border-bottom: 0; }
+.is-home .titles small { display: none; }
+.is-home .titles h1 { font-size: 20px; letter-spacing: -.01em; }
+.hero { padding: 26px 2px 4px; }
+.hero h2 { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: clamp(42px, 13vw, 62px); line-height: 1.02; letter-spacing: -.025em; text-wrap: balance; }
+.hero p { margin: 12px 0 0; font-size: 17px; line-height: 1.45; color: var(--fg-2); max-width: 30ch; }
+.bento { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 26px; }
+.tile { position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 4px; text-align: left; min-height: 158px; padding: 18px; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); transition: transform .15s ease, background .15s ease; }
+.tile:hover { background: var(--surface-2); }
+.tile:active { transform: scale(.98); }
+.tile strong { font-family: var(--font-display); font-weight: 600; font-size: 21px; line-height: 1.15; letter-spacing: -.01em; text-wrap: balance; }
+.tile .t-sub { font-size: 14px; line-height: 1.4; color: var(--fg-2); }
+.tile .t-meta { margin-top: 6px; font-size: 13px; color: var(--fg-3); font-variant-numeric: tabular-nums; }
+.t-ic { margin-bottom: auto; width: 42px; height: 42px; display: grid; place-items: center; border-radius: 14px; background: var(--surface-2); color: var(--fg); }
+.tile-alt { background: var(--surface-2); }
+.tile-alt:hover { background: #45443f; }
+.tile-alt .t-ic { background: var(--surface); }
+.tile-main { grid-column: 1 / -1; min-height: 224px; border: 0; border-radius: 32px; padding: 24px; background: var(--accent); color: var(--ink); }
+.tile-main:hover { background: #de8061; }
+.tile-main strong { font-size: 32px; line-height: 1.08; letter-spacing: -.02em; max-width: 9ch; }
+.tile-main .t-sub { color: rgba(31, 30, 29, .8); font-size: 15px; max-width: 17ch; }
+.tile-main .t-meta { color: rgba(31, 30, 29, .72); }
+.tile-main .t-ic { background: rgba(31, 30, 29, .14); color: var(--ink); }
+.tile-main .art { position: absolute; right: -6px; bottom: -40px; height: 264px; width: auto; aspect-ratio: 200 / 320; color: rgba(31, 30, 29, .5); --tank-fill: rgba(31, 30, 29, .12); --flame: #1f1e1d; transform: rotate(13deg); pointer-events: none; }
+.tile-wide { grid-column: 1 / -1; min-height: 0; flex-direction: row; align-items: center; justify-content: flex-start; gap: 14px; padding: 14px 18px 14px 14px; border-radius: 20px; }
+.tile-wide .t-ic { margin-bottom: 0; flex: none; }
+.tile-wide .t-text { flex: 1; min-width: 0; display: block; }
+.tile-wide .t-text strong { display: block; font-size: 19px; }
+.tile-wide .t-meta { display: block; margin-top: 2px; }
+.home-foot { margin-top: 40px; margin-bottom: 28px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.link-tiny { background: none; border: 0; padding: 8px 0; font-size: 12px; color: var(--fg-3); text-decoration: underline; text-underline-offset: 3px; }
+.link-tiny:hover { color: var(--fg-2); }
 
 /* Search */
 .search { position: relative; margin-top: 14px; }
@@ -129,7 +179,7 @@ button:disabled { opacity: .55; cursor: default; }
 
 /* Daftar kode */
 .list { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-.row { --tone: var(--t0); display: grid; grid-template-columns: 24px minmax(0, 1fr) auto auto; align-items: center; gap: 10px; padding: 10px 12px 10px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; transition: border-color .2s ease; }
+.row { --tone: var(--t0); display: grid; grid-template-columns: 24px minmax(0, 1fr) 132px; align-items: center; gap: 10px; min-height: 64px; padding: 10px 12px 10px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; transition: border-color .2s ease; content-visibility: auto; contain-intrinsic-size: auto 64px; }
 .row.t0 { --tone: var(--t0); }
 .row.t1 { --tone: var(--t1); }
 .row.t2 { --tone: var(--t2); }
@@ -141,13 +191,41 @@ button:disabled { opacity: .55; cursor: default; }
 .idx { color: var(--fg-3); font-size: 13px; font-variant-numeric: tabular-nums; }
 .code-wrap { min-width: 0; }
 .code { font-family: var(--font-mono); font-weight: 500; font-size: 15px; letter-spacing: .02em; overflow-wrap: anywhere; }
-.next-tag { display: none; margin-top: 2px; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
-.row.is-next .next-tag { display: block; }
-.btn-copy { height: 40px; min-width: 84px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); font-weight: 500; font-size: 14px; transition: background .15s ease, border-color .15s ease, color .15s ease; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tags > span { display: none; font-size: 11px; line-height: 1.5; }
+.tag-next { color: var(--accent); font-weight: 500; }
+.row.is-next .tag-next { display: inline; }
+.tag-vip { color: var(--warn); font-weight: 600; }
+.row.vip .tag-vip { display: inline; }
+.tag-beku { color: #8fc7ff; font-weight: 500; }
+.row.beku .tag-beku { display: inline; }
+.row.beku { border-style: dashed; background: color-mix(in srgb, var(--bg) 55%, var(--surface)); }
+.row.beku .idx, .row.beku .code-wrap { opacity: .42; }
+.row.beku .code { text-decoration: line-through; text-decoration-thickness: 1.5px; }
+.row.beku .tags { opacity: 1; }
+.row.beku .btn-copy { opacity: .35; cursor: not-allowed; }
+.row.beku .badge { opacity: .5; }
+.btn-copy { height: 40px; min-width: 84px; white-space: nowrap; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); font-weight: 500; font-size: 14px; transition: background .15s ease, border-color .15s ease, color .15s ease, opacity .18s ease, transform .22s cubic-bezier(.3, .7, .2, 1); }
 .btn-copy:hover { background: #45443f; }
 .btn-copy:active { transform: scale(.97); }
-.btn-copy.copied { background: color-mix(in srgb, var(--t1) 22%, var(--surface-2)); border-color: var(--t1); color: var(--t1); }
-.badge { position: relative; width: 38px; height: 38px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--tone); background: color-mix(in srgb, var(--tone) 16%, transparent); color: var(--tone); font-weight: 600; font-size: 17px; font-variant-numeric: tabular-nums; transition: border-color .2s ease, background .2s ease, color .2s ease; }
+.btn-copy.copied { padding: 0 8px; background: color-mix(in srgb, var(--t1) 22%, var(--surface-2)); border-color: var(--t1); color: var(--t1); }
+.right { position: relative; display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+.badge { position: relative; flex: none; width: 38px; height: 38px; padding: 0; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--tone); background: color-mix(in srgb, var(--tone) 16%, transparent); color: var(--tone); font-weight: 600; font-size: 17px; font-variant-numeric: tabular-nums; transition: transform .22s cubic-bezier(.3, .7, .2, 1), border-color .2s ease, background .2s ease, color .2s ease, opacity .2s ease; }
+.row.open .btn-copy { opacity: 0; transform: translateX(-10px); pointer-events: none; }
+.row.open .badge { transform: translateX(-94px); }
+.tray { position: absolute; right: 0; top: 50%; margin-top: -20px; display: flex; gap: 8px; animation: trayIn .22s cubic-bezier(.3, .7, .2, 1) both; }
+@keyframes trayIn { from { opacity: 0; transform: translateX(26px); } to { opacity: 1; transform: none; } }
+.act { width: 40px; height: 40px; padding: 0; display: grid; place-items: center; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); }
+.act:hover { background: #45443f; }
+.act:active { transform: scale(.94); }
+.act .ic { width: 20px; height: 20px; }
+.act-freeze { color: #8fc7ff; }
+.act-unfreeze { color: var(--warn); }
+.act-hapus { color: var(--danger); }
+.act-vip[aria-pressed="true"] { color: var(--warn); border-color: var(--warn); background: color-mix(in srgb, var(--warn) 16%, var(--surface-2)); }
+.act-vip[aria-pressed="true"] .ic { fill: currentColor; }
+.tray[data-beku="0"] .act-unfreeze, .tray[data-beku="0"] .act-hapus { display: none; }
+.tray[data-beku="1"] .act-vip, .tray[data-beku="1"] .act-freeze { display: none; }
 .num { position: absolute; inset: 0; display: grid; place-items: center; }
 .num.in { animation: rollIn .22s ease-out both; }
 .num.out { animation: rollOut .22s ease-in both; }
@@ -215,6 +293,8 @@ textarea.field { min-height: 92px; resize: vertical; }
 .btn { height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); font-weight: 500; }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--ink); font-weight: 600; }
 .btn.danger { background: var(--danger); border-color: var(--danger); color: var(--ink); font-weight: 600; }
+.btn-sm { height: 36px; padding: 0 14px; font-size: 14px; border-radius: 9px; }
+.btn.pill { width: 100%; height: 50px; border-radius: 25px; font-size: 16px; }
 .tiny-zone { margin-top: 18px; padding-top: 10px; border-top: 1px dashed var(--line); }
 .addrow { display: flex; gap: 8px; }
 .addrow .field { flex: 1; min-width: 0; }
@@ -239,17 +319,39 @@ textarea.field { min-height: 92px; resize: vertical; }
 <body>
 <noscript>Website ini membutuhkan JavaScript.</noscript>
 
+<svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false">
+  <symbol id="art-tabung" viewBox="0 0 200 320">
+    <path d="M60 80V44Q60 8 100 8Q140 8 140 44V80" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    <path d="M100 50V70" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    <rect x="88" y="26" width="24" height="24" rx="5" fill="none" stroke="currentColor" stroke-width="3"/>
+    <path d="M78 32H122" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    <rect x="34" y="70" width="132" height="226" rx="62" fill="var(--tank-fill)" stroke="currentColor" stroke-width="3"/>
+    <path d="M34 142H166M34 238H166" fill="none" stroke="currentColor" stroke-width="2" opacity=".55"/>
+    <path d="M100 160C88 174 84 186 90 198C93 204 107 204 110 198C116 186 112 174 100 160Z" fill="var(--flame)"/>
+    <rect x="52" y="292" width="96" height="16" rx="5" fill="none" stroke="currentColor" stroke-width="3"/>
+  </symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 12.5 9 5 9-5"/><path d="m3 17 9 5 9-5"/></symbol>
+  <symbol id="i-clip" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 4.5h6M9 13l2.2 2.2L15.5 11"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 8h11l-3-3M17 16H6l3 3"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></symbol>
+  <symbol id="i-snow" viewBox="0 0 24 24"><path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9M9.5 4.5 12 7l2.5-2.5M9.5 19.5 12 17l2.5 2.5"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5V5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 17l-5.2 2.7 1-5.9L3.5 9.7l5.9-.8L12 3.5Z"/></symbol>
+</svg>
+
 <!-- Login -->
 <main class="login" id="login" hidden>
-  <form class="login-card" id="loginForm" autocomplete="on">
-    <h1>Albros</h1>
-    <p class="sub">Masuk untuk membuka alat operasional.</p>
-    <label class="lbl" for="loginUser" style="margin-top:0">User</label>
-    <input class="field text" id="loginUser" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required>
-    <label class="lbl" for="loginPass">Password</label>
-    <input class="field text" id="loginPass" name="password" type="password" autocomplete="current-password" required>
+  <div class="login-art" aria-hidden="true"><svg viewBox="0 0 200 320"><use href="#art-tabung"/></svg></div>
+  <form class="login-form" id="loginForm" autocomplete="on">
+    <h1 class="login-title" id="loginTitle">sign in to Altan</h1>
+    <p class="login-hello" id="loginHello"><span class="sr">halooww..</span><span id="helloText" aria-hidden="true"></span><i class="caret" id="caret" aria-hidden="true"></i></p>
+    <div class="fields">
+      <label class="fld"><span>User</span><input id="loginUser" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
+      <label class="fld"><span>Password</span><input id="loginPass" name="password" type="password" autocomplete="current-password" required></label>
+    </div>
     <p class="err" id="loginErr" role="alert"></p>
-    <button class="btn primary" type="submit" id="loginBtn">Masuk</button>
+    <button class="btn primary pill" type="submit" id="loginBtn">Masuk</button>
   </form>
 </main>
 
@@ -259,7 +361,7 @@ textarea.field { min-height: 92px; resize: vertical; }
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
     </button>
     <div class="titles">
-      <small id="barSmall">Albros</small>
+      <small id="barSmall">Altan</small>
       <h1 id="barTitle">Menu</h1>
     </div>
     <span class="live" id="live"><i></i><span id="liveText">Menyambung</span></span>
@@ -267,33 +369,38 @@ textarea.field { min-height: 92px; resize: vertical; }
 
   <!-- Menu -->
   <section id="vHome">
-    <p class="group-label">MAP</p>
-    <div class="menu">
-      <button class="menu-item" type="button" data-go="hasil">
-        <div><strong>Hasil Pengerjaan Map</strong><span>Catat stok tabung per pangkalan</span></div>
-        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+    <div class="hero">
+      <h2 id="homeGreet">Selamat datang.</h2>
+      <p id="homeDate"></p>
+    </div>
+    <div class="bento">
+      <button class="tile tile-main" type="button" data-go="pmList">
+        <svg class="art" viewBox="0 0 200 320" aria-hidden="true"><use href="#art-tabung"/></svg>
+        <span class="t-ic"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg></span>
+        <strong>Pengerjaan Map</strong>
+        <span class="t-sub">Salin kode pelanggan per pangkalan</span>
+        <span class="t-meta" id="mPm"></span>
       </button>
-      <button class="menu-item" type="button" data-go="pmList">
-        <div><strong>Pengerjaan Map</strong><span>Salin kode pelanggan per pangkalan</span></div>
-        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      <button class="tile" type="button" data-go="hasil">
+        <span class="t-ic"><svg class="ic" aria-hidden="true"><use href="#i-clip"/></svg></span>
+        <strong>Hasil Pengerjaan Map</strong>
+        <span class="t-meta" id="mHasil"></span>
       </button>
-      <button class="menu-item" type="button" data-go="pjList">
-        <div><strong>Pinjaman Data Pelanggan</strong><span>Pinjam kode dari pangkalan lain</span></div>
+      <button class="tile tile-alt" type="button" data-go="pjList">
+        <span class="t-ic"><svg class="ic" aria-hidden="true"><use href="#i-swap"/></svg></span>
+        <strong>Pinjaman Data Pelanggan</strong>
+        <span class="t-meta" id="mPj"></span>
+      </button>
+      <button class="tile tile-wide" type="button" data-go="daftar">
+        <span class="t-ic"><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg></span>
+        <span class="t-text"><strong>Daftar Pangkalan</strong><span class="t-meta" id="mDaftar"></span></span>
         <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
       </button>
     </div>
-    <p class="group-label">Data</p>
-    <div class="menu">
-      <button class="menu-item" type="button" data-go="daftar">
-        <div><strong>Daftar Pangkalan</strong><span>Tambah dan edit pangkalan</span></div>
-        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-      </button>
-      <button class="menu-item" type="button" id="backupBtn">
-        <div><strong>Unduh Cadangan</strong><span>Simpan semua data ke file Excel</span></div>
-        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
-      </button>
+    <div class="home-foot">
+      <button class="btn btn-sm" type="button" id="logoutBtn">Keluar</button>
+      <button class="link-tiny" type="button" id="backupLink">download file excel</button>
     </div>
-    <div class="logout-row"><button class="btn" type="button" id="logoutBtn">Keluar</button></div>
   </section>
 
   <!-- Pengerjaan Map: pilih pangkalan -->
@@ -527,6 +634,34 @@ textarea.field { min-height: 92px; resize: vertical; }
   </form>
 </div>
 
+<!-- Bekukan / lepas beku -->
+<div class="overlay" id="ovFreeze" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="fzTitle">
+    <h2 id="fzTitle">Bekukan kode ini?</h2>
+    <p id="fzText"></p>
+    <div class="actions">
+      <button class="btn" type="button" data-close>Tidak</button>
+      <button class="btn primary" type="button" id="fzYes">Ya</button>
+    </div>
+  </div>
+</div>
+
+<!-- Unduh Excel (butuh kode) -->
+<div class="overlay" id="ovBackup" hidden>
+  <form class="dialog" id="backupForm" role="dialog" aria-modal="true" aria-labelledby="bkTitle">
+    <h2 id="bkTitle">Unduh file Excel</h2>
+    <p>Semua data disimpan ke satu file Excel. Masukkan kode untuk melanjutkan.</p>
+    <label for="backupCode">Kode</label>
+    <input class="field" id="backupCode" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+    <p class="err" id="backupErr" role="alert"></p>
+    <p class="hint">Kodenya sama dengan kode reset.</p>
+    <div class="actions">
+      <button class="btn" type="button" data-close>Batal</button>
+      <button class="btn primary" type="submit" id="backupGo">Unduh</button>
+    </div>
+  </form>
+</div>
+
 <!-- Stok 0 -->
 <div class="overlay" id="ovDone" hidden>
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dnTitle">
@@ -540,6 +675,7 @@ textarea.field { min-height: 92px; resize: vertical; }
 </div>
 
 <div class="toast" id="toast" hidden role="status"></div>
+<div class="wm" aria-hidden="true">©Mr.vin</div>
 
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -601,7 +737,27 @@ textarea.field { min-height: 92px; resize: vertical; }
     if (i < 0) arr.push(row); else arr[i] = row;
   }
   function removeRow(table, id) { DB[table] = DB[table].filter(function (r) { return r.id !== id; }); }
-  function minCount(p) { return p.codes.length ? Math.min.apply(null, p.codes.map(function (c) { return c.n; })) : 0; }
+  function activeOf(p) { return p.codes.filter(function (c) { return !c.beku; }); }
+  function minCount(p) {
+    var a = activeOf(p), m, i;
+    if (!a.length) return 0;
+    m = a[0].n;
+    for (i = 1; i < a.length; i++) if (a[i].n < m) m = a[i].n;
+    return m;
+  }
+  function codeOf(p, id) {
+    var i;
+    if (!p) return null;
+    for (i = 0; i < p.codes.length; i++) if (p.codes[i].id === id) return p.codes[i];
+    return null;
+  }
+  function tableOf(p) { return p.kind === 'j' ? 'kode_pinjaman' : 'kode'; }
+  function codeMeta(p) {
+    if (!p.codes.length) return 'Belum ada kode';
+    var act = activeOf(p).length, fz = p.codes.length - act;
+    if (!act) return 'Semua ' + fz + ' kode beku';
+    return act + ' kode, putaran ' + Math.min(minCount(p) + 1, LIMIT + 1) + (fz ? ', ' + fz + ' beku' : '');
+  }
   function filtered(q, aktif) {
     var nq = norm(q);
     return DB.pangkalan.filter(function (p) {
@@ -642,10 +798,11 @@ textarea.field { min-height: 92px; resize: vertical; }
     live.className = 'live' + (state === 'on' ? ' on' : state === 'off' ? ' off' : '');
     $('liveText').textContent = state === 'on' ? 'Realtime' : state === 'off' ? 'Terputus' : 'Menyambung';
   }
+  var dirty = false;
   function applyChange(table, payload) {
     if (payload.eventType === 'DELETE') removeRow(table, payload.old.id);
     else upsertRow(table, payload.new);
-    rebuild();
+    dirty = true;
     scheduleRender();
   }
   function subscribe() {
@@ -697,16 +854,43 @@ textarea.field { min-height: 92px; resize: vertical; }
     if (s === 'terlalu_banyak') return 'Terlalu banyak percobaan salah. Coba lagi dalam 10 menit.';
     if (s === 'belum_diatur') return 'Kode belum diatur di database. Lihat panduan pemasangan.';
     if (s === 'masih_aktif') return 'Pangkalan harus dinonaktifkan dulu.';
+    if (s === 'belum_beku') return 'Kode harus dibekukan dulu sebelum dihapus.';
+    if (s === 'tidak_ada') return 'Kode ini sudah tidak ada.';
     return 'Gagal. Coba lagi.';
   }
   function shake(dlg) { dlg.classList.remove('shake'); void dlg.offsetWidth; dlg.classList.add('shake'); }
 
   /* ---------- Login ---------- */
+  var introTimer = 0, typeTimer = 0, caretTimer = 0;
+  function playIntro() {
+    var title = $('loginTitle'), hello = $('helloText'), caret = $('caret'), full = 'halooww..';
+    clearInterval(typeTimer); clearTimeout(introTimer); clearTimeout(caretTimer);
+    hello.textContent = '';
+    title.classList.remove('fade-in'); void title.offsetWidth; title.classList.add('fade-in');
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      hello.textContent = full; caret.hidden = true; return;
+    }
+    caret.hidden = false;
+    introTimer = setTimeout(function () {
+      var i = 0;
+      typeTimer = setInterval(function () {
+        i++;
+        hello.textContent = full.slice(0, i);
+        if (i >= full.length) {
+          clearInterval(typeTimer);
+          caretTimer = setTimeout(function () { caret.hidden = true; }, 1800);
+        }
+      }, 95);
+    }, 900);
+  }
   function showLogin(msg) {
-    $('appRoot').hidden = true; $('fab').hidden = true;
-    $('login').hidden = false;
+    $('appRoot').hidden = true; $('fab').hidden = true; $('jumpBtn').hidden = true;
+    var lg = $('login');
+    lg.classList.remove('leaving');
+    lg.hidden = false;
     $('loginErr').textContent = msg || '';
     $('loginBtn').disabled = !sb;
+    playIntro();
   }
   $('loginForm').addEventListener('submit', async function (e) {
     e.preventDefault();
@@ -722,7 +906,8 @@ textarea.field { min-height: 92px; resize: vertical; }
         $('loginErr').textContent = bad ? 'User atau password salah.' : 'Tidak bisa masuk. Periksa koneksi lalu coba lagi.';
       } else {
         $('loginPass').value = '';
-        startApp();
+        $('login').classList.add('leaving');
+        setTimeout(startApp, 200);
       }
     } catch (err) {
       $('loginErr').textContent = 'Tidak bisa masuk. Periksa koneksi lalu coba lagi.';
@@ -738,7 +923,9 @@ textarea.field { min-height: 92px; resize: vertical; }
     $('login').hidden = true;
     $('appRoot').hidden = false;
     setLive('connecting');
-    go('home');
+    curState = { v: 'home', id: null, d: 0 };
+    go('home', null, 'replace');
+    history.pushState(curState, ''); /* entri cadangan: tombol kembali di menu utama menutup kotak dulu */
     try { await loadAll(); } catch (e) { console.error(e); toast('Gagal memuat data. Periksa koneksi lalu muat ulang.', true); }
     subscribe();
   }
@@ -747,6 +934,7 @@ textarea.field { min-height: 92px; resize: vertical; }
     DB = emptyDB();
     rebuild();
     stopWatch();
+    closeTray();
     ORDER.forEach(function (id) { $(id).hidden = true; });
     showLogin();
   }
@@ -760,12 +948,17 @@ textarea.field { min-height: 92px; resize: vertical; }
   function cur() { return view === 'pjDetail' ? LMAP[curId] : PMAP[curId]; }
   var CHEV = '<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
 
-  function go(v, id) {
+  var curState = { v: 'home', id: null, d: 0 };
+  try { history.scrollRestoration = 'manual'; } catch (e0) {}
+
+  function go(v, id, mode) {
+    closeTray();
     view = v;
     if (id) curId = id;
-    SECTIONS.forEach(function (s) { $(s).hidden = (VIEWS[v] !== s); });
+    SECTIONS.forEach(function (sec) { $(sec).hidden = (VIEWS[v] !== sec); });
     $('backBtn').hidden = (v === 'home');
-    var small = 'Albros', title = 'Menu', fab = null;
+    $('appRoot').classList.toggle('is-home', v === 'home');
+    var small = 'Altan', title = v === 'home' ? 'Altan' : 'Menu', fab = null;
     if (!isDetail(v)) stopWatch();
     if (v === 'pmList') { small = 'MAP'; title = 'Pengerjaan Map'; $('sPm').value = ''; }
     if (v === 'pjList') { small = 'MAP'; title = 'Pinjaman Data Pelanggan'; fab = 'Buat pinjaman'; $('sPj').value = ''; }
@@ -778,13 +971,22 @@ textarea.field { min-height: 92px; resize: vertical; }
     $('fab').hidden = !fab;
     if (fab) $('fabLabel').textContent = fab;
     $('jumpBtn').classList.toggle('low', !fab);
+    if (mode !== 'pop') {
+      var st = { v: v, id: isDetail(v) ? curId : null, d: curState.d };
+      if (mode === 'replace') history.replaceState(st, '');
+      else { st.d = curState.d + 1; history.pushState(st, ''); }
+      curState = st;
+    }
     renderAll();
     window.scrollTo(0, 0);
     if (isDetail(v)) {
       setTimeout(function () { if (view === v && nextEl && !nextVisible) jumpToNext(); }, 150);
     }
   }
-  $('backBtn').addEventListener('click', function () { go(PARENT[view]); });
+  $('backBtn').addEventListener('click', function () {
+    if (curState.d > 0) history.back();
+    else go(PARENT[view] || 'home', null, 'replace');
+  });
   Array.prototype.forEach.call(document.querySelectorAll('[data-go]'), function (b) {
     b.addEventListener('click', function () { go(b.getAttribute('data-go')); });
   });
@@ -792,9 +994,26 @@ textarea.field { min-height: 92px; resize: vertical; }
   var raf = 0;
   function scheduleRender() {
     if (raf) return;
-    raf = requestAnimationFrame(function () { raf = 0; renderAll(); });
+    raf = requestAnimationFrame(function () {
+      raf = 0;
+      if (dirty) { dirty = false; rebuild(); }
+      renderAll();
+    });
+  }
+  function renderHome() {
+    var now = new Date(), h = now.getHours();
+    $('homeGreet').textContent = h < 11 ? 'Selamat pagi.' : h < 15 ? 'Selamat siang.' : h < 18 ? 'Selamat sore.' : 'Selamat malam.';
+    $('homeDate').textContent = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' }) + '. Pilih pekerjaan untuk dimulai.';
+    var aktif = countAktif(), ina = DB.pangkalan.length - aktif;
+    var nh = DB.hasil.filter(function (x) { return PMAP[x.pangkalan_id] && PMAP[x.pangkalan_id].aktif; }).length;
+    var nj = loanList().length;
+    $('mPm').textContent = aktif ? aktif + ' pangkalan aktif' : 'Menunggu data';
+    $('mHasil').textContent = nh ? nh + ' hasil tersimpan' : 'Belum ada hasil';
+    $('mPj').textContent = nj ? nj + ' pinjaman berjalan' : 'Tidak ada pinjaman';
+    $('mDaftar').textContent = aktif + ' aktif' + (ina ? ', ' + ina + ' nonaktif' : '');
   }
   function renderAll() {
+    if (view === 'home') renderHome();
     if (view === 'pmList') renderPmList();
     if (view === 'pjList') renderPjList();
     if (isDetail(view)) renderDetail();
@@ -814,7 +1033,7 @@ textarea.field { min-height: 92px; resize: vertical; }
       var b = el('button', 'prow'); b.type = 'button';
       var d = el('div');
       d.appendChild(el('strong', null, p.name));
-      d.appendChild(el('span', 'meta', p.codes.length ? p.codes.length + ' kode · putaran ' + Math.min(minCount(p) + 1, LIMIT + 1) : 'Belum ada kode'));
+      d.appendChild(el('span', 'meta', codeMeta(p)));
       b.appendChild(d);
       b.insertAdjacentHTML('beforeend', CHEV);
       b.addEventListener('click', function () { go('detail', p.id); });
@@ -827,51 +1046,133 @@ textarea.field { min-height: 92px; resize: vertical; }
   /* ---------- Pengerjaan Map: detail kode ---------- */
   var listEl = $('list');
   var ownMark = {};
+  var openRow = null;
+  var trayEl = el('div', 'tray');
+  trayEl.setAttribute('data-beku', '0');
+  trayEl.innerHTML =
+    '<button class="act act-vip" type="button" data-act="vip" aria-label="Tandai VIP" title="Tandai VIP" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-star"/></svg></button>' +
+    '<button class="act act-freeze" type="button" data-act="freeze" aria-label="Bekukan kode" title="Bekukan kode"><svg class="ic" aria-hidden="true"><use href="#i-snow"/></svg></button>' +
+    '<button class="act act-unfreeze" type="button" data-act="unfreeze" aria-label="Lepas beku" title="Lepas beku"><svg class="ic" aria-hidden="true"><use href="#i-sun"/></svg></button>' +
+    '<button class="act act-hapus" type="button" data-act="hapus" aria-label="Hapus kode" title="Hapus kode"><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg></button>';
+  function syncTray(c) {
+    var v = trayEl.querySelector('.act-vip');
+    trayEl.setAttribute('data-beku', c.beku ? '1' : '0');
+    v.setAttribute('aria-pressed', String(!!c.vip));
+    v.setAttribute('aria-label', c.vip ? 'Lepas tanda VIP' : 'Tandai VIP');
+    v.setAttribute('title', c.vip ? 'Lepas tanda VIP' : 'Tandai VIP');
+  }
+  function closeTray() {
+    if (!openRow) return;
+    openRow.classList.remove('open');
+    if (trayEl.parentNode) trayEl.parentNode.removeChild(trayEl);
+    openRow = null;
+  }
+  function openTray(row) {
+    var c = codeOf(cur(), row.getAttribute('data-id'));
+    closeTray();
+    if (!c) return;
+    openRow = row;
+    row.classList.add('open');
+    syncTray(c);
+    row.querySelector('.right').appendChild(trayEl);
+  }
+
+  function setNum(row, n, animate) {
+    var roll = row.querySelector('.roll'), olds = roll.querySelectorAll('.num:not(.out)');
+    var old = olds[olds.length - 1];
+    if (old && old.textContent === String(n)) return;
+    if (!animate) {
+      if (old) old.textContent = String(n); else roll.appendChild(el('span', 'num', String(n)));
+      return;
+    }
+    var nu = el('span', 'num in', String(n));
+    roll.appendChild(nu);
+    if (old) {
+      old.classList.add('out');
+      setTimeout(function () { if (old.parentNode) old.parentNode.removeChild(old); }, 240);
+    }
+    setTimeout(function () { nu.classList.remove('in'); }, 240);
+  }
+  function patchRow(row, c, animate) {
+    var sig = c.n + '|' + (c.beku ? 1 : 0) + '|' + (c.vip ? 1 : 0);
+    if (row._sig === sig) return false;
+    var first = row._sig === undefined, cl = row.classList, i;
+    row._sig = sig;
+    row.setAttribute('data-n', c.n);
+    for (i = 0; i <= LIMIT; i++) cl.remove('t' + i);
+    cl.add(tone(c.n));
+    cl.toggle('beku', !!c.beku);
+    cl.toggle('vip', !!c.vip);
+    row.querySelector('.btn-copy').disabled = !!c.beku;
+    row.querySelector('.badge').setAttribute('aria-label', 'Disalin ' + c.n + ' kali. Buka aksi kode.');
+    setNum(row, c.n, animate && !first);
+    return !first;
+  }
+  function buildRow(c, i) {
+    var li = el('li', 'row');
+    li.setAttribute('data-id', c.id);
+    li.appendChild(el('span', 'idx', String(i + 1)));
+    var cw = el('div', 'code-wrap');
+    cw.appendChild(el('div', 'code', c.code));
+    var tg = el('div', 'tags');
+    tg.appendChild(el('span', 'tag-next', 'Berikutnya'));
+    tg.appendChild(el('span', 'tag-vip', '★ VIP'));
+    tg.appendChild(el('span', 'tag-beku', 'Beku'));
+    cw.appendChild(tg);
+    li.appendChild(cw);
+    var right = el('div', 'right');
+    var b = el('button', 'btn-copy', 'Salin'); b.type = 'button'; b.setAttribute('data-copy', '');
+    right.appendChild(b);
+    var badge = el('button', 'badge'); badge.type = 'button'; badge.setAttribute('data-badge', '');
+    var roll = el('span', 'roll'); roll.appendChild(el('span', 'num', String(c.n)));
+    badge.appendChild(roll);
+    right.appendChild(badge);
+    li.appendChild(right);
+    patchRow(li, c, false);
+    return li;
+  }
+
   function renderDetail() {
-    var p = cur();
+    var p = cur(), i;
     if (!p || !p.aktif) {
       var wasLoan = view === 'pjDetail';
       toast(wasLoan ? 'Pinjaman ini sudah tidak ada atau tidak aktif.' : 'Pangkalan ini sudah tidak aktif.', true);
-      go(wasLoan ? 'pjList' : 'pmList');
+      go(wasLoan ? 'pjList' : 'pmList', null, 'replace');
       return;
     }
     $('barTitle').textContent = p.name;
     $('detailSub').hidden = p.kind !== 'j';
     if (p.kind === 'j') $('detailSub').textContent = 'Dipinjam dari ' + p.sumberName;
-    var rows = listEl.querySelectorAll('.row');
-    var same = listEl.getAttribute('data-pid') === p.id && p.codes.length > 0 && rows.length === p.codes.length &&
-      p.codes.every(function (c, i) { return rows[i].getAttribute('data-id') === c.id; });
+    var rows = listEl.children;
+    var same = listEl.getAttribute('data-pid') === p.id && p.codes.length > 0 && rows.length === p.codes.length;
     if (same) {
-      p.codes.forEach(function (c, i) {
-        var row = rows[i];
-        if (row.getAttribute('data-n') !== String(c.n)) {
-          row.setAttribute('data-n', c.n);
-          setBadge(row, c.n);
-          if (ownMark[c.id]) { delete ownMark[c.id]; }
-          else { row.classList.remove('flash'); void row.offsetWidth; row.classList.add('flash'); }
+      for (i = 0; i < rows.length; i++) { if (rows[i].getAttribute('data-id') !== p.codes[i].id) { same = false; break; } }
+    }
+    if (same) {
+      var changed = [];
+      for (i = 0; i < rows.length; i++) {
+        if (patchRow(rows[i], p.codes[i], true)) {
+          changed.push(rows[i]);
+          if (openRow === rows[i]) syncTray(p.codes[i]);
         }
-      });
+      }
+      if (changed.length <= 8) {
+        changed.forEach(function (row) {
+          var cid = row.getAttribute('data-id');
+          if (ownMark[cid]) delete ownMark[cid];
+          else { row.classList.remove('flash'); void row.offsetWidth; row.classList.add('flash'); }
+        });
+      } else { ownMark = {}; }
     } else {
+      closeTray();
       listEl.textContent = '';
       listEl.setAttribute('data-pid', p.id);
       if (!p.codes.length) {
         listEl.appendChild(el('li', 'none', 'Belum ada kode. Tekan Input kode untuk menambahkan.'));
       } else {
-        p.codes.forEach(function (c, i) {
-          var li = el('li', 'row ' + tone(c.n));
-          li.setAttribute('data-id', c.id); li.setAttribute('data-n', c.n);
-          li.appendChild(el('span', 'idx', String(i + 1)));
-          var cw = el('div', 'code-wrap');
-          cw.appendChild(el('div', 'code', c.code));
-          cw.appendChild(el('div', 'next-tag', 'Berikutnya'));
-          li.appendChild(cw);
-          var b = el('button', 'btn-copy', 'Salin'); b.type = 'button'; b.setAttribute('data-copy', i);
-          li.appendChild(b);
-          var badge = el('span', 'badge'); badge.setAttribute('role', 'img'); badge.setAttribute('aria-label', 'Disalin ' + c.n + ' kali');
-          var roll = el('span', 'roll'); roll.appendChild(el('span', 'num', String(c.n)));
-          badge.appendChild(roll); li.appendChild(badge);
-          listEl.appendChild(li);
-        });
+        var frag = document.createDocumentFragment();
+        p.codes.forEach(function (c, k) { frag.appendChild(buildRow(c, k)); });
+        listEl.appendChild(frag);
       }
     }
     $('resetZone').hidden = !p.codes.length || p.kind === 'j';
@@ -880,17 +1181,24 @@ textarea.field { min-height: 92px; resize: vertical; }
     watchNext();
   }
   function refresh(p) {
-    var min = minCount(p), total = p.codes.length;
-    var done = p.codes.filter(function (c) { return c.n > min; }).length;
-    var nextSet = false;
-    Array.prototype.forEach.call(listEl.querySelectorAll('.row'), function (row, i) {
-      var isNext = !nextSet && p.codes[i] && p.codes[i].n === min && min < LIMIT;
-      if (isNext) nextSet = true;
-      row.classList.toggle('is-next', !!isNext);
-    });
-    if (!total) {
+    var act = activeOf(p), total = act.length, min = minCount(p), frozen = p.codes.length - total;
+    var done = 0, i, c, isNext, nextSet = false, rows = listEl.children;
+    for (i = 0; i < act.length; i++) if (act[i].n > min) done++;
+    if (p.codes.length && rows.length === p.codes.length) {
+      for (i = 0; i < rows.length; i++) {
+        c = p.codes[i];
+        isNext = !nextSet && !c.beku && c.n === min && min < LIMIT;
+        if (isNext) nextSet = true;
+        rows[i].classList.toggle('is-next', isNext);
+      }
+    }
+    if (!p.codes.length) {
       $('roundTitle').textContent = 'Belum ada kode';
       $('roundMeta').textContent = '';
+      $('roundBar').style.width = '0%';
+    } else if (!total) {
+      $('roundTitle').textContent = 'Semua kode beku';
+      $('roundMeta').textContent = 'Tambah kode baru, atau lepas beku salah satunya';
       $('roundBar').style.width = '0%';
     } else if (min >= LIMIT) {
       $('roundTitle').textContent = 'Semua kode sudah ' + LIMIT + '×';
@@ -898,24 +1206,9 @@ textarea.field { min-height: 92px; resize: vertical; }
       $('roundBar').style.width = '100%';
     } else {
       $('roundTitle').textContent = 'Putaran ' + (min + 1);
-      $('roundMeta').textContent = done + ' dari ' + total + ' kode sudah disalin';
+      $('roundMeta').textContent = done + ' dari ' + total + ' kode sudah disalin' + (frozen ? ', ' + frozen + ' beku' : '');
       $('roundBar').style.width = Math.round((done / total) * 100) + '%';
     }
-  }
-  function setBadge(row, n) {
-    var badge = row.querySelector('.badge'), roll = badge.querySelector('.roll');
-    var olds = roll.querySelectorAll('.num:not(.out)');
-    var old = olds[olds.length - 1];
-    row.className = row.className.replace(/\bt\d\b/g, '').trim() + ' ' + tone(n);
-    badge.setAttribute('aria-label', 'Disalin ' + n + ' kali');
-    if (old && old.textContent === String(n)) return;
-    var nu = el('span', 'num in', String(n));
-    roll.appendChild(nu);
-    if (old) {
-      old.classList.add('out');
-      setTimeout(function () { if (old.parentNode) old.parentNode.removeChild(old); }, 240);
-    }
-    setTimeout(function () { nu.classList.remove('in'); }, 240);
   }
   function writeClip(text) {
     function fallback() {
@@ -978,23 +1271,26 @@ textarea.field { min-height: 92px; resize: vertical; }
   }
   $('jumpBtn').addEventListener('click', jumpToNext);
 
-  var copying = {}, pendingCopy = -1;
-  async function doCopy(i) {
-    var p = cur(), c = p && p.codes[i];
-    if (!c || copying[c.id]) return;
-    copying[c.id] = true;
+  var copying = {}, pendingCopy = null;
+  async function doCopy(id) {
+    var p = cur(), c = codeOf(p, id);
+    if (!c || copying[id]) return;
+    if (c.beku) { toast('Kode ini dibekukan, tidak bisa disalin.', true); return; }
+    copying[id] = true;
     try {
       var ok = await writeClip(c.code);
       if (!ok) { toast('Tidak bisa menyalin otomatis. Angka tidak bertambah.', true); return; }
-      var r = await sb.rpc(p.kind === 'j' ? 'salin_kode_pinjaman' : 'salin_kode', { p_id: c.id });
+      var r = await sb.rpc(p.kind === 'j' ? 'salin_kode_pinjaman' : 'salin_kode', { p_id: id });
       if (r.error || r.data == null) {
-        toast('Kode tersalin, tapi angka belum tercatat di server. Tekan Salin lagi.', true);
+        await loadAll().catch(function () {});
+        var c2 = codeOf(cur(), id);
+        toast(c2 && c2.beku ? 'Kode ini sudah dibekukan di perangkat lain. Angka tidak bertambah.' : 'Kode tersalin, tapi angka belum tercatat di server. Tekan Salin lagi.', true);
         return;
       }
-      ownMark[c.id] = true;
+      ownMark[id] = true;
       c.n = r.data;
       renderDetail();
-      var btn = listEl.querySelector('.row[data-id="' + c.id + '"] .btn-copy');
+      var btn = listEl.querySelector('.row[data-id="' + id + '"] .btn-copy');
       if (btn) {
         btn.textContent = 'Tersalin ✓'; btn.classList.add('copied');
         setTimeout(function () { btn.textContent = 'Salin'; btn.classList.remove('copied'); }, 1200);
@@ -1002,25 +1298,75 @@ textarea.field { min-height: 92px; resize: vertical; }
     } catch (e) {
       console.error(e);
       toast(NET_ERR, true);
-    } finally { delete copying[c.id]; }
+    } finally { delete copying[id]; }
   }
-  function tryCopy(i) {
-    var p = cur(), min = minCount(p);
-    if (p.codes[i].n > min) {
-      pendingCopy = i;
-      $('cfText').textContent = 'Kode ini sudah disalin ' + p.codes[i].n + '×, sedangkan ada kode lain yang baru ' + min + '×. Salin kode yang di bawah dulu agar merata.';
+  function tryCopy(id) {
+    var p = cur(), c = codeOf(p, id);
+    if (!c) return;
+    if (c.beku) { toast('Kode ini dibekukan, tidak bisa disalin.', true); return; }
+    var min = minCount(p);
+    if (c.n > min) {
+      pendingCopy = id;
+      $('cfText').textContent = 'Kode ini sudah disalin ' + c.n + '×, sedangkan ada kode lain yang baru ' + min + '×. Salin kode yang di bawah dulu agar merata.';
       openOv('ovConfirm');
       $('cfYes').focus();
-    } else { doCopy(i); }
+    } else { doCopy(id); }
   }
   listEl.addEventListener('click', function (e) {
-    var b = e.target.closest('[data-copy]');
-    if (b) tryCopy(Number(b.getAttribute('data-copy')));
+    var row = e.target.closest('.row');
+    if (!row) return;
+    if (e.target.closest('[data-copy]')) { tryCopy(row.getAttribute('data-id')); return; }
+    if (e.target.closest('[data-badge]')) { if (openRow === row) closeTray(); else openTray(row); }
+  });
+  document.addEventListener('click', function (e) {
+    if (openRow && !e.target.closest('.row.open')) closeTray();
   });
   $('cfYes').addEventListener('click', function () {
-    var i = pendingCopy;
+    var id = pendingCopy;
     closeOv('ovConfirm');
-    if (i > -1) doCopy(i);
+    if (id) doCopy(id);
+  });
+
+  /* Bekukan, VIP, hapus kode (lewat indikator angka) */
+  var frzId = null, frzTo = true;
+  function askFreeze(c, to) {
+    frzId = c.id; frzTo = to;
+    $('fzTitle').textContent = to ? 'Bekukan kode ini?' : 'Lepas beku kode ini?';
+    $('fzText').textContent = to
+      ? 'Kode ' + c.code + ' tidak bisa disalin lagi dan dilewati dari "Berikutnya". Gunakan untuk kode yang sudah tidak terpakai.'
+      : 'Kode ' + c.code + ' bisa disalin lagi dan masuk hitungan "Berikutnya".';
+    openOv('ovFreeze'); $('fzYes').focus();
+  }
+  async function saveCodeFlag(c, patch, doneMsg) {
+    var p = cur(), table = tableOf(p);
+    var r = await sb.from(table).update(patch).eq('id', c.id).select().single();
+    if (r.error) {
+      if (r.error.code === 'PGRST116') { await loadAll(); closeOv('ovFreeze'); closeTray(); toast('Kode ini sudah tidak ada. Data dimuat ulang.', true); return; }
+      throw r.error;
+    }
+    ownMark[c.id] = true;
+    upsertRow(table, r.data);
+    rebuild();
+    closeOv('ovFreeze'); closeTray();
+    renderDetail();
+    toast(doneMsg);
+  }
+  $('fzYes').addEventListener('click', function () {
+    guarded(async function () {
+      var c = codeOf(cur(), frzId);
+      if (!c) { closeOv('ovFreeze'); return; }
+      await saveCodeFlag(c, { beku: frzTo }, frzTo ? 'Kode dibekukan' : 'Beku dilepas');
+    });
+  });
+  trayEl.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act]');
+    if (!b || !openRow) return;
+    var p = cur(), c = codeOf(p, openRow.getAttribute('data-id')), act = b.getAttribute('data-act');
+    if (!c) { closeTray(); return; }
+    if (act === 'freeze') askFreeze(c, true);
+    else if (act === 'unfreeze') askFreeze(c, false);
+    else if (act === 'hapus') openHapusKode(c, p);
+    else if (act === 'vip') guarded(function () { return saveCodeFlag(c, { vip: !c.vip }, c.vip ? 'Tanda VIP dilepas' : 'Ditandai VIP'); });
   });
 
   /* Reset */
@@ -1265,7 +1611,7 @@ textarea.field { min-height: 92px; resize: vertical; }
       var b = el('button', 'prow'); b.type = 'button';
       var d = el('div');
       d.appendChild(el('strong', null, l.name));
-      d.appendChild(el('span', 'meta', 'Pinjam dari ' + l.sumberName + ' · ' + l.codes.length + ' kode · putaran ' + Math.min(minCount(l) + 1, LIMIT + 1)));
+      d.appendChild(el('span', 'meta', 'Pinjam dari ' + l.sumberName + ', ' + codeMeta(l)));
       b.appendChild(d);
       b.insertAdjacentHTML('beforeend', CHEV);
       b.addEventListener('click', function () { go('pjDetail', l.id); });
@@ -1426,19 +1772,24 @@ textarea.field { min-height: 92px; resize: vertical; }
 
   var hapusId = null, hapusKind = 'pangkalan';
   digits($('hapusCode'));
-  function openHapus(p) {
-    hapusId = p.id; hapusKind = 'pangkalan';
-    $('hpTitle').textContent = 'Hapus ' + p.name + ' permanen?';
-    $('hpText').textContent = 'Kode pelanggan, hasil pengerjaan, dan pinjaman pangkalan ini ikut terhapus dan tidak bisa dikembalikan. Masukkan kode hapus untuk melanjutkan.';
+  function openHapusBase(kind, id, title, text) {
+    hapusId = id; hapusKind = kind;
+    $('hpTitle').textContent = title;
+    $('hpText').textContent = text;
     $('hapusCode').value = ''; $('hapusErr').textContent = '';
     openOv('ovHapus'); $('hapusCode').focus();
   }
+  function openHapus(p) {
+    openHapusBase('pangkalan', p.id, 'Hapus ' + p.name + ' permanen?',
+      'Kode pelanggan, hasil pengerjaan, dan pinjaman pangkalan ini ikut terhapus dan tidak bisa dikembalikan. Masukkan kode hapus untuk melanjutkan.');
+  }
   function openHapusPinjaman(l) {
-    hapusId = l.id; hapusKind = 'pinjaman';
-    $('hpTitle').textContent = 'Hapus pinjaman ' + l.name + '?';
-    $('hpText').textContent = 'Semua kode pinjaman dari ' + l.sumberName + ' dan angka salinnya dihapus. Kode asli ' + l.sumberName + ' tidak berubah. Masukkan kode hapus untuk melanjutkan.';
-    $('hapusCode').value = ''; $('hapusErr').textContent = '';
-    openOv('ovHapus'); $('hapusCode').focus();
+    openHapusBase('pinjaman', l.id, 'Hapus pinjaman ' + l.name + '?',
+      'Semua kode pinjaman dari ' + l.sumberName + ' dan angka salinnya dihapus. Kode asli ' + l.sumberName + ' tidak berubah. Masukkan kode hapus untuk melanjutkan.');
+  }
+  function openHapusKode(c, p) {
+    openHapusBase(p.kind === 'j' ? 'kodePinjaman' : 'kode', c.id, 'Hapus kode ' + c.code + '?',
+      'Kode ini dihapus permanen beserta angka salinnya dan tidak bisa dikembalikan. Masukkan kode hapus untuk melanjutkan.');
   }
   $('hapusPjBtn').addEventListener('click', function () { var l = LMAP[curId]; if (l) openHapusPinjaman(l); });
   $('hapusForm').addEventListener('submit', function (e) {
@@ -1446,16 +1797,27 @@ textarea.field { min-height: 92px; resize: vertical; }
     guarded(async function () {
       var code = $('hapusCode').value.trim();
       if (!code) { $('hapusErr').textContent = 'Masukkan kode hapus.'; shake($('hapusForm')); return; }
-      var isLoan = hapusKind === 'pinjaman';
-      var r = await sb.rpc(isLoan ? 'hapus_pinjaman' : 'hapus_pangkalan', { p_id: hapusId, p_code: code });
+      var kind = hapusKind, rpc, args;
+      if (kind === 'pinjaman') { rpc = 'hapus_pinjaman'; args = { p_id: hapusId, p_code: code }; }
+      else if (kind === 'kode' || kind === 'kodePinjaman') { rpc = 'hapus_kode'; args = { p_id: hapusId, p_pinjaman: kind === 'kodePinjaman', p_code: code }; }
+      else { rpc = 'hapus_pangkalan'; args = { p_id: hapusId, p_code: code }; }
+      var r = await sb.rpc(rpc, args);
       if (r.error) throw r.error;
       if (r.data !== 'ok') { $('hapusErr').textContent = codeMsg(r.data); shake($('hapusForm')); return; }
-      if (isLoan) {
+      if (kind === 'kode' || kind === 'kodePinjaman') {
+        removeRow(kind === 'kode' ? 'kode' : 'kode_pinjaman', hapusId);
+        rebuild();
+        closeOv('ovHapus'); closeTray();
+        renderDetail();
+        toast('Kode dihapus');
+        return;
+      }
+      if (kind === 'pinjaman') {
         removeRow('pinjaman', hapusId);
         DB.kode_pinjaman = DB.kode_pinjaman.filter(function (k) { return k.pinjaman_id !== hapusId; });
         rebuild();
         closeOv('ovHapus');
-        go('pjList');
+        go('pjList', null, 'replace');
         toast('Pangkalan pinjaman dihapus');
         return;
       }
@@ -1479,22 +1841,19 @@ textarea.field { min-height: 92px; resize: vertical; }
       document.head.appendChild(s);
     });
   }
-  $('backupBtn').addEventListener('click', async function () {
-    var btn = this;
-    if (btn.disabled) return;
-    btn.disabled = true;
+  async function runBackup() {
     try {
       if (!window.XLSX) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');
       await loadAll();
       var sheetP = [['Nama pangkalan', 'Keterangan', 'Status']];
       DB.pangkalan.slice().sort(byName).forEach(function (p) { sheetP.push([p.name, p.note, p.aktif ? 'Aktif' : 'Nonaktif']); });
-      var sheetK = [['Pangkalan', 'Kode pelanggan', 'Jumlah salin']];
-      DB.pangkalan.slice().sort(byName).forEach(function (p) { p.codes.forEach(function (c) { sheetK.push([p.name, String(c.code), c.n]); }); });
+      var sheetK = [['Pangkalan', 'Kode pelanggan', 'Jumlah salin', 'Beku', 'VIP']];
+      DB.pangkalan.slice().sort(byName).forEach(function (p) { p.codes.forEach(function (c) { sheetK.push([p.name, String(c.code), c.n, c.beku ? 'Ya' : '', c.vip ? 'Ya' : '']); }); });
       var sheetH = [['Pangkalan', 'Stok tabung', 'PT / Non PT', 'Dicatat']];
       DB.hasil.forEach(function (h) { var p = PMAP[h.pangkalan_id]; sheetH.push([p ? p.name : '', h.stok, h.pt, h.created_at]); });
-      var sheetJ = [['Peminjam', 'Dipinjam dari', 'Kode pelanggan', 'Jumlah salin']];
+      var sheetJ = [['Peminjam', 'Dipinjam dari', 'Kode pelanggan', 'Jumlah salin', 'Beku', 'VIP']];
       Object.keys(LMAP).map(function (k) { return LMAP[k]; }).sort(byName).forEach(function (l) {
-        l.codes.forEach(function (c) { sheetJ.push([l.name, l.sumberName, String(c.code), c.n]); });
+        l.codes.forEach(function (c) { sheetJ.push([l.name, l.sumberName, String(c.code), c.n, c.beku ? 'Ya' : '', c.vip ? 'Ya' : '']); });
       });
       var wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sheetP), 'Pangkalan');
@@ -1502,13 +1861,30 @@ textarea.field { min-height: 92px; resize: vertical; }
       XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sheetH), 'Hasil Pengerjaan');
       XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sheetJ), 'Pinjaman');
       var d = new Date(), pad = function (n) { return String(n).padStart(2, '0'); };
-      XLSX.writeFile(wb, 'cadangan-albros-' + d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + '.xlsx');
-      toast('Cadangan diunduh');
+      XLSX.writeFile(wb, 'cadangan-altan-' + d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + '.xlsx');
+      toast('File Excel diunduh');
     } catch (e) {
       console.error(e);
-      toast('Gagal membuat cadangan. Periksa koneksi lalu coba lagi.', true);
+      toast('Gagal membuat file Excel. Periksa koneksi lalu coba lagi.', true);
     }
-    btn.disabled = false;
+  }
+  digits($('backupCode'));
+  $('backupLink').addEventListener('click', function () {
+    $('backupCode').value = ''; $('backupErr').textContent = '';
+    openOv('ovBackup'); $('backupCode').focus();
+  });
+  $('backupForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    guarded(async function () {
+      var code = $('backupCode').value.trim();
+      if (!code) { $('backupErr').textContent = 'Masukkan kode.'; shake($('backupForm')); return; }
+      var r = await sb.rpc('verifikasi_kode', { p_code: code });
+      if (r.error) throw r.error;
+      if (r.data !== 'ok') { $('backupErr').textContent = codeMsg(r.data); shake($('backupForm')); return; }
+      closeOv('ovBackup');
+      toast('Menyiapkan file Excel');
+      await runBackup();
+    });
   });
 
   /* ---------- FAB ---------- */
@@ -1520,9 +1896,9 @@ textarea.field { min-height: 92px; resize: vertical; }
   });
 
   /* ---------- Overlay ---------- */
-  var ORDER = ['ovDone', 'ovDeact', 'ovHapus', 'ovPick', 'ovConfirm', 'ovReset', 'ovInput', 'ovHasil', 'ovPang', 'ovPinjam'];
+  var ORDER = ['ovFreeze', 'ovBackup', 'ovDone', 'ovDeact', 'ovHapus', 'ovPick', 'ovConfirm', 'ovReset', 'ovInput', 'ovHasil', 'ovPang', 'ovPinjam'];
   function openOv(id) { $(id).hidden = false; }
-  function closeOv(id) { $(id).hidden = true; if (id === 'ovConfirm') pendingCopy = -1; }
+  function closeOv(id) { $(id).hidden = true; if (id === 'ovConfirm') pendingCopy = null; }
   Array.prototype.forEach.call(document.querySelectorAll('[data-close]'), function (b) {
     b.addEventListener('click', function () { closeOv(b.closest('.overlay').id); });
   });
@@ -1532,6 +1908,19 @@ textarea.field { min-height: 92px; resize: vertical; }
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
     for (var i = 0; i < ORDER.length; i++) { if (!$(ORDER[i]).hidden) { closeOv(ORDER[i]); return; } }
+    closeTray();
+  });
+  /* Tombol kembali HP: tutup kotak yang terbuka dulu, lalu kembali ke halaman sebelumnya (bukan keluar website) */
+  window.addEventListener('popstate', function (e) {
+    if ($('appRoot').hidden) return;
+    for (var i = 0; i < ORDER.length; i++) {
+      if (!$(ORDER[i]).hidden) { closeOv(ORDER[i]); history.pushState(curState, ''); return; }
+    }
+    if (openRow) { closeTray(); history.pushState(curState, ''); return; }
+    if (view === 'home') { history.back(); return; } /* dari menu utama: keluar seperti biasa */
+    var st = e.state;
+    if (st && st.v && VIEWS[st.v]) { curState = st; go(st.v, st.id, 'pop'); }
+    else { history.pushState(curState, ''); }
   });
 
   /* ---------- Mulai ---------- */
