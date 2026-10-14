@@ -313,6 +313,50 @@ textarea.field { min-height: 92px; resize: vertical; }
 .picklist button:hover { background: var(--surface-2); }
 .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(86px + env(safe-area-inset-bottom, 0px)); z-index: 60; max-width: calc(100vw - 32px); background: var(--fg); color: var(--ink); padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 500; animation: pop .18s ease-out; }
 .toast.err { background: var(--danger); }
+/* PayStock */
+.tile-ps { min-height: 150px; }
+.tile.is-off { opacity: .5; cursor: default; }
+.tile.is-off:hover { background: var(--surface); }
+.hero-sm h2 { font-size: clamp(30px, 9vw, 40px); }
+.lrow { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; text-align: left; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.lrow:hover { background: var(--surface-2); }
+.lrow strong { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.lrow .pm { font-size: 13px; color: var(--fg-2); }
+.lrow .chev { font-size: 20px; line-height: 1; }
+.irow { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.irow strong { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.qty { font-family: var(--font-mono); font-size: 18px; font-variant-numeric: tabular-nums; }
+.psact { margin-top: 14px; display: flex; gap: 10px; }
+.arow { padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.arow strong { display: block; font-family: var(--font-mono); font-size: 14px; font-weight: 500; overflow-wrap: anywhere; }
+.arow-p { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding-top: 6px; font-size: 14px; color: var(--fg-2); }
+.lead { margin: 16px 0 10px; color: var(--fg-2); font-size: 14px; }
+.pstext { width: 100%; min-height: 240px; padding: 12px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 12px; font-family: var(--font-mono); font-size: 14px; line-height: 1.5; resize: vertical; }
+.ban { margin-top: 14px; padding: 12px 14px; border-radius: 12px; border: 1px solid; font-size: 14px; font-weight: 500; }
+.ban.ok { border-color: var(--t1); color: var(--t1); background: color-mix(in srgb, var(--t1) 10%, transparent); }
+.ban.bad { border-color: var(--danger); color: var(--danger); background: color-mix(in srgb, var(--danger) 10%, transparent); }
+.psgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; margin-top: 14px; }
+.psf { display: block; }
+.psf > span { display: block; font-size: 12px; color: var(--fg-3); margin-bottom: 4px; }
+.psf .field { font-family: var(--font-body); }
+.psf .long { display: block; margin-top: 4px; font-size: 12px; color: var(--fg-2); min-height: 1.2em; }
+.pswarn { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.pswarn li { padding: 8px 12px; border-radius: 10px; border: 1px solid var(--warn); color: var(--warn); font-size: 13px; }
+.pvrow { display: grid; grid-template-columns: minmax(0, 1fr) 68px 32px; gap: 8px 10px; align-items: center; padding: 10px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.pvrow.periksa { border-color: var(--warn); }
+.pvrow.pilih, .pvrow.asing { border-color: var(--danger); }
+.pr-main { min-width: 0; }
+.pr-name { display: flex; align-items: center; gap: 8px; width: 100%; margin-top: 4px; text-align: left; padding: 8px 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 9px; font-weight: 600; overflow-wrap: anywhere; }
+.pvrow.pilih .pr-name, .pvrow.asing .pr-name { font-weight: 500; color: var(--danger); }
+.pr-name em { font-style: normal; font-size: 11px; font-weight: 500; color: var(--fg-3); margin-left: auto; flex: none; }
+.pvrow.periksa .pr-name em { color: var(--warn); }
+.pr-qty { width: 100%; height: 40px; text-align: center; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 9px; font-family: var(--font-mono); font-size: 16px; }
+.pr-x { width: 32px; height: 32px; border-radius: 50%; border: 0; background: var(--surface-2); font-size: 18px; line-height: 1; }
+.pr-ok { grid-column: 1 / -1; height: 36px; border-radius: 9px; border: 1px solid var(--warn); background: transparent; color: var(--warn); font-weight: 600; }
+.badline { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 12px; border: 1px dashed var(--danger); border-radius: 10px; color: var(--danger); font-size: 13px; overflow-wrap: anywhere; }
+.pswhy { margin: 12px 0 0; font-size: 13px; color: var(--fg-3); }
+.psoleh { margin-top: 14px; }
+.picklist .pm-cand { color: var(--accent); }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
 </style>
 </head>
@@ -337,6 +381,7 @@ textarea.field { min-height: 92px; resize: vertical; }
   <symbol id="i-snow" viewBox="0 0 24 24"><path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9M9.5 4.5 12 7l2.5-2.5M9.5 19.5 12 17l2.5 2.5"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5V5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+  <symbol id="i-ps" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z"/><path d="M9.5 8h5M9.5 12h5"/></symbol>
   <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 17l-5.2 2.7 1-5.9L3.5 9.7l5.9-.8L12 3.5Z"/></symbol>
 </svg>
 
@@ -394,6 +439,11 @@ textarea.field { min-height: 92px; resize: vertical; }
       <button class="tile tile-wide" type="button" data-go="daftar">
         <span class="t-ic"><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg></span>
         <span class="t-text"><strong>Daftar Pangkalan</strong><span class="t-meta" id="mDaftar"></span></span>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+      <button class="tile tile-wide" type="button" id="psTile">
+        <span class="t-ic"><svg class="ic" aria-hidden="true"><use href="#i-ps"/></svg></span>
+        <span class="t-text"><strong>PayStock Matcher</strong><span class="t-meta">Login terpisah</span></span>
         <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
       </button>
     </div>
@@ -463,6 +513,100 @@ textarea.field { min-height: 92px; resize: vertical; }
       <ul class="stack" id="lIna" hidden></ul>
     </div>
   </section>
+
+  <!-- PayStock: beranda -->
+  <section id="vPsHome" hidden>
+    <div class="hero hero-sm">
+      <h2>PayStock Matcher</h2>
+      <p>Tempel laporan pengiriman, nama pangkalan dirapikan otomatis.</p>
+    </div>
+    <div class="bento">
+      <button class="tile tile-main tile-ps" type="button" data-pgo="psPaste">
+        <span class="t-ic"><svg class="ic" aria-hidden="true"><use href="#i-ps"/></svg></span>
+        <strong>Tempel laporan</strong>
+        <span class="t-sub">Salin dari ekspedisi, tempel di sini</span>
+      </button>
+      <button class="tile" type="button" data-pgo="psList">
+        <span class="t-ic"><svg class="ic" aria-hidden="true"><use href="#i-clip"/></svg></span>
+        <strong>Laporan Pengiriman</strong>
+        <span class="t-meta" id="mPsLap"></span>
+      </button>
+      <button class="tile tile-alt" type="button" data-pgo="psAlias">
+        <span class="t-ic"><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg></span>
+        <strong>Nama yang diingat</strong>
+        <span class="t-meta" id="mPsNama"></span>
+      </button>
+      <button class="tile tile-wide is-off" type="button" disabled>
+        <span class="t-ic"><svg class="ic" aria-hidden="true"><use href="#i-swap"/></svg></span>
+        <span class="t-text"><strong>Telusuri Pembayaran</strong><span class="t-meta">Tahap berikutnya</span></span>
+      </button>
+    </div>
+    <div class="home-foot">
+      <button class="btn btn-sm" type="button" id="psLock">Kunci PayStock</button>
+    </div>
+  </section>
+
+  <!-- PayStock: daftar laporan -->
+  <section id="vPsList" hidden>
+    <div class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="sPsList" type="search" placeholder="Cari laporan atau pangkalan" aria-label="Cari laporan atau pangkalan" autocomplete="off">
+    </div>
+    <p class="count" id="cPsList"></p>
+    <ul class="stack" id="lPsList"></ul>
+  </section>
+
+  <!-- PayStock: isi satu laporan -->
+  <section id="vPsDetail" hidden>
+    <section class="summary" aria-live="polite">
+      <strong id="psDetTitle"></strong>
+      <p class="meta" id="psDetMeta" style="margin:6px 0 0;color:var(--fg-2);font-size:13px"></p>
+    </section>
+    <div id="psDetActions">
+      <div class="psact"><button class="btn" type="button" id="psCopy">Salin daftar</button></div>
+    </div>
+    <ul class="stack" id="lPsDet"></ul>
+    <section class="reset-zone">
+      <p>Laporan dihapus permanen beserta semua barisnya. Nama yang sudah diingat tidak ikut terhapus.</p>
+      <button class="btn-reset" type="button" id="psDel">Hapus laporan</button>
+    </section>
+  </section>
+
+  <!-- PayStock: nama yang diingat -->
+  <section id="vPsAlias" hidden>
+    <p class="lead">Nama dari ekspedisi yang sudah Anda pilih sendiri. Satu nama boleh menunjuk lebih dari satu pangkalan.</p>
+    <p class="count" id="cPsAlias"></p>
+    <ul class="stack" id="lPsAlias"></ul>
+  </section>
+
+  <!-- PayStock: tempel laporan -->
+  <section id="vPsPaste" hidden>
+    <div id="psStep1">
+      <p class="lead">Tempel laporan pengiriman dari ekspedisi apa adanya.</p>
+      <textarea class="pstext" id="psText" spellcheck="false" autocomplete="off" aria-label="Laporan pengiriman"></textarea>
+      <p class="err" id="psReadErr" role="alert"></p>
+      <button class="btn primary pill" type="button" id="psRead">Baca laporan</button>
+    </div>
+    <div id="psStep2" hidden>
+      <div class="ban" id="psBan" role="status"></div>
+      <div class="psgrid">
+        <label class="psf"><span>SPPBE / ekspedisi</span><input class="field" id="psEks" type="text" list="psEksList" autocomplete="off"></label>
+        <label class="psf"><span>TOTAL laporan</span><input class="field" id="psTot" type="text" inputmode="numeric" autocomplete="off"></label>
+        <label class="psf"><span>Tanggal LO</span><input class="field" id="psLo" type="date"><i class="long" id="psLoLong"></i></label>
+        <label class="psf"><span>Tanggal kirim</span><input class="field" id="psKirim" type="date"><i class="long" id="psKirimLong"></i></label>
+      </div>
+      <datalist id="psEksList"><option value="BWI"><option value="FAJAR"></datalist>
+      <ul class="pswarn" id="psWarn" hidden></ul>
+      <ul class="stack" id="psRows"></ul>
+      <ul class="stack" id="psBad" hidden></ul>
+      <label class="psf psoleh"><span>Dikonfirmasi oleh (opsional)</span><input class="field" id="psOleh" type="text" maxlength="40" autocomplete="off"></label>
+      <p class="pswhy" id="psWhy" role="status"></p>
+      <div class="actions">
+        <button class="btn" type="button" id="psAgain">Tempel ulang</button>
+        <button class="btn primary" type="button" id="psSave" disabled>Simpan laporan</button>
+      </div>
+    </div>
+  </section>
 </div>
 
 <button class="jump" id="jumpBtn" type="button" hidden>
@@ -474,6 +618,23 @@ textarea.field { min-height: 92px; resize: vertical; }
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
   <span id="fabLabel">Input kode</span>
 </button>
+
+<!-- Login PayStock -->
+<div class="overlay" id="ovPsLogin" hidden>
+  <form class="dialog" id="psLoginForm" role="dialog" aria-modal="true" aria-labelledby="psLgTitle">
+    <h2 id="psLgTitle">Masuk PayStock</h2>
+    <p>Bagian ini memakai akun tersendiri.</p>
+    <label for="psUser">User</label>
+    <input class="field text" id="psUser" type="text" autocomplete="off" autocapitalize="none" spellcheck="false">
+    <label for="psPass">Password</label>
+    <input class="field text" id="psPass" type="password" autocomplete="new-password">
+    <p class="err" id="psLoginErr" role="alert"></p>
+    <div class="actions">
+      <button class="btn" type="button" data-close>Batal</button>
+      <button class="btn primary" type="submit">Masuk</button>
+    </div>
+  </form>
+</div>
 
 <!-- Peringatan salin ulang -->
 <div class="overlay" id="ovConfirm" hidden>
@@ -629,7 +790,7 @@ textarea.field { min-height: 92px; resize: vertical; }
     <p class="hint">Kode hapus sama dengan kode reset.</p>
     <div class="actions">
       <button class="btn" type="button" data-close>Batal</button>
-      <button class="btn danger" type="submit">Hapus permanen</button>
+      <button class="btn danger" type="submit" id="hapusGo">Hapus permanen</button>
     </div>
   </form>
 </div>
@@ -767,10 +928,10 @@ textarea.field { min-height: 92px; resize: vertical; }
   function countAktif() { return DB.pangkalan.filter(function (p) { return p.aktif; }).length; }
   function countText(shown, total) { return shown === total ? total + ' pangkalan' : shown + ' dari ' + total + ' pangkalan'; }
 
-  async function fetchAll(table, col, asc) {
+  async function fetchAll(table, col, asc, client) {
     var out = [], from = 0, size = 1000;
     for (;;) {
-      var r = await sb.from(table).select('*').order(col, { ascending: asc }).range(from, from + size - 1);
+      var r = await (client || sb).from(table).select('*').order(col, { ascending: asc }).range(from, from + size - 1);
       if (r.error) throw r.error;
       out = out.concat(r.data);
       if (r.data.length < size) break;
@@ -930,6 +1091,7 @@ textarea.field { min-height: 92px; resize: vertical; }
     subscribe();
   }
   function stopApp() {
+    psWipe();
     unsubscribe();
     DB = emptyDB();
     rebuild();
@@ -941,9 +1103,9 @@ textarea.field { min-height: 92px; resize: vertical; }
 
   /* ---------- Navigasi ---------- */
   var view = 'home', curId = null;
-  var VIEWS = { home: 'vHome', pmList: 'vPmList', pjList: 'vPjList', detail: 'vDetail', pjDetail: 'vDetail', hasil: 'vHasil', daftar: 'vDaftar' };
-  var SECTIONS = ['vHome', 'vPmList', 'vPjList', 'vDetail', 'vHasil', 'vDaftar'];
-  var PARENT = { pmList: 'home', pjList: 'home', detail: 'pmList', pjDetail: 'pjList', hasil: 'home', daftar: 'home' };
+  var VIEWS = { home: 'vHome', pmList: 'vPmList', pjList: 'vPjList', detail: 'vDetail', pjDetail: 'vDetail', hasil: 'vHasil', daftar: 'vDaftar', psHome: 'vPsHome', psList: 'vPsList', psDetail: 'vPsDetail', psAlias: 'vPsAlias', psPaste: 'vPsPaste' };
+  var SECTIONS = ['vHome', 'vPmList', 'vPjList', 'vDetail', 'vHasil', 'vDaftar', 'vPsHome', 'vPsList', 'vPsDetail', 'vPsAlias', 'vPsPaste'];
+  var PARENT = { pmList: 'home', pjList: 'home', detail: 'pmList', pjDetail: 'pjList', hasil: 'home', daftar: 'home', psHome: 'home', psList: 'psHome', psDetail: 'psList', psAlias: 'psHome', psPaste: 'psHome' };
   function isDetail(v) { return v === 'detail' || v === 'pjDetail'; }
   function cur() { return view === 'pjDetail' ? LMAP[curId] : PMAP[curId]; }
   var CHEV = '<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
@@ -952,6 +1114,8 @@ textarea.field { min-height: 92px; resize: vertical; }
   try { history.scrollRestoration = 'manual'; } catch (e0) {}
 
   function go(v, id, mode) {
+    if (isPs(v) && !psAuthed) { v = 'home'; id = null; if (mode === 'pop') mode = 'replace'; }
+    if (v === 'home' && psAuthed) psWipe();
     closeTray();
     view = v;
     if (id) curId = id;
@@ -966,13 +1130,18 @@ textarea.field { min-height: 92px; resize: vertical; }
     if (v === 'pjDetail') { small = 'Pinjaman'; title = LMAP[curId] ? LMAP[curId].name : ''; listEl.removeAttribute('data-pid'); }
     if (v === 'hasil') { small = 'MAP'; title = 'Hasil Pengerjaan Map'; fab = 'Input hasil'; }
     if (v === 'daftar') { small = 'Data'; title = 'Daftar Pangkalan'; fab = 'Tambah pangkalan'; $('sDaftar').value = ''; showIna = false; }
+    if (v === 'psHome') { small = 'PayStock'; title = 'PayStock Matcher'; }
+    if (v === 'psList') { small = 'PayStock'; title = 'Laporan Pengiriman'; fab = 'Tempel laporan'; $('sPsList').value = ''; }
+    if (v === 'psDetail') { small = 'Laporan pengiriman'; title = 'Laporan'; }
+    if (v === 'psAlias') { small = 'PayStock'; title = 'Nama yang diingat'; }
+    if (v === 'psPaste') { small = 'PayStock'; title = 'Tempel laporan'; psResetPaste(); }
     $('barSmall').textContent = small;
     $('barTitle').textContent = title;
     $('fab').hidden = !fab;
     if (fab) $('fabLabel').textContent = fab;
     $('jumpBtn').classList.toggle('low', !fab);
     if (mode !== 'pop') {
-      var st = { v: v, id: isDetail(v) ? curId : null, d: curState.d };
+      var st = { v: v, id: (isDetail(v) || v === 'psDetail') ? curId : null, d: curState.d };
       if (mode === 'replace') history.replaceState(st, '');
       else { st.d = curState.d + 1; history.pushState(st, ''); }
       curState = st;
@@ -1019,6 +1188,13 @@ textarea.field { min-height: 92px; resize: vertical; }
     if (isDetail(view)) renderDetail();
     if (view === 'hasil') renderHasil();
     if (view === 'daftar') renderDaftar();
+    if (psAuthed) {
+      psRebuild();
+      if (view === 'psHome') renderPsHome();
+      if (view === 'psList') renderPsList();
+      if (view === 'psDetail') renderPsDetail();
+      if (view === 'psAlias') renderPsAlias();
+    }
     if (!$('ovPick').hidden) renderPick();
   }
 
@@ -1565,7 +1741,11 @@ textarea.field { min-height: 92px; resize: vertical; }
   function renderPick() {
     var ex = pickCfg.exclude;
     var base = filtered('', true).filter(function (p) { return p.id !== ex; });
-    var nq = norm($('sPick').value);
+    var cset = {}, nq = norm($('sPick').value);
+    if (pickCfg.cands) {
+      pickCfg.cands.forEach(function (id) { cset[id] = 1; });
+      base = base.filter(function (p) { return !!cset[p.id]; }).concat(base.filter(function (p) { return !cset[p.id]; }));
+    }
     var items = base.filter(function (p) { return !nq || norm(p.name).indexOf(nq) > -1; });
     var ul = $('lPick');
     ul.textContent = '';
@@ -1575,7 +1755,8 @@ textarea.field { min-height: 92px; resize: vertical; }
       var li = el('li');
       var b = el('button', null); b.type = 'button';
       b.appendChild(el('span', null, p.name));
-      if (pickCfg.meta) b.appendChild(el('span', 'pm', pickCfg.meta(p)));
+      if (cset[p.id]) b.appendChild(el('span', 'pm pm-cand', 'Kemungkinan'));
+      else if (pickCfg.meta) b.appendChild(el('span', 'pm', pickCfg.meta(p)));
       b.addEventListener('click', function () { closeOv('ovPick'); pickCfg.onPick(p); });
       li.appendChild(b); ul.appendChild(li);
     });
@@ -1772,8 +1953,9 @@ textarea.field { min-height: 92px; resize: vertical; }
 
   var hapusId = null, hapusKind = 'pangkalan';
   digits($('hapusCode'));
-  function openHapusBase(kind, id, title, text) {
+  function openHapusBase(kind, id, title, text, label) {
     hapusId = id; hapusKind = kind;
+    $('hapusGo').textContent = label || 'Hapus permanen';
     $('hpTitle').textContent = title;
     $('hpText').textContent = text;
     $('hapusCode').value = ''; $('hapusErr').textContent = '';
@@ -1797,6 +1979,7 @@ textarea.field { min-height: 92px; resize: vertical; }
     guarded(async function () {
       var code = $('hapusCode').value.trim();
       if (!code) { $('hapusErr').textContent = 'Masukkan kode hapus.'; shake($('hapusForm')); return; }
+      if (hapusKind === 'laporan' || hapusKind === 'timpaLaporan') { await psHapusSubmit(hapusKind, code); return; }
       var kind = hapusKind, rpc, args;
       if (kind === 'pinjaman') { rpc = 'hapus_pinjaman'; args = { p_id: hapusId, p_code: code }; }
       else if (kind === 'kode' || kind === 'kodePinjaman') { rpc = 'hapus_kode'; args = { p_id: hapusId, p_pinjaman: kind === 'kodePinjaman', p_code: code }; }
@@ -1893,10 +2076,11 @@ textarea.field { min-height: 92px; resize: vertical; }
     else if (view === 'pjList') openPinjam();
     else if (view === 'hasil') openHasil(null);
     else if (view === 'daftar') openPang(null);
+    else if (view === 'psList') go('psPaste');
   });
 
   /* ---------- Overlay ---------- */
-  var ORDER = ['ovFreeze', 'ovBackup', 'ovDone', 'ovDeact', 'ovHapus', 'ovPick', 'ovConfirm', 'ovReset', 'ovInput', 'ovHasil', 'ovPang', 'ovPinjam'];
+  var ORDER = ['ovFreeze', 'ovBackup', 'ovPsLogin', 'ovDone', 'ovDeact', 'ovHapus', 'ovPick', 'ovConfirm', 'ovReset', 'ovInput', 'ovHasil', 'ovPang', 'ovPinjam'];
   function openOv(id) { $(id).hidden = false; }
   function closeOv(id) { $(id).hidden = true; if (id === 'ovConfirm') pendingCopy = null; }
   Array.prototype.forEach.call(document.querySelectorAll('[data-close]'), function (b) {
@@ -1922,6 +2106,544 @@ textarea.field { min-height: 92px; resize: vertical; }
     if (st && st.v && VIEWS[st.v]) { curState = st; go(st.v, st.id, 'pop'); }
     else { history.pushState(curState, ''); }
   });
+
+  /* ---------- PayStock: pembaca laporan dan pencocok nama (fungsi murni) ---------- */
+  var PS_HONOR = { H: 1, HJ: 1, HAJI: 1, HAJJAH: 1, BU: 1, IBU: 1, PAK: 1, BAPAK: 1, BPK: 1 };
+  function psNorm(s) {
+    return String(s || '').toUpperCase().replace(/[^A-Z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  function psTokens(s) {
+    var all = psNorm(s).split(' ').filter(Boolean);
+    var keep = all.filter(function (t) { return !PS_HONOR[t]; });
+    return keep.length ? keep : all;
+  }
+  function psLev(a, b) {
+    var m = a.length, n = b.length, i, j, prev, cur, t;
+    if (Math.abs(m - n) > 2) return 9;
+    prev = []; for (j = 0; j <= n; j++) prev[j] = j;
+    for (i = 1; i <= m; i++) {
+      cur = [i];
+      for (j = 1; j <= n; j++) {
+        t = a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1;
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + t);
+      }
+      prev = cur;
+    }
+    return prev[n];
+  }
+  function psTokOk(it, nt, fuzzy) {
+    if (nt.indexOf(it) === 0) return true;
+    if (fuzzy && it.length >= 5) return psLev(it, nt) <= 1 || psLev(it, nt.slice(0, it.length)) <= 1;
+    return false;
+  }
+  function psSubseq(inp, name, fuzzy) {
+    var pos = 0, i, j, found;
+    for (i = 0; i < inp.length; i++) {
+      found = false;
+      for (j = pos; j < name.length; j++) {
+        if (psTokOk(inp[i], name[j], fuzzy)) { pos = j + 1; found = true; break; }
+      }
+      if (!found) return false;
+    }
+    return true;
+  }
+  /* list: [{id,name}] pangkalan aktif; aliasMap: { NAMA_NORM: [pangkalan_id,...] }; byId: { id: pangkalan } */
+  function psMatch(input, list, aliasMap, byId) {
+    var n = psNorm(input), compact = n.replace(/ /g, ''), a, c, i, inp, tier, exact;
+    if (!n) return { status: 'asing', cands: [] };
+    a = (aliasMap && aliasMap[n]) || null;
+    if (a) {
+      c = a.map(function (id) { return byId[id]; }).filter(Boolean);
+      if (c.length === 1) return { status: 'alias', cands: c };
+      if (c.length > 1) return { status: 'pilih', cands: c, dariNama: true };
+    }
+    c = list.filter(function (p) { var pn = psNorm(p.name); return pn === n || pn.replace(/ /g, '') === compact; });
+    if (c.length === 1) return { status: 'pasti', cands: c };
+    inp = psTokens(input);
+    for (tier = 0; tier < 2; tier++) {
+      c = list.filter(function (p) { return psSubseq(inp, psTokens(p.name), tier === 1); });
+      if (c.length) {
+        if (c.length > 1) {
+          exact = c.filter(function (p) { return psTokens(p.name).join(' ') === inp.join(' '); });
+          if (exact.length === 1) return { status: 'otomatis', cands: exact, mirip: tier === 1 };
+        }
+        return { status: c.length === 1 ? 'otomatis' : 'pilih', cands: c, mirip: tier === 1 };
+      }
+    }
+    return { status: 'asing', cands: [] };
+  }
+
+  function psDate(s) {
+    var m = /(\d{1,2})\s*[.\-\/]\s*(\d{1,2})\s*[.\-\/]\s*(\d{2,4})/.exec(s), d, mo, y, t;
+    if (!m) return null;
+    d = +m[1]; mo = +m[2]; y = +m[3];
+    if (y < 100) y += 2000;
+    if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+    t = new Date(Date.UTC(y, mo - 1, d));
+    if (t.getUTCMonth() !== mo - 1) return null;
+    return y + '-' + (mo < 10 ? '0' : '') + mo + '-' + (d < 10 ? '0' : '') + d;
+  }
+  function psEkspedisi(s) {
+    var n = psNorm(s);
+    if (n.indexOf('FAJAR') > -1) return 'FAJAR';
+    if (/(^| )BWI( |$)/.test(n)) return 'BWI';
+    return n;
+  }
+  function psParse(text) {
+    var out = { ekspedisi: '', lo: '', kirim: '', total: null, hari: null, rows: [], bad: [] };
+    var lines = String(text || '').split(/\r?\n/), i, ln, m, d, q, nm, sawTotal = false;
+    for (i = 0; i < lines.length; i++) {
+      ln = lines[i].replace(/[ \t]+/g, ' ').trim();
+      if (!ln) continue;
+      m = /^TOTAL\b\s*[:=\-]?\s*([\d.,]*)/i.exec(ln);
+      if (m) {
+        sawTotal = true;
+        q = parseInt(m[1].replace(/\D/g, ''), 10);
+        out.total = isNaN(q) ? null : q;
+        continue;
+      }
+      m = /SPPBE\s*[:\-=]?\s*(.+)$/i.exec(ln);
+      if (m) { out.ekspedisi = psEkspedisi(m[1]); continue; }
+      d = psDate(ln);
+      if (d) {
+        m = /\b(MINGGU|AHAD|SENIN|SELASA|RABU|KAMIS|JUM'?AT|SABTU)\b/i.exec(ln);
+        if (m) out.hari = { MINGGU: 0, AHAD: 0, SENIN: 1, SELASA: 2, RABU: 3, KAMIS: 4, SABTU: 6 }[m[1].toUpperCase().replace("'", '')] != null ? { MINGGU: 0, AHAD: 0, SENIN: 1, SELASA: 2, RABU: 3, KAMIS: 4, SABTU: 6 }[m[1].toUpperCase().replace("'", '')] : 5;
+        if (/\bLO\b/i.test(ln)) out.lo = d;
+        else if (/PENGIRIMAN|KIRIM/i.test(ln)) out.kirim = d;
+        else if (!out.lo) out.lo = d;
+        else out.kirim = d;
+        continue;
+      }
+      if (/^(LAPORAN|LO)\b/i.test(ln) && !/\d\s*$/.test(ln)) continue;
+      if (/^[A-Za-z .]+$/.test(ln) && /^(BWI|FAJAR)\b/i.test(ln.trim()) && psTokens(ln).length <= 2) { out.ekspedisi = psEkspedisi(ln); continue; }
+      if (sawTotal && !out.ekspedisi && /^[A-Za-z ]+$/.test(ln)) { out.ekspedisi = psEkspedisi(ln); continue; }
+      ln = ln.replace(/^\d{1,3}\s*[.)]\s*/, '');
+      m = /^(.*?[A-Za-z].*?)\s*[:=\-]?\s*(\d[\d.,]*)\s*(?:TABUNG|TBG|PCS)?\s*$/i.exec(ln);
+      if (m) {
+        q = parseInt(m[2].replace(/\D/g, ''), 10);
+        nm = m[1].replace(/[\s:=\-.,]+$/, '').trim();
+        if (nm && q > 0) { out.rows.push({ raw: nm, qty: q }); continue; }
+      }
+      out.bad.push(lines[i].trim());
+    }
+    return out;
+  }
+
+  /* ---------- PayStock Matcher ---------- */
+  var psb = null, psAuthed = false;
+  var PS = { laporan: [], item: [], alias: [] }, PSL = {}, PSALIAS = {};
+  var PS_BULAN = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+  var PS_HARI = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+  function psPad(n) { return (n < 10 ? '0' : '') + n; }
+  function psFmt(iso) { if (!iso) return ''; var p = iso.split('-'); return p[2] + '-' + p[1] + '-' + p[0]; }
+  function psDow(iso) { var p = iso.split('-'); return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])).getUTCDay(); }
+  function psLong(iso) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(iso || '')) return '';
+    var p = iso.split('-');
+    return PS_HARI[psDow(iso)] + ', ' + (+p[2]) + ' ' + PS_BULAN[+p[1] - 1] + ' ' + p[0];
+  }
+  function psToday() { var d = new Date(); return d.getFullYear() + '-' + psPad(d.getMonth() + 1) + '-' + psPad(d.getDate()); }
+  function psTitle(l) { return 'LAPORAN PENGIRIMAN ' + l.ekspedisi + ' LO ' + psFmt(l.tanggal_lo); }
+  function psClient() {
+    if (psb) return psb;
+    if (configured && window.supabase && window.supabase.createClient) {
+      psb = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY, {
+        auth: { persistSession: false, autoRefreshToken: true, detectSessionInUrl: false, storageKey: 'altan-paystock' }
+      });
+    }
+    return psb;
+  }
+  function isPs(v) { return v.indexOf('ps') === 0 && VIEWS[v] != null; }
+  function psRebuild() {
+    PSL = {}; PSALIAS = {};
+    PS.laporan.forEach(function (l) { l.items = []; PSL[l.id] = l; });
+    PS.item.slice().sort(function (a, b) { return a.urut - b.urut; }).forEach(function (it) {
+      var l = PSL[it.laporan_id]; if (l) l.items.push(it);
+    });
+    PS.alias.forEach(function (a) {
+      if (!PMAP[a.pangkalan_id]) return;
+      (PSALIAS[a.alias] = PSALIAS[a.alias] || []).push(a.pangkalan_id);
+    });
+  }
+  async function psLoad() {
+    var c = psClient();
+    if (!c) throw new Error('no client');
+    var res = await Promise.all([
+      fetchAll('paystock_laporan', 'tanggal_lo', false, c),
+      fetchAll('paystock_item', 'urut', true, c),
+      fetchAll('paystock_alias', 'created_at', true, c)
+    ]);
+    PS.laporan = res[0].sort(function (a, b) { return a.tanggal_lo < b.tanggal_lo ? 1 : a.tanggal_lo > b.tanggal_lo ? -1 : a.ekspedisi.localeCompare(b.ekspedisi); });
+    PS.item = res[1]; PS.alias = res[2];
+    psRebuild();
+    scheduleRender();
+  }
+  function psExpired(err) { return err && (err.status === 401 || /jwt|expired|not authenticated/i.test(err.message || '')); }
+  var psChan = null, psTimer = 0;
+  function psSubscribe() {
+    if (psChan || !psb) return;
+    psChan = psb.channel('altan-paystock');
+    ['paystock_laporan', 'paystock_item', 'paystock_alias'].forEach(function (t) {
+      psChan.on('postgres_changes', { event: '*', schema: 'public', table: t }, function () {
+        clearTimeout(psTimer);
+        psTimer = setTimeout(function () { if (psAuthed) psLoad().catch(function () {}); }, 400);
+      });
+    });
+    psChan.subscribe();
+  }
+  function psUnsub() {
+    clearTimeout(psTimer);
+    if (psChan && psb) { try { psb.removeChannel(psChan); } catch (e) {} }
+    psChan = null;
+  }
+  function psWipe() {
+    psAuthed = false; psUnsub();
+    PS = { laporan: [], item: [], alias: [] }; psRebuild(); psDraft = null;
+    if (psb) { try { psb.auth.signOut(); } catch (e) {} }
+  }
+  function psLock(msg) {
+    var was = isPs(view);
+    psWipe();
+    if (was) go('home', null, 'replace');
+    if (msg) toast(msg, true);
+  }
+  async function psCall(name, args) {
+    var r = await psClient().rpc(name, args);
+    if (r.error) {
+      if (psExpired(r.error)) { psLock('Sesi PayStock berakhir. Masuk lagi.'); return null; }
+      throw r.error;
+    }
+    return r;
+  }
+
+  /* Pintu masuk: login kedua */
+  $('psTile').addEventListener('click', function () {
+    if (psAuthed) { go('psHome'); psLoad().catch(function () {}); return; }
+    $('psUser').value = ''; $('psPass').value = ''; $('psLoginErr').textContent = '';
+    openOv('ovPsLogin'); $('psUser').focus();
+  });
+  $('psLoginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    guarded(async function () {
+      var u = $('psUser').value.trim().toLowerCase().replace(/\s+/g, ''), pw = $('psPass').value;
+      if (!u || !pw) { $('psLoginErr').textContent = 'Isi user dan password PayStock.'; shake($('psLoginForm')); return; }
+      var c = psClient();
+      if (!c) { $('psLoginErr').textContent = 'Koneksi belum siap. Muat ulang halaman.'; return; }
+      var r = await c.auth.signInWithPassword({ email: u + EMAIL_DOMAIN, password: pw });
+      if (r.error) {
+        var bad = r.error.status === 400 || /invalid/i.test(r.error.message || '');
+        $('psLoginErr').textContent = bad ? 'User atau password salah.' : 'Tidak bisa masuk. Periksa koneksi lalu coba lagi.';
+        shake($('psLoginForm')); return;
+      }
+      var ok = await c.rpc('punya_paystock');
+      if (ok.error || ok.data !== true) {
+        try { await c.auth.signOut(); } catch (e2) {}
+        $('psLoginErr').textContent = ok.error ? 'PayStock belum dipasang di database. Lihat panduan (langkah 05).' : 'Akun ini tidak punya akses PayStock.';
+        shake($('psLoginForm')); return;
+      }
+      psAuthed = true;
+      $('psPass').value = '';
+      closeOv('ovPsLogin');
+      go('psHome');
+      await psLoad();
+      psSubscribe();
+    });
+  });
+  $('psLock').addEventListener('click', function () { go('home'); toast('PayStock dikunci'); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-pgo]'), function (b) {
+    b.addEventListener('click', function () { if (!b.disabled) go(b.getAttribute('data-pgo')); });
+  });
+
+  /* Daftar laporan */
+  function psItemsText(l) { return l.items.map(function (it) { return it.nama_pangkalan + ' ' + it.tabung; }).join('\n'); }
+  $('sPsList').addEventListener('input', renderPsList);
+  function renderPsHome() {
+    $('mPsLap').textContent = PS.laporan.length ? PS.laporan.length + ' laporan tersimpan' : 'Belum ada laporan';
+    $('mPsNama').textContent = Object.keys(PSALIAS).length ? Object.keys(PSALIAS).length + ' nama diingat' : 'Belum ada';
+  }
+  function renderPsList() {
+    var q = norm($('sPsList').value), ul = $('lPsList');
+    var items = PS.laporan.filter(function (l) {
+      if (!q) return true;
+      if (norm(psTitle(l)).indexOf(q) > -1) return true;
+      return l.items.some(function (it) { return norm(it.nama_pangkalan).indexOf(q) > -1 || norm(it.nama_mentah).indexOf(q) > -1; });
+    });
+    ul.textContent = '';
+    $('cPsList').textContent = items.length === PS.laporan.length ? PS.laporan.length + ' laporan' : items.length + ' dari ' + PS.laporan.length + ' laporan';
+    if (!items.length) { ul.appendChild(el('li', 'none', PS.laporan.length ? 'Laporan tidak ditemukan. Coba kata lain.' : 'Belum ada laporan. Tekan Tempel laporan untuk memulai.')); return; }
+    items.forEach(function (l) {
+      var li = el('li'), b = el('button', 'lrow'); b.type = 'button';
+      var d = el('div');
+      d.appendChild(el('strong', null, l.ekspedisi + ' · LO ' + psFmt(l.tanggal_lo)));
+      d.appendChild(el('span', 'pm', l.items.length + ' baris, ' + l.total + ' tabung' + (l.tanggal_kirim ? ', kirim ' + psLong(l.tanggal_kirim) : '')));
+      b.appendChild(d);
+      b.appendChild(el('span', 'chev', '›'));
+      b.addEventListener('click', function () { go('psDetail', l.id); });
+      li.appendChild(b); ul.appendChild(li);
+    });
+  }
+
+  /* Detail laporan */
+  function renderPsDetail() {
+    var l = PSL[curId], ul = $('lPsDet');
+    ul.textContent = '';
+    if (!l) { $('psDetTitle').textContent = 'Laporan tidak ditemukan'; $('psDetMeta').textContent = ''; $('psDetActions').hidden = true; return; }
+    $('psDetActions').hidden = false;
+    $('psDetTitle').textContent = psTitle(l);
+    $('psDetMeta').textContent = (l.tanggal_kirim ? 'Dikirim ' + psLong(l.tanggal_kirim) + '. ' : '') + 'TOTAL ' + l.total + ' tabung, ' + l.items.length + ' baris.';
+    $('barTitle').textContent = l.ekspedisi + ' LO ' + psFmt(l.tanggal_lo);
+    l.items.forEach(function (it) {
+      var li = el('li', 'irow'), d = el('div');
+      d.appendChild(el('strong', null, it.nama_pangkalan));
+      if (psNorm(it.nama_mentah) !== psNorm(it.nama_pangkalan)) d.appendChild(el('span', 'pm', 'tertulis: ' + it.nama_mentah));
+      li.appendChild(d);
+      li.appendChild(el('span', 'qty', String(it.tabung)));
+      ul.appendChild(li);
+    });
+  }
+  $('psCopy').addEventListener('click', async function () {
+    var l = PSL[curId]; if (!l) return;
+    var ok = await writeClip(psItemsText(l));
+    toast(ok ? 'Daftar disalin' : 'Tidak bisa menyalin otomatis.', !ok);
+  });
+  $('psDel').addEventListener('click', function () {
+    var l = PSL[curId]; if (!l) return;
+    openHapusBase('laporan', l.id, 'Hapus ' + psTitle(l) + '?',
+      'Laporan dan semua barisnya dihapus permanen dan tidak bisa dikembalikan. Masukkan kode hapus untuk melanjutkan.', 'Hapus laporan');
+  });
+
+  /* Daftar nama yang diingat */
+  function renderPsAlias() {
+    var ul = $('lPsAlias'), keys = Object.keys(PSALIAS).sort();
+    ul.textContent = '';
+    $('cPsAlias').textContent = keys.length + ' nama';
+    if (!keys.length) { ul.appendChild(el('li', 'none', 'Belum ada nama yang diingat. Nama yang Anda pilih sendiri saat menempel laporan akan muncul di sini.')); return; }
+    keys.forEach(function (k) {
+      var li = el('li', 'arow');
+      li.appendChild(el('strong', null, k));
+      PS.alias.filter(function (a) { return a.alias === k && PMAP[a.pangkalan_id]; }).forEach(function (a) {
+        var r = el('div', 'arow-p');
+        r.appendChild(el('span', null, PMAP[a.pangkalan_id].name));
+        var x = el('button', 'btn-tiny danger', 'Hapus'); x.type = 'button';
+        x.addEventListener('click', function () {
+          if (!x._arm) {
+            x._arm = true; x.textContent = 'Yakin?';
+            setTimeout(function () { x._arm = false; x.textContent = 'Hapus'; }, 3000);
+            return;
+          }
+          guarded(async function () {
+            var res = await psCall('hapus_alias', { p_id: a.id });
+            if (!res) return;
+            PS.alias = PS.alias.filter(function (z) { return z.id !== a.id; });
+            psRebuild(); renderPsAlias(); renderPsHome(); toast('Nama dihapus');
+          });
+        });
+        r.appendChild(x); li.appendChild(r);
+      });
+      ul.appendChild(li);
+    });
+  }
+
+  /* Tempel laporan */
+  var psDraft = null;
+  var PS_SAMPLE = 'LAPORAN PENGIRIMAN LO 01-10-2026\n1. BRILIAN 119\n2. NUNG 51\n...\nTOTAL 560\nBWI';
+  $('psText').setAttribute('placeholder', PS_SAMPLE);
+  try { $('psOleh').value = localStorage.getItem('altan-ps-oleh') || ''; } catch (e) {}
+  function psResetPaste() {
+    psDraft = null; $('psText').value = ''; $('psReadErr').textContent = '';
+    renderPsPaste();
+  }
+  function renderPsPaste() {
+    $('psStep1').hidden = !!psDraft;
+    $('psStep2').hidden = !psDraft;
+  }
+  function pName(id) { return PMAP[id] ? PMAP[id].name : ''; }
+  $('psRead').addEventListener('click', function () {
+    var txt = $('psText').value;
+    if (!txt.trim()) { $('psReadErr').textContent = 'Tempel laporan dari ekspedisi dulu.'; return; }
+    var r = psParse(txt);
+    if (!r.rows.length) { $('psReadErr').textContent = 'Tidak ada baris "nama jumlah" yang terbaca. Periksa teks yang ditempel.'; return; }
+    var list = DB.pangkalan.filter(function (p) { return p.aktif; });
+    var rows = r.rows.map(function (x) {
+      var m = psMatch(x.raw, list, PSALIAS, PMAP), row = { raw: x.raw, qty: x.qty, pid: null, state: 'asing', cands: m.cands.map(function (c) { return c.id; }), dariNama: !!m.dariNama, remember: false };
+      if (m.status === 'alias' || m.status === 'pasti' || (m.status === 'otomatis' && !m.mirip)) { row.pid = m.cands[0].id; row.state = m.status; }
+      else if (m.status === 'otomatis') { row.pid = m.cands[0].id; row.state = 'periksa'; row.remember = true; }
+      else if (m.status === 'pilih') row.state = 'pilih';
+      return row;
+    });
+    var groups = {};
+    rows.forEach(function (row, i) { if (row.state === 'pilih' && row.dariNama) (groups[psNorm(row.raw)] = groups[psNorm(row.raw)] || []).push(i); });
+    Object.keys(groups).forEach(function (k) {
+      var g = groups[k], cs = rows[g[0]].cands;
+      if (g.length === cs.length) g.forEach(function (ri, j) { rows[ri].pid = cs[j]; rows[ri].state = 'periksa'; rows[ri].remember = true; });
+    });
+    var seenA = {};
+    rows.forEach(function (row) {
+      if (row.state !== 'alias') return;
+      var k = psNorm(row.raw);
+      if (seenA[k]) { row.state = 'periksa'; row.remember = true; row.dupe = true; } else seenA[k] = 1;
+    });
+    psDraft = { rows: rows, bad: r.bad.slice(), hari: r.hari };
+    $('psEks').value = r.ekspedisi; $('psLo').value = r.lo; $('psKirim').value = r.kirim;
+    $('psTot').value = r.total != null ? String(r.total) : '';
+    $('psReadErr').textContent = '';
+    renderPsPaste(); psDraw(); psCheck();
+    window.scrollTo(0, 0);
+  });
+  $('psAgain').addEventListener('click', function () { psDraft = null; renderPsPaste(); });
+  var PS_TAG = { alias: 'diingat', pasti: 'cocok', otomatis: 'otomatis', periksa: 'periksa', dipilih: 'dipilih' };
+  function psDraw() {
+    var ul = $('psRows'), d = psDraft;
+    ul.textContent = '';
+    d.rows.forEach(function (row, i) {
+      var li = el('li', 'pvrow ' + row.state);
+      var main = el('div', 'pr-main');
+      main.appendChild(el('span', 'pm', 'tertulis: ' + row.raw));
+      var b = el('button', 'pr-name'); b.type = 'button';
+      if (row.pid) {
+        b.appendChild(el('span', null, pName(row.pid)));
+        b.appendChild(el('em', null, row.dupe && row.state === 'periksa' ? 'nama kembar, cek' : (PS_TAG[row.state] || '')));
+      } else {
+        b.appendChild(el('span', null, row.cands.length ? 'Pilih dari ' + row.cands.length + ' kemungkinan' : 'Nama belum dikenal, pilih pangkalan'));
+      }
+      b.addEventListener('click', function () {
+        openPicker({
+          title: 'Pangkalan untuk "' + row.raw + '"', cands: row.cands.length ? row.cands : null,
+          onPick: function (p) { row.pid = p.id; row.state = 'dipilih'; row.remember = true; psDraw(); psCheck(); }
+        });
+      });
+      main.appendChild(b);
+      li.appendChild(main);
+      var q = el('input', 'pr-qty'); q.type = 'text'; q.inputMode = 'numeric'; q.value = String(row.qty);
+      q.setAttribute('aria-label', 'Jumlah tabung ' + row.raw);
+      q.addEventListener('input', function () { q.value = q.value.replace(/[^0-9]/g, ''); row.qty = parseInt(q.value, 10) || 0; psCheck(); });
+      li.appendChild(q);
+      var x = el('button', 'pr-x', '×'); x.type = 'button'; x.setAttribute('aria-label', 'Hapus baris ' + row.raw);
+      x.addEventListener('click', function () { d.rows.splice(i, 1); psDraw(); psCheck(); });
+      li.appendChild(x);
+      if (row.state === 'periksa') {
+        var ok = el('button', 'pr-ok', 'Benar'); ok.type = 'button';
+        ok.addEventListener('click', function () { row.state = 'dipilih'; psDraw(); psCheck(); });
+        li.appendChild(ok);
+      }
+      ul.appendChild(li);
+    });
+    var bl = $('psBad'); bl.textContent = ''; bl.hidden = !d.bad.length;
+    d.bad.forEach(function (t, i) {
+      var li = el('li', 'badline'); li.appendChild(el('span', null, 'Tidak terbaca: ' + t));
+      var x = el('button', 'btn-tiny', 'Abaikan'); x.type = 'button';
+      x.addEventListener('click', function () { d.bad.splice(i, 1); psDraw(); psCheck(); });
+      li.appendChild(x); bl.appendChild(li);
+    });
+  }
+  ['psEks', 'psLo', 'psKirim', 'psTot'].forEach(function (id) { $(id).addEventListener('input', psCheck); });
+  $('psTot').addEventListener('input', function () { $('psTot').value = $('psTot').value.replace(/[^0-9]/g, ''); });
+  function psDup() {
+    var e = $('psEks').value.trim().toUpperCase(), lo = $('psLo').value;
+    return PS.laporan.filter(function (l) { return l.ekspedisi === e && l.tanggal_lo === lo; })[0] || null;
+  }
+  function psCheck() {
+    var d = psDraft; if (!d) return;
+    var sum = d.rows.reduce(function (a, r) { return a + (r.qty || 0); }, 0), tot = parseInt($('psTot').value, 10) || 0;
+    var eks = $('psEks').value.trim(), lo = $('psLo').value, kirim = $('psKirim').value;
+    var ban = $('psBan'), why = [], warn = [];
+    $('psLoLong').textContent = psLong(lo);
+    $('psKirimLong').textContent = psLong(kirim);
+    if (!tot) { ban.className = 'ban bad'; ban.textContent = 'TOTAL laporan belum ada. Isi angka TOTAL dari laporan (hitungan sistem: ' + sum + ').'; why.push('isi TOTAL'); }
+    else if (tot !== sum) {
+      ban.className = 'ban bad';
+      ban.textContent = 'TOTAL tidak cocok. Laporan menulis ' + tot + ', hitungan baris ' + sum + ' (selisih ' + (sum - tot > 0 ? '+' : '−') + Math.abs(sum - tot) + '). Periksa jumlah tiap baris atau angka TOTAL.';
+      why.push('TOTAL tidak cocok');
+    } else { ban.className = 'ban ok'; ban.textContent = 'TOTAL cocok: ' + sum + ' tabung dari ' + d.rows.length + ' baris.'; }
+    if (!eks) why.push('isi ekspedisi');
+    if (!lo) why.push('isi tanggal LO');
+    if (!d.rows.length) why.push('tidak ada baris');
+    var unres = d.rows.filter(function (r) { return !r.pid || r.state === 'periksa'; }).length;
+    if (unres) why.push(unres + ' nama belum dipastikan');
+    if (d.rows.some(function (r) { return !(r.qty > 0); })) why.push('ada jumlah kosong');
+    if (d.bad.length) why.push(d.bad.length + ' baris tidak terbaca');
+    if (sum && sum !== 560) warn.push('Satu LO biasanya 560 tabung, di sini ' + sum + '. Lanjut jika memang begitu.');
+    if (lo) {
+      var t = psToday();
+      if (lo > t) warn.push('Tanggal LO ada di masa depan. Periksa bulan dan tahunnya.');
+      else if (lo.slice(0, 7) !== t.slice(0, 7)) warn.push('Tanggal LO bukan bulan ini (' + psLong(lo) + '). Lanjut jika ini laporan lama.');
+      if (kirim && kirim < lo) warn.push('Tanggal kirim lebih awal dari tanggal LO.');
+    }
+    var cmp = kirim || lo;
+    if (d.hari != null && cmp && psDow(cmp) !== d.hari) warn.push('Hari di laporan (' + PS_HARI[d.hari] + ') tidak cocok dengan tanggal ' + psLong(cmp) + '. Kemungkinan salah ketik tanggal.');
+    var dup = eks && lo ? psDup() : null;
+    if (dup) warn.push('Laporan ' + dup.ekspedisi + ' LO ' + psFmt(dup.tanggal_lo) + ' sudah ada. Menyimpan akan menimpa laporan lama (butuh kode).');
+    var w = $('psWarn'); w.textContent = ''; w.hidden = !warn.length;
+    warn.forEach(function (m) { w.appendChild(el('li', null, m)); });
+    var sv = $('psSave');
+    sv.disabled = why.length > 0;
+    sv.textContent = dup ? 'Timpa laporan lama' : 'Simpan laporan';
+    $('psWhy').textContent = why.length ? 'Belum bisa disimpan: ' + why.join(', ') + '.' : '';
+  }
+  function psPayload() {
+    var d = psDraft, al = [], seen = {};
+    d.rows.forEach(function (r) {
+      var k = psNorm(r.raw) + '|' + r.pid;
+      if (r.remember && r.state === 'dipilih' && !seen[k]) { seen[k] = 1; al.push({ alias: psNorm(r.raw), pangkalan_id: r.pid }); }
+    });
+    return {
+      ekspedisi: $('psEks').value.trim().toUpperCase(), tanggal_lo: $('psLo').value, tanggal_kirim: $('psKirim').value || null,
+      total: parseInt($('psTot').value, 10) || 0, oleh: $('psOleh').value.trim(),
+      items: d.rows.map(function (r) { return { nama_mentah: r.raw, pangkalan_id: r.pid, tabung: r.qty }; }), aliases: al
+    };
+  }
+  var PS_MSG = {
+    total_beda: 'TOTAL tidak cocok dengan jumlah baris. Periksa lagi.', kosong: 'Tidak ada baris untuk disimpan.',
+    data_salah: 'Data laporan belum lengkap atau salah format.', pangkalan_tidak_ada: 'Ada pangkalan yang sudah tidak ada. Pilih ulang.',
+    tidak_ada_akses: 'Akun ini tidak punya akses PayStock.', tidak_masuk: 'Sesi berakhir. Masuk lagi.'
+  };
+  /* Mengembalikan 'ok' atau teks pesan galat */
+  async function psSave(code) {
+    try { localStorage.setItem('altan-ps-oleh', $('psOleh').value.trim()); } catch (e) {}
+    var r = await psCall('simpan_laporan', { p: psPayload(), p_timpa_kode: code || null });
+    if (!r) return 'Sesi berakhir.';
+    var s = r.data && r.data.status;
+    if (s === 'ok') {
+      var id = r.data.id;
+      psDraft = null; $('psText').value = '';
+      await psLoad().catch(function () {});
+      go('psDetail', id, 'replace');
+      toast('Laporan tersimpan');
+      return 'ok';
+    }
+    if (s === 'duplikat') return 'duplikat';
+    return PS_MSG[s] || codeMsg(s);
+  }
+  $('psSave').addEventListener('click', function () {
+    if ($('psSave').disabled) return;
+    var dup = psDup();
+    if (dup) {
+      openHapusBase('timpaLaporan', dup.id, 'Timpa laporan lama?',
+        'Laporan ' + psTitle(dup) + ' yang sudah ada akan diganti dengan isi yang baru. Masukkan kode hapus untuk melanjutkan.', 'Timpa laporan');
+      return;
+    }
+    guarded(async function () {
+      var res = await psSave(null);
+      if (res !== 'ok') toast(res === 'duplikat' ? 'Laporan dengan ekspedisi dan tanggal LO ini sudah ada. Muat ulang lalu coba lagi.' : res, true);
+    });
+  });
+  /* Dipanggil dari form kode hapus */
+  async function psHapusSubmit(kind, code) {
+    if (kind === 'timpaLaporan') {
+      var res = await psSave(code);
+      if (res === 'ok') { closeOv('ovHapus'); return; }
+      $('hapusErr').textContent = res === 'duplikat' ? 'Laporan sudah ada. Coba lagi.' : res; shake($('hapusForm')); return;
+    }
+    var r = await psCall('hapus_laporan', { p_id: hapusId, p_code: code });
+    if (!r) { closeOv('ovHapus'); return; }
+    if (r.data !== 'ok' && r.data !== 'tidak_ada') { $('hapusErr').textContent = codeMsg(r.data); shake($('hapusForm')); return; }
+    closeOv('ovHapus');
+    PS.laporan = PS.laporan.filter(function (l) { return l.id !== hapusId; });
+    PS.item = PS.item.filter(function (i) { return i.laporan_id !== hapusId; });
+    psRebuild();
+    go('psList', null, 'replace');
+    toast('Laporan dihapus');
+  }
 
   /* ---------- Mulai ---------- */
   async function boot() {
