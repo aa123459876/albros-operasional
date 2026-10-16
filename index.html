@@ -325,6 +325,22 @@ textarea.field { min-height: 92px; resize: vertical; }
 .lrow .chev { font-size: 20px; line-height: 1; }
 .irow { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
 .irow strong { display: block; font-weight: 600; overflow-wrap: anywhere; }
+/* Detail baris laporan: panel turun dari belakang kartu */
+.xrow { position: relative; }
+.xrow .irow { position: relative; z-index: 1; cursor: pointer; }
+.xrow .irow:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.qtyw { display: flex; align-items: center; gap: 10px; }
+.xch { width: 16px; height: 16px; color: var(--fg-3); transition: transform .28s ease; }
+.xrow.open .xch { transform: rotate(180deg); }
+.xp { display: grid; grid-template-rows: 0fr; margin-top: 0; transition: grid-template-rows .3s ease, margin-top .3s ease; }
+.xp > div { overflow: hidden; min-height: 0; }
+.xrow.open .xp { grid-template-rows: 1fr; margin-top: -14px; }
+.xin { padding: 22px 14px 12px; background: var(--surface-2); border: 1px solid var(--line); border-top: 0; border-radius: 0 0 12px 12px; font-size: 14px; color: var(--fg-2); display: flex; flex-direction: column; gap: 10px; transform: translateY(-12px); opacity: 0; transition: transform .3s ease, opacity .25s ease; }
+.xrow.open .xin { transform: none; opacity: 1; }
+.xin b { color: var(--fg); font-weight: 600; }
+.xin .xl { display: flex; justify-content: space-between; gap: 12px; }
+.xin .xl em { font-style: normal; font-family: var(--font-mono); color: var(--fg); white-space: nowrap; }
+.xin .btn-tiny { align-self: flex-start; }
 .qty { font-family: var(--font-mono); font-size: 18px; font-variant-numeric: tabular-nums; }
 .psact { margin-top: 14px; display: flex; gap: 10px; }
 .arow { padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
@@ -2530,15 +2546,59 @@ textarea.field { min-height: 92px; resize: vertical; }
     $('psDetTitle').textContent = psTitle(l);
     $('psDetMeta').textContent = (l.tanggal_kirim ? 'Dikirim ' + psLong(l.tanggal_kirim) + '. ' : '') + 'TOTAL ' + l.total + ' tabung, ' + l.items.length + ' baris.';
     $('barTitle').textContent = l.ekspedisi + ' LO ' + psFmt(l.tanggal_lo);
+    var live = {};
     l.items.forEach(function (it) {
-      var li = el('li', 'irow'), d = el('div');
+      live[it.id] = 1;
+      var li = el('li', 'xrow' + (PSX[it.id] ? ' open' : '')), card = el('div', 'irow'), d = el('div');
+      card.tabIndex = 0; card.setAttribute('role', 'button'); card.setAttribute('aria-expanded', String(!!PSX[it.id]));
       d.appendChild(el('strong', null, it.nama_pangkalan));
       if (psNorm(it.nama_mentah) !== psNorm(it.nama_pangkalan)) d.appendChild(el('span', 'pm', 'tertulis: ' + it.nama_mentah));
       var stt = psStat(it); d.appendChild(el('span', 'pm st ' + stt[1], stt[0]));
-      li.appendChild(d);
-      li.appendChild(el('span', 'qty', String(it.tabung)));
+      card.appendChild(d);
+      var qw = el('div', 'qtyw'); qw.appendChild(el('span', 'qty', String(it.tabung)));
+      var ch = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      ch.setAttribute('class', 'xch'); ch.setAttribute('viewBox', '0 0 24 24'); ch.setAttribute('fill', 'none'); ch.setAttribute('stroke', 'currentColor');
+      ch.setAttribute('stroke-width', '2'); ch.setAttribute('stroke-linecap', 'round'); ch.setAttribute('stroke-linejoin', 'round'); ch.setAttribute('aria-hidden', 'true');
+      var pth = document.createElementNS('http://www.w3.org/2000/svg', 'path'); pth.setAttribute('d', 'M6 9l6 6 6-6'); ch.appendChild(pth);
+      qw.appendChild(ch); card.appendChild(qw);
+      li.appendChild(card);
+      var xp = el('div', 'xp'), wrap = el('div'), xin = el('div', 'xin');
+      psItemDetail(it, xin); wrap.appendChild(xin); xp.appendChild(wrap); li.appendChild(xp);
+      function toggle() {
+        var o = !li.classList.contains('open');
+        li.classList.toggle('open', o); card.setAttribute('aria-expanded', String(o));
+        if (o) PSX[it.id] = 1; else delete PSX[it.id];
+      }
+      card.addEventListener('click', toggle);
+      card.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
       ul.appendChild(li);
     });
+    Object.keys(PSX).forEach(function (k) { if (!live[k]) delete PSX[k]; });
+  }
+  var PSX = {};
+  function psItemDetail(it, box) {
+    var al = PS.alok.filter(function (a) { return a.item_id === it.id; });
+    function line(a, b) { var r = el('div', 'xl'); r.appendChild(el('span', null, a)); r.appendChild(el('em', null, b)); box.appendChild(r); }
+    line('Dikirim ke ' + it.nama_pangkalan, it.tabung + ' tabung');
+    if (!al.length) {
+      box.appendChild(el('span', null, 'Belum ada pembayaran untuk pengiriman ini.'));
+    }
+    al.forEach(function (a) {
+      var pay = null, k; for (k = 0; k < PS.pay.length; k++) if (PS.pay[k].id === a.pembayaran_id) { pay = PS.pay[k]; break; }
+      var head = el('b', null, !pay ? 'Pembayaran' : pay.jenis === 'lama' ? 'Data lama, ditandai lunas' : 'Transfer ' + psFmt(pay.tanggal_transfer));
+      box.appendChild(head);
+      if (pay && pay.jenis === 'transfer') {
+        line(a.tabung + ' tabung × ' + (a.harga || 0).toLocaleString('id-ID'), psRp(a.tabung * (a.harga || 0)).replace('Rp ', 'Rp '));
+        box.appendChild(el('span', null, 'Total transfer ' + psRp(pay.nominal) + (pay.dibuat_oleh ? ', dicatat oleh ' + pay.dibuat_oleh : '')));
+      } else if (pay) {
+        line(a.tabung + ' tabung', 'lunas');
+        box.appendChild(el('span', null, 'Dicatat ' + pay.created_at.slice(0, 10).split('-').reverse().join('-') + (pay.dibuat_oleh ? ' oleh ' + pay.dibuat_oleh : '')));
+      }
+    });
+    if (it.sisa > 0 && al.length) line('Belum dibayar', it.sisa + ' tabung');
+    var go1 = el('button', 'btn-tiny', 'Buka saldo pangkalan'); go1.type = 'button';
+    go1.addEventListener('click', function (e) { e.stopPropagation(); go('psSaldoDet', it.pangkalan_id); });
+    box.appendChild(go1);
   }
   $('psCopy').addEventListener('click', async function () {
     var l = PSL[curId]; if (!l) return;
