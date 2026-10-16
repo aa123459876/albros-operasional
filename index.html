@@ -357,6 +357,36 @@ textarea.field { min-height: 92px; resize: vertical; }
 .pswhy { margin: 12px 0 0; font-size: 13px; color: var(--fg-3); }
 .psoleh { margin-top: 14px; }
 .picklist .pm-cand { color: var(--accent); }
+.cal { padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.cal-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.cal-head strong { font-family: var(--font-display); font-size: 17px; font-weight: 600; }
+.cal-head button { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); font-size: 20px; line-height: 1; }
+.cal-dow, .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-dow { margin-top: 10px; text-align: center; font-size: 11px; color: var(--fg-3); }
+.cal-grid { margin-top: 6px; }
+.cal-day { height: 40px; border-radius: 10px; border: 1px solid transparent; background: var(--bg); font-variant-numeric: tabular-nums; }
+.cal-day.today { border-color: var(--line); }
+.cal-day.sel { background: var(--accent); border-color: var(--accent); color: var(--ink); font-weight: 600; }
+.cal-day:disabled { opacity: .3; }
+.cal-sel { margin: 10px 2px 0; font-size: 13px; color: var(--fg-2); }
+.sub { margin: 22px 0 0; font-family: var(--font-display); font-weight: 600; font-size: 17px; overflow-wrap: anywhere; }
+.cand { padding: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.cand:first-child { border-color: color-mix(in srgb, var(--accent) 70%, var(--line)); }
+.cand-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.cand-tag { font-size: 12px; color: var(--accent); }
+.cand-lines { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--fg-2); }
+.cand-lines li { display: flex; justify-content: space-between; gap: 10px; }
+.cand-lines em { font-style: normal; font-family: var(--font-mono); color: var(--fg); white-space: nowrap; }
+.cand-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.pm.st { font-weight: 500; }
+.pm.st.ok { color: var(--t1); }
+.pm.st.part { color: var(--warn); }
+.sdlab { display: flex; align-items: center; gap: 12px; min-width: 0; cursor: pointer; }
+.sdlab input { width: 20px; height: 20px; accent-color: var(--accent); flex: none; }
+.cbpad { width: 20px; flex: none; }
+.btn.block { width: 100%; margin-top: 14px; }
+.arow strong.plain { font-family: var(--font-body); font-size: 14px; font-weight: 600; }
+.arow .pm { display: block; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
 </style>
 </head>
@@ -536,9 +566,15 @@ textarea.field { min-height: 92px; resize: vertical; }
         <strong>Nama yang diingat</strong>
         <span class="t-meta" id="mPsNama"></span>
       </button>
-      <button class="tile tile-wide is-off" type="button" disabled>
+      <button class="tile tile-wide" type="button" data-pgo="psBayar">
         <span class="t-ic"><svg class="ic" aria-hidden="true"><use href="#i-swap"/></svg></span>
-        <span class="t-text"><strong>Telusuri Pembayaran</strong><span class="t-meta">Tahap berikutnya</span></span>
+        <span class="t-text"><strong>Telusuri Pembayaran</strong><span class="t-meta">Cocokkan transfer dengan pengiriman</span></span>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+      <button class="tile tile-wide" type="button" data-pgo="psSaldo">
+        <span class="t-ic"><svg class="ic" aria-hidden="true"><use href="#i-clip"/></svg></span>
+        <span class="t-text"><strong>Saldo Pangkalan</strong><span class="t-meta" id="mPsSaldo"></span></span>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
       </button>
     </div>
     <div class="home-foot">
@@ -563,7 +599,7 @@ textarea.field { min-height: 92px; resize: vertical; }
       <p class="meta" id="psDetMeta" style="margin:6px 0 0;color:var(--fg-2);font-size:13px"></p>
     </section>
     <div id="psDetActions">
-      <div class="psact"><button class="btn" type="button" id="psCopy">Salin daftar</button></div>
+      <div class="psact"><button class="btn" type="button" id="psCopy">Salin daftar</button><button class="btn" type="button" id="psEdit">Ubah laporan</button></div>
     </div>
     <ul class="stack" id="lPsDet"></ul>
     <section class="reset-zone">
@@ -607,6 +643,66 @@ textarea.field { min-height: 92px; resize: vertical; }
       </div>
     </div>
   </section>
+
+  <!-- PayStock: telusuri pembayaran -->
+  <section id="vPsBayar" hidden>
+    <span class="lbl" style="margin-top:16px">Pangkalan</span>
+    <button class="pickbtn placeholder" type="button" id="byPick">
+      <span id="byPickText">Pilih pangkalan</span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <span class="lbl">Tanggal transfer</span>
+    <div class="cal">
+      <div class="cal-head">
+        <button type="button" id="calPrev" aria-label="Bulan sebelumnya">‹</button>
+        <strong id="calMonth"></strong>
+        <button type="button" id="calNext" aria-label="Bulan berikutnya">›</button>
+      </div>
+      <div class="cal-dow" aria-hidden="true"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+    <p class="cal-sel" id="calSel"></p>
+    <span class="lbl">Nominal transfer</span>
+    <input class="field text" id="byNom" type="text" inputmode="numeric" autocomplete="off" placeholder="Contoh 1.600.000">
+    <p class="hint" id="byNomHint"></p>
+    <div id="byOut"></div>
+  </section>
+
+  <!-- PayStock: saldo pangkalan -->
+  <section id="vPsSaldo" hidden>
+    <div class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="sPsSaldo" type="search" placeholder="Cari pangkalan" aria-label="Cari pangkalan" autocomplete="off">
+    </div>
+    <p class="count" id="cPsSaldo"></p>
+    <ul class="stack" id="lPsSaldo"></ul>
+  </section>
+
+  <!-- PayStock: saldo satu pangkalan -->
+  <section id="vPsSaldoDet" hidden>
+    <section class="summary" aria-live="polite"><strong id="psSdSum" style="font-size:16px"></strong></section>
+    <ul class="stack" id="lPsSd"></ul>
+    <button class="btn block" type="button" id="psLunasGo" disabled>Pilih pengiriman yang sudah lunas</button>
+    <p class="hint">Untuk pengiriman lama yang sudah dibayar sebelum website ini dipakai.</p>
+    <h3 class="sub" id="psPayHead" hidden>Riwayat pembayaran</h3>
+    <ul class="stack" id="lPsPay"></ul>
+  </section>
+
+  <!-- PayStock: ubah laporan tersimpan -->
+  <section id="vPsEdit" hidden>
+    <p class="lead">Ubah pangkalan atau jumlah tabung tiap baris. Jumlah semua baris harus sama dengan TOTAL.</p>
+    <div class="ban" id="edBan" role="status"></div>
+    <label class="psf" style="margin-top:14px"><span>TOTAL laporan</span><input class="field" id="edTot" type="text" inputmode="numeric" autocomplete="off"></label>
+    <ul class="pswarn" id="edWarn" hidden></ul>
+    <ul class="stack" id="edRows"></ul>
+    <button class="btn block" type="button" id="edAdd">Tambah baris</button>
+    <p class="err" id="edErr" role="alert"></p>
+    <p class="pswhy" id="edWhy" role="status"></p>
+    <div class="actions">
+      <button class="btn" type="button" id="edCancel">Batal</button>
+      <button class="btn primary" type="button" id="edSave" disabled>Simpan perubahan</button>
+    </div>
+  </section>
 </div>
 
 <button class="jump" id="jumpBtn" type="button" hidden>
@@ -618,6 +714,35 @@ textarea.field { min-height: 92px; resize: vertical; }
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
   <span id="fabLabel">Input kode</span>
 </button>
+
+<!-- Konfirmasi pembayaran -->
+<div class="overlay sheet-wrap" id="ovPsBayar" hidden>
+  <form class="dialog sheet" id="byForm" role="dialog" aria-modal="true" aria-labelledby="byTitle">
+    <h2 id="byTitle"></h2>
+    <div id="byConfirm"></div>
+    <label for="byOleh">Dikonfirmasi oleh (opsional)</label>
+    <input class="field text" id="byOleh" type="text" maxlength="40" autocomplete="off">
+    <p class="err" id="byErr" role="alert"></p>
+    <div class="actions">
+      <button class="btn" type="button" data-close>Batal</button>
+      <button class="btn primary" type="submit">Catat pembayaran</button>
+    </div>
+  </form>
+</div>
+
+<!-- Tandai lunas data lama -->
+<div class="overlay" id="ovPsLunas" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="lnTitle">
+    <h2 id="lnTitle">Tandai sudah lunas?</h2>
+    <p id="lnText"></p>
+    <label for="lnOleh">Dikonfirmasi oleh (opsional)</label>
+    <input class="field text" id="lnOleh" type="text" maxlength="40" autocomplete="off">
+    <div class="actions">
+      <button class="btn" type="button" data-close>Batal</button>
+      <button class="btn primary" type="button" id="lnYes">Ya, tandai lunas</button>
+    </div>
+  </div>
+</div>
 
 <!-- Login PayStock -->
 <div class="overlay" id="ovPsLogin" hidden>
@@ -1103,9 +1228,9 @@ textarea.field { min-height: 92px; resize: vertical; }
 
   /* ---------- Navigasi ---------- */
   var view = 'home', curId = null;
-  var VIEWS = { home: 'vHome', pmList: 'vPmList', pjList: 'vPjList', detail: 'vDetail', pjDetail: 'vDetail', hasil: 'vHasil', daftar: 'vDaftar', psHome: 'vPsHome', psList: 'vPsList', psDetail: 'vPsDetail', psAlias: 'vPsAlias', psPaste: 'vPsPaste' };
-  var SECTIONS = ['vHome', 'vPmList', 'vPjList', 'vDetail', 'vHasil', 'vDaftar', 'vPsHome', 'vPsList', 'vPsDetail', 'vPsAlias', 'vPsPaste'];
-  var PARENT = { pmList: 'home', pjList: 'home', detail: 'pmList', pjDetail: 'pjList', hasil: 'home', daftar: 'home', psHome: 'home', psList: 'psHome', psDetail: 'psList', psAlias: 'psHome', psPaste: 'psHome' };
+  var VIEWS = { home: 'vHome', pmList: 'vPmList', pjList: 'vPjList', detail: 'vDetail', pjDetail: 'vDetail', hasil: 'vHasil', daftar: 'vDaftar', psHome: 'vPsHome', psList: 'vPsList', psDetail: 'vPsDetail', psAlias: 'vPsAlias', psPaste: 'vPsPaste', psBayar: 'vPsBayar', psSaldo: 'vPsSaldo', psSaldoDet: 'vPsSaldoDet', psEdit: 'vPsEdit' };
+  var SECTIONS = ['vHome', 'vPmList', 'vPjList', 'vDetail', 'vHasil', 'vDaftar', 'vPsHome', 'vPsList', 'vPsDetail', 'vPsAlias', 'vPsPaste', 'vPsBayar', 'vPsSaldo', 'vPsSaldoDet', 'vPsEdit'];
+  var PARENT = { pmList: 'home', pjList: 'home', detail: 'pmList', pjDetail: 'pjList', hasil: 'home', daftar: 'home', psHome: 'home', psList: 'psHome', psDetail: 'psList', psAlias: 'psHome', psPaste: 'psHome', psBayar: 'psHome', psSaldo: 'psHome', psSaldoDet: 'psSaldo', psEdit: 'psDetail' };
   function isDetail(v) { return v === 'detail' || v === 'pjDetail'; }
   function cur() { return view === 'pjDetail' ? LMAP[curId] : PMAP[curId]; }
   var CHEV = '<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
@@ -1135,13 +1260,17 @@ textarea.field { min-height: 92px; resize: vertical; }
     if (v === 'psDetail') { small = 'Laporan pengiriman'; title = 'Laporan'; }
     if (v === 'psAlias') { small = 'PayStock'; title = 'Nama yang diingat'; }
     if (v === 'psPaste') { small = 'PayStock'; title = 'Tempel laporan'; psResetPaste(); }
+    if (v === 'psBayar') { small = 'PayStock'; title = 'Telusuri Pembayaran'; if (mode !== 'pop') byReset(); }
+    if (v === 'psSaldo') { small = 'PayStock'; title = 'Saldo Pangkalan'; $('sPsSaldo').value = ''; }
+    if (v === 'psSaldoDet') { small = 'Saldo pangkalan'; title = 'Saldo'; }
+    if (v === 'psEdit') { small = 'Laporan pengiriman'; title = 'Ubah laporan'; if (mode !== 'pop' || !ed) psEditInit(); }
     $('barSmall').textContent = small;
     $('barTitle').textContent = title;
     $('fab').hidden = !fab;
     if (fab) $('fabLabel').textContent = fab;
     $('jumpBtn').classList.toggle('low', !fab);
     if (mode !== 'pop') {
-      var st = { v: v, id: (isDetail(v) || v === 'psDetail') ? curId : null, d: curState.d };
+      var st = { v: v, id: (isDetail(v) || v === 'psDetail' || v === 'psSaldoDet' || v === 'psEdit') ? curId : null, d: curState.d };
       if (mode === 'replace') history.replaceState(st, '');
       else { st.d = curState.d + 1; history.pushState(st, ''); }
       curState = st;
@@ -1194,6 +1323,9 @@ textarea.field { min-height: 92px; resize: vertical; }
       if (view === 'psList') renderPsList();
       if (view === 'psDetail') renderPsDetail();
       if (view === 'psAlias') renderPsAlias();
+      if (view === 'psBayar') renderPsBayar();
+      if (view === 'psSaldo') renderPsSaldo();
+      if (view === 'psSaldoDet') renderPsSaldoDet();
     }
     if (!$('ovPick').hidden) renderPick();
   }
@@ -1979,7 +2111,7 @@ textarea.field { min-height: 92px; resize: vertical; }
     guarded(async function () {
       var code = $('hapusCode').value.trim();
       if (!code) { $('hapusErr').textContent = 'Masukkan kode hapus.'; shake($('hapusForm')); return; }
-      if (hapusKind === 'laporan' || hapusKind === 'timpaLaporan') { await psHapusSubmit(hapusKind, code); return; }
+      if (hapusKind === 'laporan' || hapusKind === 'timpaLaporan' || hapusKind === 'pembayaran') { await psHapusSubmit(hapusKind, code); return; }
       var kind = hapusKind, rpc, args;
       if (kind === 'pinjaman') { rpc = 'hapus_pinjaman'; args = { p_id: hapusId, p_code: code }; }
       else if (kind === 'kode' || kind === 'kodePinjaman') { rpc = 'hapus_kode'; args = { p_id: hapusId, p_pinjaman: kind === 'kodePinjaman', p_code: code }; }
@@ -2080,7 +2212,7 @@ textarea.field { min-height: 92px; resize: vertical; }
   });
 
   /* ---------- Overlay ---------- */
-  var ORDER = ['ovFreeze', 'ovBackup', 'ovPsLogin', 'ovDone', 'ovDeact', 'ovHapus', 'ovPick', 'ovConfirm', 'ovReset', 'ovInput', 'ovHasil', 'ovPang', 'ovPinjam'];
+  var ORDER = ['ovFreeze', 'ovBackup', 'ovPsBayar', 'ovPsLunas', 'ovPsLogin', 'ovDone', 'ovDeact', 'ovHapus', 'ovPick', 'ovConfirm', 'ovReset', 'ovInput', 'ovHasil', 'ovPang', 'ovPinjam'];
   function openOv(id) { $(id).hidden = false; }
   function closeOv(id) { $(id).hidden = true; if (id === 'ovConfirm') pendingCopy = null; }
   Array.prototype.forEach.call(document.querySelectorAll('[data-close]'), function (b) {
@@ -2231,7 +2363,7 @@ textarea.field { min-height: 92px; resize: vertical; }
 
   /* ---------- PayStock Matcher ---------- */
   var psb = null, psAuthed = false;
-  var PS = { laporan: [], item: [], alias: [] }, PSL = {}, PSALIAS = {};
+  var PS = { laporan: [], item: [], alias: [], pay: [], alok: [] }, PSL = {}, PSALIAS = {};
   var PS_BULAN = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
   var PS_HARI = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
   function psPad(n) { return (n < 10 ? '0' : '') + n; }
@@ -2264,6 +2396,7 @@ textarea.field { min-height: 92px; resize: vertical; }
       if (!PMAP[a.pangkalan_id]) return;
       (PSALIAS[a.alias] = PSALIAS[a.alias] || []).push(a.pangkalan_id);
     });
+    psRebuild2();
   }
   async function psLoad() {
     var c = psClient();
@@ -2271,10 +2404,12 @@ textarea.field { min-height: 92px; resize: vertical; }
     var res = await Promise.all([
       fetchAll('paystock_laporan', 'tanggal_lo', false, c),
       fetchAll('paystock_item', 'urut', true, c),
-      fetchAll('paystock_alias', 'created_at', true, c)
+      fetchAll('paystock_alias', 'created_at', true, c),
+      fetchAll('paystock_pembayaran', 'created_at', true, c),
+      fetchAll('paystock_alokasi', 'id', true, c)
     ]);
     PS.laporan = res[0].sort(function (a, b) { return a.tanggal_lo < b.tanggal_lo ? 1 : a.tanggal_lo > b.tanggal_lo ? -1 : a.ekspedisi.localeCompare(b.ekspedisi); });
-    PS.item = res[1]; PS.alias = res[2];
+    PS.item = res[1]; PS.alias = res[2]; PS.pay = res[3]; PS.alok = res[4];
     psRebuild();
     scheduleRender();
   }
@@ -2283,7 +2418,7 @@ textarea.field { min-height: 92px; resize: vertical; }
   function psSubscribe() {
     if (psChan || !psb) return;
     psChan = psb.channel('altan-paystock');
-    ['paystock_laporan', 'paystock_item', 'paystock_alias'].forEach(function (t) {
+    ['paystock_laporan', 'paystock_item', 'paystock_alias', 'paystock_pembayaran', 'paystock_alokasi'].forEach(function (t) {
       psChan.on('postgres_changes', { event: '*', schema: 'public', table: t }, function () {
         clearTimeout(psTimer);
         psTimer = setTimeout(function () { if (psAuthed) psLoad().catch(function () {}); }, 400);
@@ -2298,7 +2433,7 @@ textarea.field { min-height: 92px; resize: vertical; }
   }
   function psWipe() {
     psAuthed = false; psUnsub();
-    PS = { laporan: [], item: [], alias: [] }; psRebuild(); psDraft = null;
+    PS = { laporan: [], item: [], alias: [], pay: [], alok: [] }; psRebuild(); psDraft = null;
     if (psb) { try { psb.auth.signOut(); } catch (e) {} }
   }
   function psLock(msg) {
@@ -2311,6 +2446,7 @@ textarea.field { min-height: 92px; resize: vertical; }
     var r = await psClient().rpc(name, args);
     if (r.error) {
       if (psExpired(r.error)) { psLock('Sesi PayStock berakhir. Masuk lagi.'); return null; }
+      if (/ada_pembayaran/.test(r.error.message || '')) return { data: { status: 'ada_pembayaran' }, soft: true };
       throw r.error;
     }
     return r;
@@ -2360,6 +2496,8 @@ textarea.field { min-height: 92px; resize: vertical; }
   function renderPsHome() {
     $('mPsLap').textContent = PS.laporan.length ? PS.laporan.length + ' laporan tersimpan' : 'Belum ada laporan';
     $('mPsNama').textContent = Object.keys(PSALIAS).length ? Object.keys(PSALIAS).length + ' nama diingat' : 'Belum ada';
+    var npk = Object.keys(PSBY).filter(function (k) { return PMAP[k] && psSaldoOf(k) > 0; }).length;
+    $('mPsSaldo').textContent = npk ? npk + ' pangkalan belum lunas' : (PS.laporan.length ? 'Semua lunas' : 'Belum ada laporan');
   }
   function renderPsList() {
     var q = norm($('sPsList').value), ul = $('lPsList');
@@ -2396,6 +2534,7 @@ textarea.field { min-height: 92px; resize: vertical; }
       var li = el('li', 'irow'), d = el('div');
       d.appendChild(el('strong', null, it.nama_pangkalan));
       if (psNorm(it.nama_mentah) !== psNorm(it.nama_pangkalan)) d.appendChild(el('span', 'pm', 'tertulis: ' + it.nama_mentah));
+      var stt = psStat(it); d.appendChild(el('span', 'pm st ' + stt[1], stt[0]));
       li.appendChild(d);
       li.appendChild(el('span', 'qty', String(it.tabung)));
       ul.appendChild(li);
@@ -2595,7 +2734,8 @@ textarea.field { min-height: 92px; resize: vertical; }
   var PS_MSG = {
     total_beda: 'TOTAL tidak cocok dengan jumlah baris. Periksa lagi.', kosong: 'Tidak ada baris untuk disimpan.',
     data_salah: 'Data laporan belum lengkap atau salah format.', pangkalan_tidak_ada: 'Ada pangkalan yang sudah tidak ada. Pilih ulang.',
-    tidak_ada_akses: 'Akun ini tidak punya akses PayStock.', tidak_masuk: 'Sesi berakhir. Masuk lagi.'
+    tidak_ada_akses: 'Akun ini tidak punya akses PayStock.', tidak_masuk: 'Sesi berakhir. Masuk lagi.',
+    ada_pembayaran: 'Laporan ini sudah punya catatan pembayaran. Batalkan pembayarannya dulu di Saldo Pangkalan.'
   };
   /* Mengembalikan 'ok' atau teks pesan galat */
   async function psSave(code) {
@@ -2629,6 +2769,16 @@ textarea.field { min-height: 92px; resize: vertical; }
   });
   /* Dipanggil dari form kode hapus */
   async function psHapusSubmit(kind, code) {
+    if (kind === 'pembayaran') {
+      var rb = await psCall('batal_pembayaran', { p_id: hapusId, p_code: code });
+      if (!rb) { closeOv('ovHapus'); return; }
+      if (rb.data !== 'ok' && rb.data !== 'tidak_ada') { $('hapusErr').textContent = codeMsg(rb.data); shake($('hapusForm')); return; }
+      closeOv('ovHapus');
+      PS.pay = PS.pay.filter(function (p) { return p.id !== hapusId; });
+      PS.alok = PS.alok.filter(function (a) { return a.pembayaran_id !== hapusId; });
+      psRebuild(); renderAll(); toast('Pembayaran dibatalkan');
+      return;
+    }
     if (kind === 'timpaLaporan') {
       var res = await psSave(code);
       if (res === 'ok') { closeOv('ovHapus'); return; }
@@ -2636,6 +2786,7 @@ textarea.field { min-height: 92px; resize: vertical; }
     }
     var r = await psCall('hapus_laporan', { p_id: hapusId, p_code: code });
     if (!r) { closeOv('ovHapus'); return; }
+    if (r.soft) { $('hapusErr').textContent = PS_MSG.ada_pembayaran; shake($('hapusForm')); return; }
     if (r.data !== 'ok' && r.data !== 'tidak_ada') { $('hapusErr').textContent = codeMsg(r.data); shake($('hapusForm')); return; }
     closeOv('ovHapus');
     PS.laporan = PS.laporan.filter(function (l) { return l.id !== hapusId; });
@@ -2644,6 +2795,456 @@ textarea.field { min-height: 92px; resize: vertical; }
     go('psList', null, 'replace');
     toast('Laporan dihapus');
   }
+
+  /* ---------- PayStock Tahap 2: pencari kombinasi pembayaran (fungsi murni) ---------- */
+  var PS_HARGA = [16000, 16500, 17000];
+  function psRp(n) { return 'Rp ' + Math.round(n).toLocaleString('id-ID'); }
+  function psGcd(a, b) { return b ? psGcd(b, a % b) : a; }
+  /* items: [{id, sisa, tgl, ...}] diurutkan dari yang tertua; N: nominal; prices: daftar harga.
+     Hasil: { list: [{parts:[{item,q,p,sebagian}], total, skor}], alasan: '' }
+     Aturan: tiap baris pengiriman dilunasi penuh (pada salah satu harga), kecuali satu baris
+     terakhir yang boleh dibayar sebagian (cicilan) bila itu pas menghabiskan nominal. */
+  function psSolve(items, N, prices, opts) {
+    opts = opts || {};
+    var cap = opts.cap || 3000, show = opts.show || 8, maxItems = opts.maxItems || 30;
+    var g = prices.reduce(psGcd, 0), a = items.filter(function (it) { return it.sisa > 0; }).slice(0, maxItems);
+    var n = a.length, memo = {}, sols = [], maxP = Math.max.apply(null, prices), i, sumMax = 0;
+    if (!(N > 0) || !n) return { list: [], alasan: n ? 'nominal' : 'kosong' };
+    if (N % g !== 0) return { list: [], alasan: 'tidak_habis' };
+    for (i = 0; i < n; i++) sumMax += a[i].sisa * maxP;
+    if (N > sumMax) return { list: [], alasan: 'melebihi' };
+    function feas(i, rem) {
+      if (rem === 0) return true;
+      if (i >= n) return false;
+      var k = i + '|' + rem;
+      if (memo[k] !== undefined) return memo[k];
+      var r = a[i].sisa, res = false, j, p;
+      if (feas(i + 1, rem)) res = true;
+      for (j = 0; !res && j < prices.length; j++) {
+        p = prices[j];
+        if (r * p <= rem && feas(i + 1, rem - r * p)) res = true;
+        else if (rem % p === 0 && rem / p >= 1 && rem / p < r) res = true;
+      }
+      memo[k] = res;
+      return res;
+    }
+    if (!feas(0, N)) return { list: [], alasan: 'tidak_cocok' };
+    var cur = [];
+    function walk(i, rem) {
+      if (sols.length >= cap) return;
+      if (rem === 0) { sols.push(cur.slice()); return; }
+      if (i >= n) return;
+      var r = a[i].sisa, j, p;
+      for (j = 0; j < prices.length; j++) {
+        p = prices[j];
+        if (r * p <= rem && feas(i + 1, rem - r * p)) {
+          cur.push({ item: a[i], q: r, p: p, sebagian: false }); walk(i + 1, rem - r * p); cur.pop();
+        }
+      }
+      for (j = 0; j < prices.length; j++) {
+        p = prices[j];
+        if (rem % p === 0 && rem / p >= 1 && rem / p < r) {
+          cur.push({ item: a[i], q: rem / p, p: p, sebagian: true }); sols.push(cur.slice()); cur.pop();
+        }
+      }
+      if (feas(i + 1, rem)) walk(i + 1, rem);
+    }
+    walk(0, N);
+    var idx = {};
+    a.forEach(function (it, k) { idx[it.id] = k; });
+    var ranked = sols.map(function (parts) {
+      var skor = 0, last = -1, chosen = {}, prs = {}, np = 0, k, gap = 0;
+      parts.forEach(function (x) { var q = idx[x.item.id]; chosen[q] = 1; if (q > last) last = q; if (!prs[x.p]) { prs[x.p] = 1; np++; } });
+      for (k = 0; k < last; k++) if (!chosen[k]) gap++;
+      skor += parts.length * 10 + gap * 6 + (np - 1) * 3;
+      parts.forEach(function (x) { if (x.sebagian) { skor += 40; if (idx[x.item.id] !== last) skor += 40; } });
+      return { parts: parts, total: parts.reduce(function (s, x) { return s + x.q * x.p; }, 0), skor: skor, gap: gap };
+    }).sort(function (x, y) { return x.skor - y.skor; });
+    return { list: ranked.slice(0, show), jumlah: ranked.length, alasan: '' };
+  }
+
+  /* ---------- PayStock Tahap 2: telusuri pembayaran dan saldo ---------- */
+  var PSPAID = {}, PSBY = {}, PSPAYBY = {};
+  var PS_BULAN_FULL = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+  function psCmpItem(a, b) {
+    if (a.tgl !== b.tgl) return a.tgl < b.tgl ? -1 : 1;
+    if (a.lap.tanggal_lo !== b.lap.tanggal_lo) return a.lap.tanggal_lo < b.lap.tanggal_lo ? -1 : 1;
+    if (a.lap.ekspedisi !== b.lap.ekspedisi) return a.lap.ekspedisi < b.lap.ekspedisi ? -1 : 1;
+    return a.urut - b.urut;
+  }
+  function psRebuild2() {
+    PSPAID = {}; PSBY = {}; PSPAYBY = {};
+    PS.alok.forEach(function (a) { PSPAID[a.item_id] = (PSPAID[a.item_id] || 0) + a.tabung; });
+    PS.laporan.forEach(function (l) {
+      l.items.forEach(function (it) {
+        it.lap = l; it.tgl = l.tanggal_kirim || l.tanggal_lo; it.paid = PSPAID[it.id] || 0; it.sisa = it.tabung - it.paid;
+        if (it.pangkalan_id) (PSBY[it.pangkalan_id] = PSBY[it.pangkalan_id] || []).push(it);
+      });
+    });
+    Object.keys(PSBY).forEach(function (k) { PSBY[k].sort(psCmpItem); });
+    PS.pay.slice().sort(function (a, b) { return a.created_at < b.created_at ? 1 : -1; }).forEach(function (p) {
+      (PSPAYBY[p.pangkalan_id] = PSPAYBY[p.pangkalan_id] || []).push(p);
+    });
+  }
+  function psShort(iso) { var p = iso.split('-'); return p[2] + '-' + p[1]; }
+  function psOpen(pid) { return (PSBY[pid] || []).filter(function (it) { return it.sisa > 0; }); }
+  function psSaldoOf(pid) { return psOpen(pid).reduce(function (s, it) { return s + it.sisa; }, 0); }
+  function psItemLabel(it) { return it.lap.ekspedisi + ' LO ' + psShort(it.lap.tanggal_lo) + (it.lap.tanggal_kirim ? ', kirim ' + psShort(it.lap.tanggal_kirim) : ''); }
+  function psStat(it) { return it.sisa <= 0 ? ['Lunas', 'ok'] : it.paid > 0 ? ['Sisa ' + it.sisa + ' tabung', 'part'] : ['Belum dibayar', '']; }
+
+  /* ----- Telusuri pembayaran ----- */
+  var by = { pid: null, sel: null, y: 0, m: 0, nom: 0, cand: null };
+  function byReset() {
+    var t = new Date();
+    by.pid = null; by.sel = null; by.y = t.getFullYear(); by.m = t.getMonth(); by.nom = 0; by.cand = null;
+    $('byNom').value = '';
+  }
+  function renderCal() {
+    var y = by.y, m = by.m, g = $('calGrid'), today = psToday(), t = new Date(), i, d, iso, b;
+    var lead = (new Date(Date.UTC(y, m, 1)).getUTCDay() + 6) % 7, days = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+    $('calMonth').textContent = PS_BULAN_FULL[m] + ' ' + y;
+    $('calNext').disabled = (y * 12 + m) >= (t.getFullYear() * 12 + t.getMonth());
+    g.textContent = '';
+    for (i = 0; i < lead; i++) g.appendChild(el('span', 'cal-pad'));
+    for (d = 1; d <= days; d++) {
+      iso = y + '-' + psPad(m + 1) + '-' + psPad(d);
+      b = el('button', 'cal-day' + (iso === today ? ' today' : '') + (iso === by.sel ? ' sel' : ''), String(d));
+      b.type = 'button'; b.disabled = iso > today; b.setAttribute('data-iso', iso);
+      b.setAttribute('aria-pressed', String(iso === by.sel));
+      g.appendChild(b);
+    }
+    $('calSel').textContent = by.sel ? 'Transfer ' + psLong(by.sel) : 'Pilih tanggal transfer';
+  }
+  $('calGrid').addEventListener('click', function (e) {
+    var b = e.target.closest('.cal-day'); if (!b || b.disabled) return;
+    by.sel = b.getAttribute('data-iso'); renderPsBayar();
+  });
+  $('calPrev').addEventListener('click', function () { by.m--; if (by.m < 0) { by.m = 11; by.y--; } renderCal(); });
+  $('calNext').addEventListener('click', function () { by.m++; if (by.m > 11) { by.m = 0; by.y++; } renderCal(); });
+  $('byPick').addEventListener('click', function () {
+    openPicker({
+      title: 'Pangkalan yang membayar',
+      meta: function (p) { var s = psSaldoOf(p.id); return s ? s + ' tabung belum lunas' : 'Tidak ada tagihan'; },
+      onPick: function (p) { by.pid = p.id; renderPsBayar(); }
+    });
+  });
+  $('byNom').addEventListener('input', function () {
+    var n = parseInt($('byNom').value.replace(/\D/g, ''), 10) || 0;
+    by.nom = n; $('byNom').value = n ? n.toLocaleString('id-ID') : '';
+    renderPsBayar();
+  });
+  function byLine(x) {
+    return psItemLabel(x.item) + ': ' + x.q + ' tabung × ' + psRp(x.p).replace('Rp ', '') + (x.sebagian ? ' (cicilan, sisa ' + (x.item.sisa - x.q) + ')' : '');
+  }
+  function renderPsBayar() {
+    $('byPickText').textContent = by.pid ? pName(by.pid) : 'Pilih pangkalan';
+    $('byPick').classList.toggle('placeholder', !by.pid);
+    renderCal();
+    $('byNomHint').textContent = by.nom ? psRp(by.nom) : '';
+    var out = $('byOut'), open, cand, r, later;
+    out.textContent = '';
+    if (!by.pid) { out.appendChild(el('p', 'lead', 'Pilih pangkalan, tanggal transfer, dan nominal. Rekomendasi muncul otomatis.')); return; }
+    open = psOpen(by.pid);
+    if (!by.sel || !by.nom) {
+      out.appendChild(el('p', 'lead', 'Pilih tanggal transfer dan isi nominal untuk melihat rekomendasi.'));
+    } else {
+      cand = open.filter(function (it) { return it.tgl <= by.sel; });
+      later = open.length - cand.length;
+      r = psSolve(cand, by.nom, PS_HARGA);
+      if (!r.list.length) {
+        var why = r.alasan === 'tidak_habis' ? 'Nominal tidak habis dibagi harga mana pun (' + PS_HARGA.map(function (h) { return h.toLocaleString('id-ID'); }).join(', ') + '). Periksa lagi nominalnya.'
+          : r.alasan === 'melebihi' ? 'Nominal lebih besar dari seluruh tagihan pangkalan ini sampai tanggal itu. Periksa pangkalan, tanggal, dan nominal.'
+          : r.alasan === 'kosong' ? (open.length ? 'Tidak ada pengiriman yang tanggalnya sebelum atau sama dengan tanggal transfer.' : 'Pangkalan ini tidak punya pengiriman yang belum lunas.')
+          : 'Tidak ada kombinasi pengiriman yang jumlahnya persis sama dengan nominal ini. Periksa pangkalan, tanggal, dan nominal.';
+        out.appendChild(el('p', 'ban bad', why));
+      } else {
+        out.appendChild(el('p', 'count', r.jumlah > r.list.length ? r.list.length + ' dari ' + r.jumlah + ' kemungkinan, paling mungkin di atas' : r.list.length + ' kemungkinan, paling mungkin di atas'));
+        var ul = el('ul', 'stack');
+        r.list.forEach(function (c, i) {
+          var li = el('li', 'cand'), hd = el('div', 'cand-head');
+          hd.appendChild(el('strong', null, 'Pilihan ' + (i + 1)));
+          var tags = [];
+          if (c.parts.some(function (x) { return x.sebagian; })) tags.push('cicilan');
+          if (c.gap === 0) tags.push('tertua dulu');
+          if (tags.length) hd.appendChild(el('span', 'cand-tag', tags.join(', ')));
+          li.appendChild(hd);
+          var ls = el('ul', 'cand-lines');
+          c.parts.forEach(function (x) {
+            var row = el('li'); row.appendChild(el('span', null, byLine(x))); row.appendChild(el('em', null, psRp(x.q * x.p).replace('Rp ', '')));
+            ls.appendChild(row);
+          });
+          li.appendChild(ls);
+          var ft = el('div', 'cand-foot');
+          ft.appendChild(el('span', null, 'Total ' + psRp(c.total)));
+          var pb = el('button', 'btn primary btn-sm', 'Pilih'); pb.type = 'button';
+          pb.addEventListener('click', function () { openBayar(c); });
+          ft.appendChild(pb); li.appendChild(ft); ul.appendChild(li);
+        });
+        out.appendChild(ul);
+      }
+      if (later > 0) out.appendChild(el('p', 'hint', later + ' pengiriman setelah tanggal transfer tidak ikut dihitung.'));
+    }
+    var h = el('h3', 'sub', 'Belum lunas: ' + pName(by.pid));
+    out.appendChild(h);
+    if (!open.length) out.appendChild(el('p', 'lead', 'Semua pengiriman pangkalan ini sudah lunas.'));
+    else {
+      var ol = el('ul', 'stack');
+      open.forEach(function (it) {
+        var li = el('li', 'irow'), d = el('div');
+        d.appendChild(el('strong', null, psItemLabel(it)));
+        d.appendChild(el('span', 'pm', it.paid ? it.tabung + ' tabung, sudah dibayar ' + it.paid : it.tabung + ' tabung'));
+        li.appendChild(d); li.appendChild(el('span', 'qty', String(it.sisa))); ol.appendChild(li);
+      });
+      out.appendChild(ol);
+    }
+  }
+  /* Konfirmasi pembayaran */
+  function openBayar(c) {
+    by.cand = c;
+    $('byTitle').textContent = 'Catat pembayaran ' + pName(by.pid) + '?';
+    var box = $('byConfirm'); box.textContent = '';
+    box.appendChild(el('p', null, 'Transfer ' + psLong(by.sel) + ', ' + psRp(by.nom)));
+    var ul = el('ul', 'cand-lines');
+    c.parts.forEach(function (x) { var li = el('li'); li.appendChild(el('span', null, byLine(x))); ul.appendChild(li); });
+    box.appendChild(ul);
+    $('byOleh').value = $('psOleh').value || '';
+    try { if (!$('byOleh').value) $('byOleh').value = localStorage.getItem('altan-ps-oleh') || ''; } catch (e) {}
+    $('byErr').textContent = '';
+    openOv('ovPsBayar');
+  }
+  var BY_MSG = {
+    nominal_beda: 'Nominal tidak sama dengan hitungan. Muat ulang lalu coba lagi.', data_salah: 'Data belum lengkap.',
+    item_salah: 'Ada baris pengiriman yang bukan milik pangkalan ini.', tidak_ada_akses: 'Akun ini tidak punya akses PayStock.', tidak_masuk: 'Sesi berakhir. Masuk lagi.'
+  };
+  $('byForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    guarded(async function () {
+      var c = by.cand; if (!c) return;
+      var oleh = $('byOleh').value.trim();
+      try { localStorage.setItem('altan-ps-oleh', oleh); } catch (e2) {}
+      var r = await psCall('catat_pembayaran', { p: {
+        pangkalan_id: by.pid, tanggal_transfer: by.sel, nominal: by.nom, oleh: oleh,
+        alokasi: c.parts.map(function (x) { return { item_id: x.item.id, tabung: x.q, harga: x.p }; })
+      } });
+      if (!r) { closeOv('ovPsBayar'); return; }
+      var s = r.data && r.data.status;
+      if (s === 'ok') {
+        closeOv('ovPsBayar');
+        var nm = pName(by.pid);
+        by.sel = null; by.nom = 0; by.cand = null; $('byNom').value = '';
+        await psLoad().catch(function () {});
+        renderAll();
+        toast('Pembayaran ' + nm + ' dicatat');
+        return;
+      }
+      if (s === 'melebihi_sisa') {
+        closeOv('ovPsBayar'); by.cand = null;
+        await psLoad().catch(function () {});
+        renderAll();
+        toast('Data berubah, ada pembayaran lain yang masuk. Rekomendasi dihitung ulang.', true);
+        return;
+      }
+      $('byErr').textContent = BY_MSG[s] || 'Gagal. Coba lagi.'; shake($('byForm'));
+    });
+  });
+
+  /* ----- Saldo pangkalan ----- */
+  $('sPsSaldo').addEventListener('input', renderPsSaldo);
+  function renderPsSaldo() {
+    var q = norm($('sPsSaldo').value), ul = $('lPsSaldo'), rows = [], tot = 0;
+    Object.keys(PSBY).forEach(function (pid) {
+      var o = psOpen(pid);
+      if (!o.length || !PMAP[pid]) return;
+      var s = o.reduce(function (a, it) { return a + it.sisa; }, 0);
+      tot += s;
+      if (q && norm(PMAP[pid].name).indexOf(q) < 0) return;
+      rows.push({ pid: pid, n: o.length, s: s, tertua: o[0].tgl });
+    });
+    rows.sort(function (a, b) { return a.tertua < b.tertua ? -1 : a.tertua > b.tertua ? 1 : 0; });
+    ul.textContent = '';
+    $('cPsSaldo').textContent = (q ? rows.length + ' pangkalan cocok, ' : '') + tot + ' tabung belum lunas';
+    if (!rows.length) { ul.appendChild(el('li', 'none', PS.laporan.length ? (q ? 'Pangkalan tidak ditemukan. Coba kata lain.' : 'Semua pengiriman sudah lunas.') : 'Belum ada laporan pengiriman.')); return; }
+    rows.forEach(function (x) {
+      var li = el('li'), b = el('button', 'lrow'); b.type = 'button';
+      var d = el('div');
+      d.appendChild(el('strong', null, PMAP[x.pid].name));
+      d.appendChild(el('span', 'pm', x.s + ' tabung, ' + x.n + ' pengiriman, tertua ' + psShort(x.tertua)));
+      b.appendChild(d); b.appendChild(el('span', 'chev', '›'));
+      b.addEventListener('click', function () { go('psSaldoDet', x.pid); });
+      li.appendChild(b); ul.appendChild(li);
+    });
+  }
+  var sd = { pid: null, sel: {} };
+  function renderPsSaldoDet() {
+    var pid = curId, items = PSBY[pid] || [], ul = $('lPsSd'), pays = PSPAYBY[pid] || [];
+    if (sd.pid !== pid) { sd.pid = pid; sd.sel = {}; }
+    $('barTitle').textContent = pName(pid) || 'Saldo';
+    var open = psOpen(pid), tot = open.reduce(function (s, it) { return s + it.sisa; }, 0);
+    $('psSdSum').textContent = tot ? 'Belum lunas ' + tot + ' tabung dalam ' + open.length + ' pengiriman.' : 'Semua pengiriman pangkalan ini sudah lunas.';
+    ul.textContent = '';
+    if (!items.length) ul.appendChild(el('li', 'none', 'Belum ada pengiriman untuk pangkalan ini.'));
+    items.forEach(function (it) {
+      var li = el('li', 'irow sdrow'), lab = el('label', 'sdlab'), st = psStat(it);
+      if (it.sisa > 0) {
+        var cb = el('input'); cb.type = 'checkbox'; cb.checked = !!sd.sel[it.id]; cb.setAttribute('aria-label', 'Pilih ' + psItemLabel(it));
+        cb.addEventListener('change', function () { if (cb.checked) sd.sel[it.id] = 1; else delete sd.sel[it.id]; syncSd(); });
+        lab.appendChild(cb);
+      } else lab.appendChild(el('span', 'cbpad'));
+      var d = el('div');
+      d.appendChild(el('strong', null, psItemLabel(it)));
+      d.appendChild(el('span', 'pm st ' + st[1], st[0]));
+      lab.appendChild(d); li.appendChild(lab); li.appendChild(el('span', 'qty', String(it.tabung)));
+      ul.appendChild(li);
+    });
+    var pl = $('lPsPay'); pl.textContent = '';
+    $('psPayHead').hidden = !pays.length;
+    pays.forEach(function (p) {
+      var li = el('li', 'arow'), top = el('div', 'arow-p');
+      var title = p.jenis === 'lama' ? 'Data lama ditandai lunas' : psFmt(p.tanggal_transfer) + ', ' + psRp(p.nominal);
+      top.appendChild(el('strong', 'plain', title));
+      var x = el('button', 'btn-tiny danger', 'Batalkan'); x.type = 'button';
+      x.addEventListener('click', function () {
+        openHapusBase('pembayaran', p.id, 'Batalkan pembayaran ini?',
+          'Pembayaran ' + title + ' dibatalkan dan tabung yang dilunasinya kembali menjadi belum lunas. Masukkan kode hapus untuk melanjutkan.', 'Batalkan pembayaran');
+      });
+      top.appendChild(x); li.appendChild(top);
+      PS.alok.filter(function (a) { return a.pembayaran_id === p.id; }).forEach(function (a) {
+        var it = null, k; for (k = 0; k < items.length; k++) if (items[k].id === a.item_id) { it = items[k]; break; }
+        if (it) li.appendChild(el('span', 'pm', psItemLabel(it) + ': ' + a.tabung + ' tabung' + (a.harga ? ' × ' + a.harga.toLocaleString('id-ID') : '')));
+      });
+      li.appendChild(el('span', 'pm', 'Dicatat ' + p.created_at.slice(0, 10).split('-').reverse().join('-') + (p.dibuat_oleh ? ' oleh ' + p.dibuat_oleh : '')));
+      pl.appendChild(li);
+    });
+    syncSd();
+  }
+  function syncSd() {
+    var n = Object.keys(sd.sel).length;
+    $('psLunasGo').disabled = !n;
+    $('psLunasGo').textContent = n ? 'Tandai ' + n + ' pengiriman sudah lunas' : 'Pilih pengiriman yang sudah lunas';
+  }
+  $('psLunasGo').addEventListener('click', function () {
+    var ids = Object.keys(sd.sel); if (!ids.length) return;
+    var tot = 0; (PSBY[sd.pid] || []).forEach(function (it) { if (sd.sel[it.id]) tot += it.sisa; });
+    $('lnText').textContent = ids.length + ' pengiriman (' + tot + ' tabung) ditandai sudah lunas tanpa nominal. Pakai hanya untuk pengiriman lama yang sudah dibayar sebelum website ini dipakai. Bisa dibatalkan lewat riwayat dengan kode.';
+    $('lnOleh').value = $('psOleh').value || '';
+    openOv('ovPsLunas');
+  });
+  $('lnYes').addEventListener('click', function () {
+    guarded(async function () {
+      var ids = Object.keys(sd.sel); if (!ids.length) { closeOv('ovPsLunas'); return; }
+      var r = await psCall('tandai_lunas_lama', { p_item_ids: ids, p_oleh: $('lnOleh').value.trim() });
+      if (!r) { closeOv('ovPsLunas'); return; }
+      var s = r.data && r.data.status;
+      closeOv('ovPsLunas');
+      if (s === 'ok' || s === 'sudah_lunas') {
+        sd.sel = {};
+        await psLoad().catch(function () {}); renderAll();
+        toast(s === 'ok' ? 'Ditandai lunas' : 'Semuanya sudah lunas', s !== 'ok');
+      } else toast(BY_MSG[s] || 'Gagal. Coba lagi.', true);
+    });
+  });
+
+  /* ---------- PayStock: ubah baris laporan yang sudah tersimpan ---------- */
+  var ed = null;
+  var ED_MSG = {
+    total_beda: 'TOTAL tidak sama dengan jumlah baris.', kosong: 'Laporan harus punya minimal satu baris.',
+    data_salah: 'Data belum lengkap atau salah.', pangkalan_tidak_ada: 'Ada pangkalan yang sudah tidak ada. Pilih ulang.',
+    terkunci_pembayaran: 'Baris yang sudah ada pembayarannya tidak bisa dipindah atau dihapus. Batalkan pembayarannya dulu di Saldo Pangkalan.',
+    kurang_dari_dibayar: 'Jumlah tabung tidak boleh lebih kecil dari yang sudah dibayar.',
+    item_salah: 'Laporan sudah berubah di perangkat lain. Data dimuat ulang.', tidak_ada: 'Laporan ini sudah tidak ada.',
+    tidak_ada_akses: 'Akun ini tidak punya akses PayStock.', tidak_masuk: 'Sesi berakhir. Masuk lagi.'
+  };
+  function psEditInit() {
+    var l = PSL[curId];
+    if (!l) { ed = null; return; }
+    ed = {
+      id: l.id, total0: l.total, ids0: l.items.map(function (it) { return it.id; }),
+      rows: l.items.map(function (it) { return { id: it.id, raw: it.nama_mentah, pid: it.pangkalan_id, qty: it.tabung, paid: it.paid || 0, pid0: it.pangkalan_id, qty0: it.tabung }; })
+    };
+    $('edTot').value = String(l.total);
+    $('edErr').textContent = '';
+    edDraw(); edCheck();
+  }
+  function edBack() {
+    var id = ed ? ed.id : curId;
+    if (curState.d > 0) history.back(); else go('psDetail', id, 'replace');
+  }
+  function edDraw() {
+    var ul = $('edRows'); ul.textContent = '';
+    if (!ed) return;
+    ed.rows.forEach(function (row, i) {
+      var li = el('li', 'pvrow' + (row.pid ? '' : ' asing')), main = el('div', 'pr-main');
+      main.appendChild(el('span', 'pm', row.id ? 'tertulis: ' + row.raw : 'baris baru'));
+      var b = el('button', 'pr-name'); b.type = 'button'; b.disabled = row.paid > 0;
+      b.appendChild(el('span', null, row.pid ? pName(row.pid) : 'Pilih pangkalan'));
+      b.addEventListener('click', function () {
+        openPicker({ title: 'Pangkalan untuk baris ini', onPick: function (p) { row.pid = p.id; edDraw(); edCheck(); } });
+      });
+      main.appendChild(b);
+      if (row.paid) main.appendChild(el('span', 'pm', 'Sudah dibayar ' + row.paid + ' tabung, pangkalan dikunci'));
+      li.appendChild(main);
+      var q = el('input', 'pr-qty'); q.type = 'text'; q.inputMode = 'numeric'; q.value = row.qty ? String(row.qty) : '';
+      q.setAttribute('aria-label', 'Jumlah tabung baris ' + (i + 1));
+      q.addEventListener('input', function () { q.value = q.value.replace(/[^0-9]/g, ''); row.qty = parseInt(q.value, 10) || 0; edCheck(); });
+      li.appendChild(q);
+      var x = el('button', 'pr-x', '×'); x.type = 'button'; x.disabled = row.paid > 0;
+      x.setAttribute('aria-label', 'Hapus baris ' + (i + 1));
+      x.addEventListener('click', function () { ed.rows.splice(i, 1); edDraw(); edCheck(); });
+      li.appendChild(x);
+      ul.appendChild(li);
+    });
+  }
+  $('edTot').addEventListener('input', function () { $('edTot').value = $('edTot').value.replace(/[^0-9]/g, ''); edCheck(); });
+  $('edAdd').addEventListener('click', function () {
+    if (!ed) return;
+    ed.rows.push({ id: null, raw: '', pid: null, qty: 0, paid: 0, pid0: null, qty0: 0 });
+    edDraw(); edCheck();
+    var ins = $('edRows').querySelectorAll('.pr-qty'); if (ins.length) ins[ins.length - 1].focus();
+  });
+  function edCheck() {
+    if (!ed) return;
+    var sum = ed.rows.reduce(function (a, r) { return a + (r.qty || 0); }, 0), tot = parseInt($('edTot').value, 10) || 0;
+    var ban = $('edBan'), why = [], warn = [];
+    if (!tot) { ban.className = 'ban bad'; ban.textContent = 'TOTAL laporan belum diisi (hitungan baris: ' + sum + ').'; why.push('isi TOTAL'); }
+    else if (tot !== sum) {
+      ban.className = 'ban bad';
+      ban.textContent = 'TOTAL tidak cocok. TOTAL ' + tot + ', hitungan baris ' + sum + ' (selisih ' + (sum - tot > 0 ? '+' : '−') + Math.abs(sum - tot) + '). Samakan keduanya.';
+      why.push('TOTAL tidak cocok');
+    } else { ban.className = 'ban ok'; ban.textContent = 'TOTAL cocok: ' + sum + ' tabung dari ' + ed.rows.length + ' baris.'; }
+    if (!ed.rows.length) why.push('tidak ada baris');
+    if (ed.rows.some(function (r) { return !r.pid; })) why.push('ada baris tanpa pangkalan');
+    if (ed.rows.some(function (r) { return !(r.qty > 0); })) why.push('ada jumlah kosong');
+    if (ed.rows.some(function (r) { return r.paid > r.qty && r.qty > 0; })) why.push('jumlah lebih kecil dari yang sudah dibayar');
+    if (sum && sum !== 560) warn.push('Satu LO biasanya 560 tabung, di sini ' + sum + '. Lanjut jika memang begitu.');
+    var dirty = tot !== ed.total0 || ed.rows.length !== ed.ids0.length || ed.rows.some(function (r) { return !r.id || r.pid !== r.pid0 || r.qty !== r.qty0; });
+    if (!dirty) why.push('belum ada perubahan');
+    var w = $('edWarn'); w.textContent = ''; w.hidden = !warn.length;
+    warn.forEach(function (m) { w.appendChild(el('li', null, m)); });
+    $('edSave').disabled = why.length > 0;
+    $('edWhy').textContent = why.length ? 'Belum bisa disimpan: ' + why.join(', ') + '.' : '';
+  }
+  $('psEdit').addEventListener('click', function () { if (PSL[curId]) go('psEdit', curId); });
+  $('edCancel').addEventListener('click', edBack);
+  $('edSave').addEventListener('click', function () {
+    if ($('edSave').disabled || !ed) return;
+    guarded(async function () {
+      var r = await psCall('ubah_laporan', { p: {
+        id: ed.id, total: parseInt($('edTot').value, 10) || 0,
+        items: ed.rows.map(function (x) { return { id: x.id || '', nama_mentah: x.raw, pangkalan_id: x.pid, tabung: x.qty }; })
+      } });
+      if (!r) return;
+      var s = r.data && r.data.status;
+      if (s === 'ok') {
+        await psLoad().catch(function () {});
+        toast('Laporan diubah');
+        edBack();
+        return;
+      }
+      $('edErr').textContent = ED_MSG[s] || 'Gagal. Coba lagi.';
+      if (s === 'item_salah' || s === 'terkunci_pembayaran' || s === 'kurang_dari_dibayar') { await psLoad().catch(function () {}); }
+      if (s === 'tidak_ada') { await psLoad().catch(function () {}); go('psList', null, 'replace'); }
+    });
+  });
 
   /* ---------- Mulai ---------- */
   async function boot() {
