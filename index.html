@@ -534,12 +534,18 @@ body[data-area="home"] { overflow-x: hidden; }
 .pillg:active { transform: scale(.97); }
 span.pillg { min-height: 40px; padding: 0 20px; }
 
-.car-nav { display: none; }
+.swh { display: none; }
 @media (hover: hover) and (pointer: fine) {
-  .car-nav { display: grid; place-items: center; position: absolute; top: 50%; transform: translateY(-50%); z-index: 3; width: 48px; height: 48px; padding: 0; font-size: 26px; line-height: 1; }
-  .car-nav.prev { left: 8px; } .car-nav.next { right: 8px; }
-  .car-nav:disabled { opacity: .3; }
+  .swh { display: block; position: absolute; top: 50%; z-index: 3; width: 58px; height: 44px; margin-top: -22px; pointer-events: none; color: #a9f1e0; filter: drop-shadow(0 0 7px rgba(95, 224, 196, .55)); transition: opacity .5s ease; }
+  .swh.l { left: 3vw; transform: scaleX(-1); } .swh.r { right: 3vw; }
+  .swh.off { opacity: 0; }
+  .swh svg { width: 100%; height: 100%; overflow: visible; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .swh path { opacity: 0; animation: swgo 2.4s cubic-bezier(.4, 0, .2, 1) infinite; }
+  .swh path:nth-child(2) { animation-delay: .22s; } .swh path:nth-child(3) { animation-delay: .44s; }
+  @keyframes swgo { 0% { opacity: 0; transform: translateX(-10px); } 22% { opacity: 1; } 55% { opacity: .9; } 80%, 100% { opacity: 0; transform: translateX(12px); } }
 }
+@media (prefers-reduced-motion: reduce) { .swh path { animation: none; opacity: .6; } }
+.car-shell[data-mode="compact"] .swh { display: none; }
 .car-dots { display: flex; justify-content: center; gap: 8px; margin-top: 2px; }
 .car-dots i { width: 6px; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, .22); transition: width .3s ease, background .3s ease; }
 .car-dots i.on { width: 22px; background: #5fe0c4; }
@@ -576,7 +582,6 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
 .car[data-mode="compact"] .cc-ico1 { display: grid; width: 36px; height: 36px; }
 .car[data-mode="compact"] .ccard strong { font-family: var(--font-body); font-size: 14px; line-height: 1.18; font-weight: 600; letter-spacing: 0; }
 @media (min-width: 700px) { .car[data-mode="compact"] { grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 920px; margin-inline: auto; } .car[data-mode="compact"] .ccard:last-child:nth-child(odd) { grid-column: auto; justify-self: stretch; width: auto; } .car[data-mode="compact"] .ccard strong { font-size: 15px; } }
-.car-shell[data-mode="compact"] .car-nav { display: none !important; }
 .car-shell[data-mode="compact"] + .car-dots { display: none; }
 .car.morph .ccard { visibility: hidden; }
 .ghost { position: fixed; margin: 0; padding: 0; z-index: 30; pointer-events: none; transform: none !important; opacity: 1; transition: none !important; visibility: visible !important; }
@@ -650,6 +655,16 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
 .scli .pct { font-family: var(--font-mono); font-size: 15px; color: var(--fg-2); }
 .sc-prev { margin-top: 14px; }
 .sc-prev .ban { margin-top: 10px; }
+
+/* animasi masuk beranda setelah login */
+@keyframes cardIn { from { opacity: 0; translate: 0 46px; scale: .88; } to { opacity: 1; translate: 0 0; scale: 1; } }
+@keyframes heroIn { from { opacity: 0; translate: 0 18px; filter: blur(6px); } to { opacity: 1; translate: 0 0; filter: blur(0); } }
+@keyframes toolIn { from { opacity: 0; translate: 0 14px; } to { opacity: 1; translate: 0 0; } }
+#vHome.intro .hero2 > * { animation: heroIn .9s cubic-bezier(.2, .8, .2, 1) both; }
+#vHome.intro .hero2 > :nth-child(2) { animation-delay: .1s; } #vHome.intro .hero2 > :nth-child(3) { animation-delay: .2s; }
+#vHome.intro .ccard { animation: cardIn 1s cubic-bezier(.2, .9, .25, 1) both; animation-delay: calc(.25s + var(--k, 0) * 90ms); }
+#vHome.intro .car-tools, #vHome.intro .car-dots, #vHome.intro .home-foot { animation: toolIn .8s ease both; animation-delay: 1s; }
+@media (prefers-reduced-motion: reduce) { #vHome.intro * { animation: none !important; } }
 </style>
 </head>
 <body>
@@ -725,7 +740,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
       <p class="ask">Pilih pekerjaan untuk dimulai</p>
     </div>
     <div class="car-shell" id="carShell" data-mode="full">
-      <button class="pillg car-nav prev" type="button" id="carPrev" aria-label="Sebelumnya">‹</button>
+      <span class="swh l" id="swhL" aria-hidden="true"><svg viewBox="0 0 44 40" aria-hidden="true"><path d="M5 8l9 12-9 12"/><path d="M17 8l9 12-9 12"/><path d="M29 8l9 12-9 12"/></svg></span>
       <div class="car" id="car" data-mode="full" role="group" aria-label="Pilih pekerjaan">
       <button class="ccard" type="button" data-go="pmList" style="--g1:#ffa56b;--g2:#ff6b8b">
         <span class="cc-icons"><span class="cic" style="--n:0"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg></span><span class="cic" style="--n:1"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg></span><span class="cic" style="--n:2"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></span></span>
@@ -784,7 +799,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
         <span class="pillg cc-go" style="--g1:#5ad7ff;--g2:#b6ff6a">Buka</span>
       </button>
       </div>
-      <button class="pillg car-nav next" type="button" id="carNext" aria-label="Berikutnya">›</button>
+      <span class="swh r" id="swhR" aria-hidden="true"><svg viewBox="0 0 44 40" aria-hidden="true"><path d="M5 8l9 12-9 12"/><path d="M17 8l9 12-9 12"/><path d="M29 8l9 12-9 12"/></svg></span>
     </div>
     <div class="car-dots" id="carDots" aria-hidden="true"></div>
     <div class="car-tools"><div class="pillg modeseg" id="carMode" data-mode="full" role="group" aria-label="Tampilan menu"><i class="thumb" aria-hidden="true"></i>
@@ -1106,6 +1121,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
   <!-- Scratchpad: tempel laporan -->
   <section id="vScHome" hidden>
     <p class="lead">Tempel laporan ekspedisi. Sistem mengecek jumlahnya 560, lalu Anda bisa mencentang pangkalan satu per satu saat menginput ke aplikasi.</p>
+    <p class="ban bad" id="scMissing" hidden>Scratchpad belum dipasang di database. Jalankan file 08-scratchpad.sql di Supabase (lihat panduan).</p>
     <textarea class="pstext" id="scText" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="LAPORAN PENGIRIMAN LO 01-10-2026&#10;1. NUNG 51&#10;2. HJ TARJANI 250&#10;...&#10;TOTAL 560&#10;BWI"></textarea>
     <div class="sc-prev" id="scPrev" hidden></div>
     <div class="actions">
@@ -1507,6 +1523,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     DB.pangkalan = res[0]; DB.kode = res[1]; DB.hasil = res[2]; DB.pinjaman = res[3]; DB.kode_pinjaman = res[4];
     rebuild();
     scheduleRender();
+    scLoad();
   }
 
   /* ---------- Realtime ---------- */
@@ -1529,6 +1546,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     ['pangkalan', 'kode', 'hasil', 'pinjaman', 'kode_pinjaman'].forEach(function (t) {
       channel.on('postgres_changes', { event: '*', schema: 'public', table: t }, function (payload) { applyChange(t, payload); });
     });
+    scSubscribe();
     channel.subscribe(function (status) {
       if (status === 'SUBSCRIBED') {
         setLive('on');
@@ -1541,7 +1559,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
   }
   function unsubscribe() {
     if (channel && sb) { try { sb.removeChannel(channel); } catch (e) {} }
-    channel = null; everSubscribed = false;
+    channel = null; everSubscribed = false; scReset();
   }
   document.addEventListener('visibilitychange', function () {
     if (!document.hidden && sb && !$('appRoot').hidden) loadAll().catch(function () {});
@@ -1643,6 +1661,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     $('appRoot').hidden = false;
     setLive('connecting');
     curState = { v: 'home', id: null, d: 0 };
+    homeIntro();
     go('home', null, 'replace');
     history.pushState(curState, ''); /* entri cadangan: tombol kembali di menu utama menutup kotak dulu */
     try { await loadAll(); } catch (e) { console.error(e); toast('Gagal memuat data. Periksa koneksi lalu muat ulang.', true); }
@@ -1676,6 +1695,8 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     if (v === 'home' && psAuthed) psWipe();
     closeTray();
     view = v;
+    scLeaving = false;
+    if (v === 'home') homeCard();
     if (id) curId = id;
     SECTIONS.forEach(function (sec) { $(sec).hidden = (VIEWS[v] !== sec); });
     $('backBtn').hidden = (v === 'home');
@@ -1744,7 +1765,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     $('homeGreet').textContent = h < 11 ? 'Selamat pagi.' : h < 15 ? 'Selamat siang.' : h < 18 ? 'Selamat sore.' : 'Selamat malam.';
     $('homeDate').textContent = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' }) + '.';
     carShow();
-    $('mSc').textContent = SC.pads.length ? SC.pads.length + ' checklist tersimpan' : 'Belum ada checklist';
+    scMeta();
     var aktif = countAktif(), ina = DB.pangkalan.length - aktif;
     var nh = DB.hasil.filter(function (x) { return PMAP[x.pangkalan_id] && PMAP[x.pangkalan_id].aktif; }).length;
     var nj = loanList().length;
@@ -4465,7 +4486,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
       cenIdx = best;
       cards.forEach(function (c, i) { c.classList.toggle('is-center', i === best); c.setAttribute('aria-current', String(i === best)); });
       Array.prototype.forEach.call(dotsEl.children, function (d, i) { d.className = i === best ? 'on' : ''; });
-      $('carPrev').disabled = best === 0; $('carNext').disabled = best === cards.length - 1;
+      $('swhL').classList.toggle('off', best === 0); $('swhR').classList.toggle('off', best === cards.length - 1);
     }
     if (!carHidden) carLast = best;
   }
@@ -4502,7 +4523,6 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
   }
   function setMode(m, save) {
     if (m === curMode) return;
-    if (save) { try { localStorage.setItem('altan-home-mode', m); } catch (e) {} }
     endMorph();
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (view !== 'home' || !car.clientWidth || reduce || !car.animate) { applyMode(m); return; }
@@ -4535,10 +4555,16 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     setTimeout(function () { if (morphG !== wrap) return; cards.forEach(function (c) { c.style.visibility = ''; }); car.classList.add('settle'); }, D * .8);
     morphT = setTimeout(function () { if (morphG === wrap) endMorph(); }, D + 60);
   }
-  try { var sm = localStorage.getItem('altan-home-mode'); if (sm === 'compact') applyMode('compact'); } catch (e) {}
+  function homeCard() { endMorph(); if (curMode !== 'full') applyMode('full'); }
+  var introT = 0;
+  function homeIntro() {
+    clearTimeout(introT);
+    var mid = cenIdx < 0 ? carLast : cenIdx;
+    cards.forEach(function (c, i) { c.style.setProperty('--k', Math.min(Math.abs(i - mid), 3)); });
+    var h = $('vHome'); h.classList.remove('intro'); void h.offsetWidth; h.classList.add('intro');
+    introT = setTimeout(function () { h.classList.remove('intro'); }, 2200);
+  }
   $('carMode').addEventListener('click', function (e) { var b = e.target.closest('button[data-m]'); if (b) setMode(b.getAttribute('data-m'), true); });
-  $('carPrev').addEventListener('click', function () { carTo(cenIdx - 1, true); });
-  $('carNext').addEventListener('click', function () { carTo(cenIdx + 1, true); });
   /* geser ke atas = kapsul, geser ke bawah = kartu penuh */
   var tx = 0, ty = 0, tOn = false, home = $('vHome');
   home.addEventListener('touchstart', function (e) { var t = e.touches[0]; tx = t.clientX; ty = t.clientY; tOn = e.touches.length === 1; }, { passive: true });
@@ -4592,12 +4618,76 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
   $('psTile').addEventListener('click', function () { psEnter('psHome'); });
   $('rkTile').addEventListener('click', function () { psEnter('rkHome'); });
 
-  /* ---------- Scratchpad: checklist laporan ekspedisi ---------- */
-  var SC = { pads: [] }, scBuilt = null, scArm = {}, SC_TARGET = 560;
-  try { var scRaw = JSON.parse(localStorage.getItem('altan-scratch') || '[]'); if (Array.isArray(scRaw)) SC.pads = scRaw.filter(function (p) { return p && p.id && Array.isArray(p.rows); }); } catch (e) {}
-  function scSave() { try { localStorage.setItem('altan-scratch', JSON.stringify(SC.pads)); } catch (e) { toast('Penyimpanan perangkat tidak bisa dipakai', true); } }
+  /* ---------- Scratchpad: checklist laporan ekspedisi (real-time lewat Supabase) ---------- */
+  var scLeaving = false;
+  var SC = { pads: [] }, SCR = { pad: [], baris: [] }, scReady = false, scMissing = false, scBuilt = null, scSig = '', scArm = {}, SC_TARGET = 560, scChan = null, scEver = false, scRaf = 0, scBusy = false;
+  function scAssemble() {
+    var by = {};
+    SCR.baris.forEach(function (b) { (by[b.pad_id] = by[b.pad_id] || []).push({ id: b.id, n: b.nama, q: b.jumlah, d: b.dicek ? 1 : 0, u: b.urut }); });
+    SC.pads = SCR.pad.map(function (p) {
+      return { id: p.id, eks: p.ekspedisi, lo: p.tanggal_lo, kirim: p.tanggal_kirim, total: p.total_laporan, made: p.created_at || '', rows: (by[p.id] || []).sort(function (x, y) { return x.u - y.u; }) };
+    }).sort(function (x, y) { return x.made < y.made ? 1 : x.made > y.made ? -1 : 0; });
+  }
   function scFind(id) { for (var i = 0; i < SC.pads.length; i++) if (SC.pads[i].id === id) return SC.pads[i]; return null; }
   function scSum(rows, onlyDone) { var t = 0; rows.forEach(function (r) { if (!onlyDone || r.d) t += (r.q != null ? r.q : r.qty); }); return t; }
+  function scMeta() { $('mSc').textContent = scMissing ? '' : scReady ? (SC.pads.length ? SC.pads.length + ' checklist' : 'Belum ada checklist') : ''; }
+  function scRefresh() {
+    scMeta();
+    if (view === 'scHome') renderScList();
+    if (view === 'scPad') renderScPad();
+  }
+  function scSoon() { if (!scRaf) scRaf = requestAnimationFrame(function () { scRaf = 0; scRefresh(); }); }
+  function scUid() { return (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) { var r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 3 | 8)).toString(16); }); }
+  async function scInsertPad(p) {
+    var r = await sb.from('scratch_pad').insert({ id: p.id, ekspedisi: p.eks || null, tanggal_lo: p.lo || null, tanggal_kirim: p.kirim || null, total_laporan: p.total == null ? null : p.total });
+    if (r.error) throw r.error;
+    var rows = p.rows.map(function (x, i) { return { id: scUid(), pad_id: p.id, urut: i, nama: x.n, jumlah: x.q, dicek: !!x.d }; });
+    r = await sb.from('scratch_baris').insert(rows);
+    if (r.error) { await sb.from('scratch_pad').delete().eq('id', p.id); throw r.error; }
+    SCR.pad.push({ id: p.id, ekspedisi: p.eks || null, tanggal_lo: p.lo || null, tanggal_kirim: p.kirim || null, total_laporan: p.total == null ? null : p.total, created_at: new Date().toISOString() });
+    rows.forEach(function (x) { SCR.baris.push(x); });
+  }
+  async function scMigrate() {
+    var raw; try { raw = JSON.parse(localStorage.getItem('altan-scratch') || '[]'); } catch (e) { raw = []; }
+    if (!Array.isArray(raw) || !raw.length) return;
+    try { localStorage.setItem('altan-scratch-cadangan', JSON.stringify(raw)); } catch (e) {}
+    for (var i = 0; i < raw.length; i++) {
+      var p = raw[i]; if (!p || !p.rows || !p.rows.length) continue;
+      await scInsertPad({ id: scUid(), eks: p.eks, lo: p.lo, kirim: p.kirim, total: p.total, rows: p.rows });
+    }
+    try { localStorage.removeItem('altan-scratch'); } catch (e) {}
+    scAssemble(); toast('Checklist lama dipindahkan ke database');
+  }
+  async function scLoad() {
+    try {
+      var a = await fetchAll('scratch_pad', 'created_at', false), b = await fetchAll('scratch_baris', 'urut', true);
+      SCR.pad = a; SCR.baris = b; scMissing = false; scReady = true; scAssemble();
+      try { await scMigrate(); } catch (e) { console.error(e); }
+    } catch (e) { scMissing = true; scReady = false; console.error(e); }
+    $('scMissing').hidden = !scMissing;
+    scRefresh();
+  }
+  function scApply(table, payload) {
+    var arr = table === 'scratch_pad' ? SCR.pad : SCR.baris, id = payload.eventType === 'DELETE' ? payload.old.id : payload.new.id, i = -1, k;
+    for (k = 0; k < arr.length; k++) if (arr[k].id === id) { i = k; break; }
+    if (payload.eventType === 'DELETE') {
+      if (i > -1) arr.splice(i, 1);
+      if (table === 'scratch_pad') SCR.baris = SCR.baris.filter(function (b) { return b.pad_id !== id; });
+    } else if (i > -1) arr[i] = Object.assign(arr[i], payload.new); else arr.push(payload.new);
+    scAssemble(); scSoon();
+  }
+  function scSubscribe() {
+    if (scChan || !sb) return;
+    scChan = sb.channel('altan-scratch');
+    ['scratch_pad', 'scratch_baris'].forEach(function (t) {
+      scChan.on('postgres_changes', { event: '*', schema: 'public', table: t }, function (payload) { scApply(t, payload); });
+    });
+    scChan.subscribe(function (status) { if (status === 'SUBSCRIBED') { if (scEver) scLoad(); scEver = true; } });
+  }
+  function scReset() {
+    if (scChan && sb) { try { sb.removeChannel(scChan); } catch (e) {} }
+    scChan = null; scEver = false; scReady = false; scMissing = false; SCR.pad = []; SCR.baris = []; SC.pads = []; scBuilt = null; scSig = '';
+  }
   function scCheck(r, sum) {
     var m = [], ok = sum === SC_TARGET && (r.total == null || r.total === SC_TARGET);
     if (sum === SC_TARGET) m.push('Jumlah ' + SC_TARGET + ' tabung dari ' + r.rows.length + ' pangkalan. Cocok.');
@@ -4633,11 +4723,16 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
   }
   $('scText').addEventListener('input', scPreview);
   $('scClear').addEventListener('click', function () { $('scText').value = ''; scPreview(); $('scText').focus(); });
-  $('scStart').addEventListener('click', function () {
-    if (!scDraft || !scDraft.rows.length) return;
-    var r = scDraft, id = 'sc' + Date.now().toString(36);
-    SC.pads.unshift({ id: id, eks: r.ekspedisi, lo: r.lo, kirim: r.kirim, total: r.total, made: Date.now(), rows: r.rows.map(function (x) { return { n: x.raw, q: x.qty, d: 0 }; }) });
-    scSave(); $('scText').value = ''; scPreview(); go('scPad', id);
+  $('scStart').addEventListener('click', async function () {
+    if (!scDraft || !scDraft.rows.length || scBusy) return;
+    if (!scReady) { toast('Database Scratchpad belum siap. Jalankan 08-scratchpad.sql lalu muat ulang.', true); return; }
+    var r = scDraft, id = scUid(), btn = $('scStart');
+    scBusy = true; btn.disabled = true; btn.textContent = 'Menyimpan...';
+    try {
+      await scInsertPad({ id: id, eks: r.ekspedisi, lo: r.lo, kirim: r.kirim, total: r.total, rows: r.rows.map(function (x) { return { n: x.raw, q: x.qty, d: 0 }; }) });
+      scAssemble(); $('scText').value = ''; scPreview(); go('scPad', id);
+    } catch (e) { console.error(e); toast('Gagal menyimpan checklist. Periksa koneksi lalu coba lagi.', true); }
+    scBusy = false; btn.textContent = 'Mulai checklist'; btn.disabled = !scDraft || !scDraft.rows.length;
   });
   function renderScList() {
     var ul = $('lScList'); ul.textContent = '';
@@ -4673,29 +4768,50 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     if (all && !scWasAll) { var rs = $('scRows'); rs.classList.remove('wave'); void rs.offsetWidth; rs.classList.add('wave'); setTimeout(function () { rs.classList.remove('wave'); }, 2300); if (navigator.vibrate) { try { navigator.vibrate([18, 40, 18]); } catch (e) {} } }
     scWasAll = all;
   }
+  async function scToggle(pid, rid) {
+    var rec = null, i;
+    for (i = 0; i < SCR.baris.length; i++) if (SCR.baris[i].id === rid) { rec = SCR.baris[i]; break; }
+    if (!rec) return;
+    var nv = !rec.dicek; rec.dicek = nv; scAssemble(); renderScPad();
+    var r = await sb.from('scratch_baris').update({ dicek: nv }).eq('id', rid);
+    if (r.error) { rec.dicek = !nv; scAssemble(); scSoon(); toast('Centang gagal tersimpan. Periksa koneksi.', true); }
+  }
   function renderScPad() {
+    if (!scReady) { if (scMissing) go('scHome', null, 'replace'); return; }
     var p = scFind(curId);
-    if (!p) { go('scHome'); return; }
-    if (scBuilt !== p.id) {
-      scBuilt = p.id; scWasAll = false;
+    if (!p) {
+      scBuilt = null; if (scLeaving) return; scLeaving = true;
+      if (curState.d > 0) history.back(); else go('scHome', null, 'replace');
+      return;
+    }
+    var sig = p.rows.map(function (r) { return r.id; }).join(',');
+    var ul = $('scRows');
+    if (scBuilt !== p.id || scSig !== sig) {
+      scBuilt = p.id; scSig = sig; scWasAll = p.rows.length > 0 && p.rows.every(function (r) { return r.d; });
       $('scDone').removeAttribute('data-v'); $('scPct').removeAttribute('data-v'); $('scDone').textContent = ''; $('scPct').textContent = '';
       scHead($('scHead'), p);
       var c = scCheck({ total: p.total, rows: p.rows }, scSum(p.rows)), bn = $('scBan'); bn.className = 'ban ' + (c.ok ? 'ok' : 'bad'); bn.textContent = c.text;
-      var ul = $('scRows'); ul.textContent = '';
+      ul.textContent = '';
       p.rows.forEach(function (r, i) {
         var li = el('li', 'scrow' + (r.d ? ' done' : '')), b = el('button', 'sc-hit'), bx = el('span', 'sc-box');
+        li.setAttribute('data-id', r.id);
         li.style.setProperty('--i', Math.min(i, 24));
         bx.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg><span class="sc-rip"></span>';
         b.type = 'button'; b.setAttribute('aria-pressed', String(!!r.d));
         b.appendChild(bx); b.appendChild(el('span', 'sc-n', String(i + 1))); b.appendChild(el('span', 'sc-t', r.n)); b.appendChild(el('span', 'sc-q', String(r.q)));
-        b.addEventListener('click', function () {
-          r.d = r.d ? 0 : 1; li.classList.toggle('done', !!r.d); b.setAttribute('aria-pressed', String(!!r.d));
-          if (r.d) { li.classList.remove('pop'); void li.offsetWidth; li.classList.add('pop'); setTimeout(function () { li.classList.remove('pop'); }, 700); }
-          scSave(); scUpdate();
-        });
+        b.addEventListener('click', function () { scToggle(p.id, r.id); });
         li.appendChild(b); ul.appendChild(li);
       });
       $('scReset').textContent = 'Reset ceklis'; $('scDel').textContent = 'Hapus checklist ini';
+    } else {
+      p.rows.forEach(function (r, i) {
+        var li = ul.children[i]; if (!li) return;
+        var was = li.classList.contains('done');
+        if (was !== !!r.d) {
+          li.classList.toggle('done', !!r.d); li.firstElementChild.setAttribute('aria-pressed', String(!!r.d));
+          if (r.d) { li.classList.remove('pop'); void li.offsetWidth; li.classList.add('pop'); setTimeout(function () { li.classList.remove('pop'); }, 700); }
+        }
+      });
     }
     scUpdate();
   }
@@ -4705,14 +4821,19 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
       clearTimeout(scArm[key]); scArm[key] = 0; btn.textContent = label; fn();
     });
   }
-  scTwoTap($('scReset'), 'r', 'Reset ceklis', 'Ketuk lagi untuk reset', function () {
-    var p = scFind(curId); if (!p) return;
-    p.rows.forEach(function (r) { r.d = 0; });
-    Array.prototype.forEach.call($('scRows').children, function (li) { li.classList.remove('done'); li.firstElementChild.setAttribute('aria-pressed', 'false'); });
-    scSave(); scUpdate(); toast('Ceklis direset');
+  scTwoTap($('scReset'), 'r', 'Reset ceklis', 'Ketuk lagi untuk reset', async function () {
+    var pid = curId; if (!scFind(pid)) return;
+    SCR.baris.forEach(function (b) { if (b.pad_id === pid) b.dicek = false; });
+    scAssemble(); renderScPad(); toast('Ceklis direset');
+    var r = await sb.from('scratch_baris').update({ dicek: false }).eq('pad_id', pid);
+    if (r.error) { toast('Reset gagal tersimpan. Memuat ulang data.', true); scLoad(); }
   });
-  scTwoTap($('scDel'), 'd', 'Hapus checklist ini', 'Ketuk lagi untuk menghapus', function () {
-    SC.pads = SC.pads.filter(function (p) { return p.id !== curId; }); scSave(); scBuilt = null; toast('Checklist dihapus'); go('scHome');
+  scTwoTap($('scDel'), 'd', 'Hapus checklist ini', 'Ketuk lagi untuk menghapus', async function () {
+    var pid = curId, r = await sb.from('scratch_pad').delete().eq('id', pid);
+    if (r.error) { toast('Checklist gagal dihapus. Periksa koneksi.', true); return; }
+    SCR.pad = SCR.pad.filter(function (p) { return p.id !== pid; }); SCR.baris = SCR.baris.filter(function (b) { return b.pad_id !== pid; });
+    scAssemble(); scBuilt = null; toast('Checklist dihapus');
+    if (curState.d > 0) history.back(); else go('scHome', null, 'replace');
   });
 
   /* ---------- Mulai ---------- */
