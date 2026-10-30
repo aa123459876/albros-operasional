@@ -53,7 +53,7 @@ button:disabled { opacity: .55; cursor: default; }
 /* Login */
 .login { min-height: 100vh; min-height: 100dvh; max-width: 960px; margin: 0 auto; display: grid; align-content: center; justify-items: center; row-gap: 6px; padding: 28px 0 56px; transition: opacity .22s ease; }
 .login.leaving { opacity: 0; }
-.login-art { position: relative; width: min(44vw, 176px); aspect-ratio: 200 / 320; color: #6d6c65; --tank-fill: #30302e; --flame: var(--accent); }
+.login-art { position: relative; width: min(44vw, 176px); aspect-ratio: 200 / 320; color: #6d6c65; --tank-fill: #30302e; --flame: var(--accent); aspect-ratio: 180 / 270; }
 .login-art::before { content: ""; position: absolute; inset: -28% -70%; background: radial-gradient(closest-side, rgba(217, 119, 87, .26), rgba(217, 119, 87, 0)); pointer-events: none; }
 .login-art svg { position: relative; display: block; width: 100%; height: 100%; }
 .login-form { width: 100%; max-width: 380px; margin-top: 10px; text-align: center; }
@@ -665,6 +665,45 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
 #vHome.intro .ccard { animation: cardIn 1s cubic-bezier(.2, .9, .25, 1) both; animation-delay: calc(.25s + var(--k, 0) * 90ms); }
 #vHome.intro .car-tools, #vHome.intro .car-dots, #vHome.intro .home-foot { animation: toolIn .8s ease both; animation-delay: 1s; }
 @media (prefers-reduced-motion: reduce) { #vHome.intro * { animation: none !important; } }
+
+/* ===== Maskot Robot Tabung Gas (SVG murni) ===== */
+.mascot-wrap { position: relative; width: 100%; height: 100%; }
+.mascot { position: relative; width: 100%; height: 100%; overflow: visible; }
+.mascot .m-grp { transform-box: view-box; transform-origin: 90px 180px; }
+.mascot .m-tank { fill: var(--mk-tank, #2b2f33); stroke: var(--mk-line, #6d6c65); stroke-width: 3; }
+.mascot .m-band { stroke: var(--mk-line, #6d6c65); stroke-width: 1.6; opacity: .45; fill: none; }
+.mascot .m-neck { fill: var(--mk-tank, #2b2f33); stroke: var(--mk-line, #6d6c65); stroke-width: 3; }
+.mascot .m-valve { fill: none; stroke: var(--mk-line, #6d6c65); stroke-width: 3; }
+.mascot .m-valve-bar { stroke: var(--mk-line, #6d6c65); stroke-width: 3; stroke-linecap: round; }
+.mascot .m-eye { fill: var(--mk-line, #6d6c65); transition: transform .25s ease, opacity .25s ease; transform-box: fill-box; transform-origin: center; }
+.mascot .m-limb, .mascot .m-hand, .mascot .m-foot { fill: var(--mk-tank, #2b2f33); stroke: var(--mk-line, #6d6c65); stroke-width: 2.6; }
+.mascot .m-chestring { fill: none; stroke: var(--mk-line, #6d6c65); stroke-width: 2.4; opacity: .7; }
+.mascot .m-flame { fill: var(--mk-flame, var(--accent, #d97757)); transition: opacity .35s ease, transform .35s ease; transform-box: fill-box; transform-origin: center; }
+.mascot .m-arm { transform-box: view-box; transition: transform .45s cubic-bezier(.3, .9, .3, 1); }
+.mascot .m-arm-l { transform-origin: -48.5px -30px; }
+.mascot .m-arm-r { transform-origin: 48.5px -30px; }
+.mascot .m-leg { transform-box: view-box; transition: transform .45s cubic-bezier(.3, .9, .3, 1), opacity .4s ease; }
+.mascot .m-leg-l { transform-origin: -22px 70px; }
+.mascot .m-leg-r { transform-origin: 22px 70px; }
+.mascot .m-head, .mascot .m-body, .mascot .m-chest { transition: transform .4s cubic-bezier(.3, .9, .3, 1); transform-box: view-box; transform-origin: 0px -8px; }
+/* masuk melompat */
+@keyframes mkJump { 0% { transform: translateY(90px); opacity: 0; } 55% { transform: translateY(-12px); opacity: 1; } 75% { transform: translateY(5px); } 100% { transform: translateY(0); } }
+.mascot.mk-in .m-grp { animation: mkJump .75s cubic-bezier(.22, 1.1, .3, 1) both; }
+/* fokus password: tangan naik menutup wajah, api padam */
+.mascot.shy .m-arm-l { transform: rotate(-158deg) translate(13px, -2px); }
+.mascot.shy .m-arm-r { transform: rotate(158deg) translate(-13px, -2px); }
+.mascot.shy .m-flame { opacity: 0; transform: scale(.35); }
+.mascot.shy .m-eye { opacity: 0; }
+/* mode kapsul: lipat tangan dan kaki */
+.mascot.folded .m-arm-l { transform: rotate(100deg) translate(9px, -10px) scale(.8); }
+.mascot.folded .m-arm-r { transform: rotate(-100deg) translate(-9px, -10px) scale(.8); }
+.mascot.folded .m-leg { opacity: 0; transform: translateY(-30px) scaleY(.2); }
+.mascot.folded .m-head { transform: translateY(14px) scale(.92); }
+.mascot.folded .m-body { transform: scale(1, .94); }
+@media (prefers-reduced-motion: reduce) { .mascot .m-arm, .mascot .m-leg, .mascot .m-head, .mascot .m-body, .mascot .m-chest, .mascot .m-eye, .mascot .m-flame, .mascot .m-grp { transition: none !important; animation: none !important; } }
+
+.home-mascot { width: 92px; margin: 10px auto -6px; --mk-tank: #1d262b; --mk-line: #3c4a51; --mk-flame: #ffb27a; filter: drop-shadow(0 6px 16px rgba(0, 0, 0, .35)); transition: width .5s cubic-bezier(.3, .9, .3, 1), margin .5s cubic-bezier(.3, .9, .3, 1); }
+.home-mascot.folded { position: absolute; top: 2px; right: 14px; width: 38px; margin: 0; z-index: 2; opacity: .9; }
 </style>
 </head>
 <body>
@@ -705,7 +744,13 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
 
 <!-- Login -->
 <main class="login" id="login" hidden>
-  <div class="login-art" aria-hidden="true"><svg viewBox="0 0 200 320"><use href="#art-tabung"/></svg></div>
+  <div class="login-art" aria-hidden="true"><div class="mascot-wrap"><svg class="mascot" id="loginMascot" viewBox="-90 -150 180 270" aria-hidden="true" focusable="false"><g class="m-grp"><g class="m-leg m-leg-l"><rect x="-30" y="70" width="16" height="34" rx="7"/><rect x="-35" y="100" width="26" height="12" rx="6" class="m-foot"/></g>
+<g class="m-leg m-leg-r"><rect x="14" y="70" width="16" height="34" rx="7"/><rect x="9" y="100" width="26" height="12" rx="6" class="m-foot"/></g>
+<g class="m-body"><rect x="-42" y="-80" width="84" height="150" rx="40" class="m-tank"/><path d="M-42 -24h84M-42 30h84" class="m-band"/></g>
+<g class="m-chest"><circle cx="0" cy="-8" r="19" class="m-chestring"/><path d="M0 -22c-7 8-10 14-10 20 0 6.5 4.5 11.5 10 11.5S10 -1.5 10 -8c0-6-3-12-10-14Z" class="m-flame"/></g>
+<g class="m-head"><path d="M-24 -80Q-24 -118 0 -118Q24 -118 24 -80" class="m-neck"/><rect x="-14" y="-136" width="28" height="20" rx="5" class="m-valve"/><path d="M-20 -126H20" class="m-valve-bar"/><g class="m-face"><circle cx="-9" cy="-99" r="4.4" class="m-eye"/><circle cx="9" cy="-99" r="4.4" class="m-eye"/></g></g>
+<g class="m-arm m-arm-l"><rect x="-55" y="-30" width="13" height="45" rx="6.5" class="m-limb"/><circle cx="-48.5" cy="18" r="11" class="m-hand"/></g>
+<g class="m-arm m-arm-r"><rect x="42" y="-30" width="13" height="45" rx="6.5" class="m-limb"/><circle cx="48.5" cy="18" r="11" class="m-hand"/></g></g></svg></div></div>
   <form class="login-form" id="loginForm" autocomplete="on">
     <h1 class="login-title" id="loginTitle">sign in to Altan</h1>
     <p class="login-hello" id="loginHello"><span class="sr">halooww..</span><span id="helloText" aria-hidden="true"></span><i class="caret" id="caret" aria-hidden="true"></i></p>
@@ -733,12 +778,19 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
   </header>
 
   <!-- Menu -->
-  <section id="vHome">
+  <section id="vHome" style="position:relative">
     <div class="hero2">
       <h2 id="homeGreet">Selamat datang.</h2>
       <p class="hd" id="homeDate"></p>
       <p class="ask">Pilih pekerjaan untuk dimulai</p>
     </div>
+    <div class="home-mascot" id="homeMascotBox" aria-hidden="true"><div class="mascot-wrap"><svg class="mascot" id="homeMascot" viewBox="-90 -150 180 270" aria-hidden="true" focusable="false"><g class="m-grp"><g class="m-leg m-leg-l"><rect x="-30" y="70" width="16" height="34" rx="7"/><rect x="-35" y="100" width="26" height="12" rx="6" class="m-foot"/></g>
+<g class="m-leg m-leg-r"><rect x="14" y="70" width="16" height="34" rx="7"/><rect x="9" y="100" width="26" height="12" rx="6" class="m-foot"/></g>
+<g class="m-body"><rect x="-42" y="-80" width="84" height="150" rx="40" class="m-tank"/><path d="M-42 -24h84M-42 30h84" class="m-band"/></g>
+<g class="m-chest"><circle cx="0" cy="-8" r="19" class="m-chestring"/><path d="M0 -22c-7 8-10 14-10 20 0 6.5 4.5 11.5 10 11.5S10 -1.5 10 -8c0-6-3-12-10-14Z" class="m-flame"/></g>
+<g class="m-head"><path d="M-24 -80Q-24 -118 0 -118Q24 -118 24 -80" class="m-neck"/><rect x="-14" y="-136" width="28" height="20" rx="5" class="m-valve"/><path d="M-20 -126H20" class="m-valve-bar"/><g class="m-face"><circle cx="-9" cy="-99" r="4.4" class="m-eye"/><circle cx="9" cy="-99" r="4.4" class="m-eye"/></g></g>
+<g class="m-arm m-arm-l"><rect x="-55" y="-30" width="13" height="45" rx="6.5" class="m-limb"/><circle cx="-48.5" cy="18" r="11" class="m-hand"/></g>
+<g class="m-arm m-arm-r"><rect x="42" y="-30" width="13" height="45" rx="6.5" class="m-limb"/><circle cx="48.5" cy="18" r="11" class="m-hand"/></g></g></svg></div></div>
     <div class="car-shell" id="carShell" data-mode="full">
       <span class="swh l" id="swhL" aria-hidden="true"><svg viewBox="0 0 44 40" aria-hidden="true"><path d="M5 8l9 12-9 12"/><path d="M17 8l9 12-9 12"/><path d="M29 8l9 12-9 12"/></svg></span>
       <div class="car" id="car" data-mode="full" role="group" aria-label="Pilih pekerjaan">
@@ -1628,6 +1680,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     $('loginErr').textContent = msg || '';
     $('loginBtn').disabled = !sb;
     playIntro();
+    mkJumpIn();
   }
   $('loginForm').addEventListener('submit', async function (e) {
     e.preventDefault();
@@ -1678,6 +1731,31 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     showLogin();
   }
 
+
+  /* ---------- Maskot: login ---------- */
+  var loginMk = $('loginMascot');
+  function mkJumpIn() { if (!loginMk) return; loginMk.classList.remove('mk-in'); void loginMk.getBoundingClientRect(); loginMk.classList.add('mk-in'); }
+  ['loginUser'].forEach(function (id) {
+    var inp = $(id); if (!inp) return;
+    inp.addEventListener('focus', function () { loginMk.classList.remove('shy'); });
+  });
+  var pwInp = $('loginPass');
+  if (pwInp) {
+    pwInp.addEventListener('focus', function () { loginMk.classList.add('shy'); });
+    pwInp.addEventListener('blur', function () { loginMk.classList.remove('shy'); });
+  }
+  $('loginUser').addEventListener('blur', function () { loginMk.classList.remove('shy'); });
+
+  /* ---------- Maskot: beranda (menoleh saat geser, melipat saat kapsul) ---------- */
+  var homeMk = $('homeMascot'), homeMkTO = 0;
+  function mkTurn(dir) {
+    if (!homeMk) return;
+    var grp = homeMk.querySelector('.m-grp');
+    grp.style.transform = dir ? 'rotate(' + (dir * 7) + 'deg)' : '';
+    clearTimeout(homeMkTO);
+    homeMkTO = setTimeout(function () { grp.style.transform = ''; }, 420);
+  }
+  function mkFold(on) { if (homeMk) homeMk.classList.toggle('folded', !!on); if ($('homeMascotBox')) $('homeMascotBox').classList.toggle('folded', !!on); }
   /* ---------- Navigasi ---------- */
   var view = 'home', curId = null;
   var VIEWS = { home: 'vHome', pmList: 'vPmList', pjList: 'vPjList', detail: 'vDetail', pjDetail: 'vDetail', hasil: 'vHasil', daftar: 'vDaftar', psHome: 'vPsHome', psList: 'vPsList', psDetail: 'vPsDetail', psAlias: 'vPsAlias', psPaste: 'vPsPaste', psBayar: 'vPsBayar', psSaldo: 'vPsSaldo', psSaldoDet: 'vPsSaldoDet', psEdit: 'vPsEdit', rkHome: 'vRkHome', rkInput: 'vRkInput', rkData: 'vRkData', rkHasil: 'vRkHasil', scHome: 'vScHome', scPad: 'vScPad' };
@@ -4483,6 +4561,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
       if (d < bd) { bd = d; best = i; }
     });
     if (best !== cenIdx) {
+      if (cenIdx > -1) mkTurn(best > cenIdx ? 1 : -1);
       cenIdx = best;
       cards.forEach(function (c, i) { c.classList.toggle('is-center', i === best); c.setAttribute('aria-current', String(i === best)); });
       Array.prototype.forEach.call(dotsEl.children, function (d, i) { d.className = i === best ? 'on' : ''; });
@@ -4505,7 +4584,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
   window.addEventListener('resize', function () { if (view === 'home') { carTo(cenIdx < 0 ? 0 : cenIdx, false); } });
   function applyMode(m) {
     curMode = m;
-    car.setAttribute('data-mode', m); $('carShell').setAttribute('data-mode', m); $('carMode').setAttribute('data-mode', m);
+    car.setAttribute('data-mode', m); $('carShell').setAttribute('data-mode', m); $('carMode').setAttribute('data-mode', m); mkFold(m === 'compact');
     Array.prototype.forEach.call($('carMode').querySelectorAll('button'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-m') === m)); });
     if (m === 'compact') car.scrollLeft = 0; else carTo(cenIdx < 0 ? carLast : cenIdx, false);
   }
