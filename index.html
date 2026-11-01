@@ -676,10 +676,10 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
 .mascot .m-base, .mascot .m-valve { fill: none; }
 .mascot .m-joint { fill: var(--mk-line, #6d6c65); stroke: none; }
 .mascot .m-flame { fill: var(--mk-flame, var(--accent, #d97757)); stroke: none; transition: opacity .35s ease, transform .35s ease; transform-box: fill-box; transform-origin: center; }
-.mascot .m-arm { transform-box: view-box; transition: transform .45s cubic-bezier(.3, .9, .3, 1), opacity .3s ease; }
+.mascot .m-arm { transform-box: view-box; transition: transform .42s cubic-bezier(.3, .9, .3, 1), opacity .22s ease; }
 .mascot .m-arm-l { transform-origin: 50px 75px; }
 .mascot .m-arm-r { transform-origin: 150px 75px; }
-.mascot .m-cover { opacity: 0; transition: opacity .3s ease; }
+.mascot .m-cover { opacity: 0; transform: scale(.8); transform-box: fill-box; transform-origin: center; transition: opacity .18s ease, transform .18s ease; }
 .mascot .m-leg { transform-box: view-box; transition: transform .45s cubic-bezier(.3, .9, .3, 1), opacity .4s ease; }
 .mascot .m-leg-l { transform-origin: 75px 190px; }
 .mascot .m-leg-r { transform-origin: 125px 190px; }
@@ -687,10 +687,12 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
 /* masuk melompat */
 @keyframes mkJump { 0% { transform: translateY(110px); opacity: 0; } 55% { transform: translateY(-14px); opacity: 1; } 75% { transform: translateY(6px); } 100% { transform: translateY(0); } }
 .mascot.mk-in .m-grp { animation: mkJump .75s cubic-bezier(.22, 1.1, .3, 1) both; }
-/* fokus password: tangan menutupi dada, api padam */
-.mascot.shy .m-arm { opacity: 0; }
-.mascot.shy .m-cover { opacity: 1; }
-.mascot.shy .m-flame { opacity: 0; transform: scale(.3); }
+/* fokus password: tangan menyapu naik lalu diganti pose menutup dada, api meredup */
+.mascot.shy .m-arm-l { transform: rotate(-62deg); }
+.mascot.shy .m-arm-r { transform: rotate(62deg); }
+.mascot.shy .m-arm { opacity: 0; transition: transform .42s cubic-bezier(.3, .9, .3, 1), opacity .16s ease .28s; }
+.mascot.shy .m-cover { opacity: 1; transform: scale(1); transition: opacity .3s ease .24s, transform .34s cubic-bezier(.34, 1.4, .4, 1) .24s; }
+.mascot.shy .m-flame { opacity: 0; transform: scale(.25); transition: opacity .3s ease .05s, transform .3s ease .05s; }
 /* mode kapsul: lipat tangan dan kaki */
 .mascot.folded .m-arm-l { transform: rotate(104deg) translate(10px, -14px) scale(.75); }
 .mascot.folded .m-arm-r { transform: rotate(-104deg) translate(-10px, -14px) scale(.75); }
@@ -701,6 +703,26 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
 
 .home-mascot { width: 92px; margin: 10px auto -6px; --mk-tank: #1d262b; --mk-line: #3c4a51; --mk-flame: #ffb27a; filter: drop-shadow(0 6px 16px rgba(0, 0, 0, .35)); transition: width .5s cubic-bezier(.3, .9, .3, 1), margin .5s cubic-bezier(.3, .9, .3, 1); }
 .home-mascot.folded { position: absolute; top: 2px; right: 14px; width: 38px; margin: 0; z-index: 2; opacity: .9; }
+
+/* berjalan menuju tombol masuk */
+@keyframes mkWalk { 0% { transform: translate(0, 0); } 20% { transform: translate(16px, -7px); } 40% { transform: translate(34px, 0); } 60% { transform: translate(52px, -7px); } 80% { transform: translate(70px, 0); } 100% { transform: translate(84px, 0); } }
+.mascot.walking .m-grp { animation: mkWalk .85s cubic-bezier(.45, 0, .2, 1) both; }
+@keyframes legStepL { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-18deg); } 75% { transform: rotate(12deg); } }
+@keyframes legStepR { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(12deg); } 75% { transform: rotate(-18deg); } }
+.mascot.walking .m-leg-l { animation: legStepL .34s ease-in-out infinite; }
+.mascot.walking .m-leg-r { animation: legStepR .34s ease-in-out infinite; }
+/* password benar: lanjut berjalan keluar layar */
+@keyframes mkWalkOut { 0% { transform: translate(84px, 0); opacity: 1; } 100% { transform: translate(260px, -10px); opacity: 0; } }
+.mascot.walk-out .m-grp { animation: mkWalkOut .5s cubic-bezier(.4, 0, .6, 1) forwards; }
+/* password salah: menabrak dan terpental */
+@keyframes mkCrash { 0% { transform: translate(84px, 0) scale(1); } 32% { transform: translate(98px, 0) scaleX(1.22) scaleY(.8); } 55% { transform: translate(64px, -2px) scaleX(.9) scaleY(1.06) rotate(-4deg); } 75% { transform: translate(74px, 0) rotate(2deg); } 100% { transform: translate(70px, 0) rotate(0deg); } }
+.mascot.crash .m-grp { animation: mkCrash .55s cubic-bezier(.3, .9, .3, 1) both; }
+.mascot.crash .m-leg-l, .mascot.crash .m-leg-r { animation: none; }
+@media (prefers-reduced-motion: reduce) { .mascot.walking .m-grp, .mascot.walk-out .m-grp, .mascot.crash .m-grp, .mascot.walking .m-leg-l, .mascot.walking .m-leg-r { animation: none !important; } }
+/* gelembung komik */
+.m-bubble { position: absolute; left: 60%; top: 6%; max-width: 72%; transform: translate(-16%, -60%) scale(.4) rotate(-6deg); transform-origin: left bottom; background: #fff; color: #17181a; font-family: var(--font-display); font-weight: 700; font-size: 14px; line-height: 1.22; letter-spacing: -.01em; padding: 9px 13px; border-radius: 15px 15px 15px 3px; border: 2px solid #17181a; box-shadow: 3px 4px 0 #17181a; opacity: 0; pointer-events: none; z-index: 4; transition: opacity .18s ease, transform .18s ease; }
+.m-bubble.show { opacity: 1; transform: translate(-16%, -60%) scale(1) rotate(-3deg); transition: opacity .22s cubic-bezier(.3, 1.6, .4, 1), transform .4s cubic-bezier(.3, 1.6, .4, 1); }
+@media (max-width: 420px) { .m-bubble { font-size: 12.5px; padding: 7px 11px; } }
 </style>
 </head>
 <body>
@@ -741,7 +763,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
 
 <!-- Login -->
 <main class="login" id="login" hidden>
-  <div class="login-art" aria-hidden="true"><div class="mascot-wrap"><svg class="mascot" id="loginMascot" viewBox="0 0 200 320" aria-hidden="true" focusable="false"><g class="m-grp"><g class="m-leg m-leg-l"><path d="M75 190 65 220 75 250 65 280 55 280 50 290 75 290 75 280Z"/><circle class="m-joint" cx="65" cy="220" r="4"/></g>
+  <div class="login-art" style="position:relative" aria-hidden="true"><div class="mascot-wrap"><svg class="mascot" id="loginMascot" viewBox="0 0 200 320" aria-hidden="true" focusable="false"><g class="m-grp"><g class="m-leg m-leg-l"><path d="M75 190 65 220 75 250 65 280 55 280 50 290 75 290 75 280Z"/><circle class="m-joint" cx="65" cy="220" r="4"/></g>
 <g class="m-leg m-leg-r"><path d="M125 190 135 220 125 250 135 280 145 280 150 290 125 290 125 280Z"/><circle class="m-joint" cx="135" cy="220" r="4"/></g>
 <g class="m-body"><rect x="50" y="50" width="100" height="130" rx="25" class="m-tank"/><path d="M50 85H150M50 145H150" class="m-band"/><path d="M65 180V190H135V180" class="m-base"/></g>
 <g class="m-head"><path d="M80 50V20H120V50M88 35H112M100 35V20M92 10H108M100 10V0" class="m-valve"/></g>
@@ -749,7 +771,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
 <g class="m-arm m-arm-l"><path d="M50 75 25 100 25 130 35 140M25 140C15 140 15 155 28 155M35 140C45 140 45 155 32 155"/></g>
 <g class="m-arm m-arm-r"><path d="M150 75 175 100 175 130 165 140M175 140C185 140 185 155 172 155M165 140C155 140 155 155 168 155"/></g>
 <g class="m-cover m-cover-l"><path d="M50 75 80 110 95 115"/></g>
-<g class="m-cover m-cover-r"><path d="M150 75 120 110 105 115"/></g></g></svg></div></div>
+<g class="m-cover m-cover-r"><path d="M150 75 120 110 105 115"/></g></g></svg><p class="m-bubble" id="loginBubble"></p></div></div>
   <form class="login-form" id="loginForm" autocomplete="on">
     <h1 class="login-title" id="loginTitle">sign in to Altan</h1>
     <p class="login-hello" id="loginHello"><span class="sr">halooww..</span><span id="helloText" aria-hidden="true"></span><i class="caret" id="caret" aria-hidden="true"></i></p>
@@ -1690,18 +1712,26 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     var pass = $('loginPass').value;
     if (!user || !pass) { $('loginErr').textContent = 'Isi user dan password.'; return; }
     $('loginBtn').disabled = true; $('loginErr').textContent = '';
+    mkWalkStart();
     try {
-      var r = await sb.auth.signInWithPassword({ email: user + EMAIL_DOMAIN, password: pass });
+      var rr = await Promise.all([
+        sb.auth.signInWithPassword({ email: user + EMAIL_DOMAIN, password: pass }),
+        new Promise(function (res) { setTimeout(res, 520); })
+      ]);
+      var r = rr[0];
       if (r.error) {
         var bad = r.error.status === 400 || /invalid/i.test(r.error.message || '');
-        $('loginErr').textContent = bad ? 'User atau password salah.' : 'Tidak bisa masuk. Periksa koneksi lalu coba lagi.';
+        if (bad) { $('loginErr').textContent = 'User atau password salah.'; mkWalkFail('Kata sandi salah!'); }
+        else { $('loginErr').textContent = 'Tidak bisa masuk. Periksa koneksi lalu coba lagi.'; if (loginMk) loginMk.classList.remove('walking'); }
       } else {
         $('loginPass').value = '';
+        mkWalkSuccess();
         $('login').classList.add('leaving');
-        setTimeout(startApp, 200);
+        setTimeout(startApp, 480);
       }
     } catch (err) {
       $('loginErr').textContent = 'Tidak bisa masuk. Periksa koneksi lalu coba lagi.';
+      if (loginMk) loginMk.classList.remove('walking');
     }
     $('loginBtn').disabled = false;
   });
@@ -1735,7 +1765,24 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
 
   /* ---------- Maskot: login ---------- */
   var loginMk = $('loginMascot');
-  function mkJumpIn() { if (!loginMk) return; loginMk.classList.remove('mk-in'); void loginMk.getBoundingClientRect(); loginMk.classList.add('mk-in'); }
+  function mkJumpIn() { if (!loginMk) return; loginMk.classList.remove('mk-in', 'walking', 'walk-out', 'crash'); $('loginBubble').classList.remove('show'); void loginMk.getBoundingClientRect(); loginMk.classList.add('mk-in'); }
+  var mkWalkT = 0;
+  function mkWalkStart() {
+    if (!loginMk) return;
+    $('loginBubble').classList.remove('show');
+    loginMk.classList.remove('crash', 'walk-out'); loginMk.classList.add('walking');
+  }
+  function mkWalkSuccess() {
+    if (!loginMk) return;
+    loginMk.classList.remove('walking'); loginMk.classList.add('walk-out');
+  }
+  function mkWalkFail(msg) {
+    if (!loginMk) return;
+    clearTimeout(mkWalkT);
+    loginMk.classList.remove('walking'); void loginMk.getBoundingClientRect(); loginMk.classList.add('crash');
+    var b = $('loginBubble'); b.textContent = msg; b.classList.remove('show'); void b.offsetWidth; b.classList.add('show');
+    mkWalkT = setTimeout(function () { b.classList.remove('show'); loginMk.classList.remove('crash'); }, 2200);
+  }
   ['loginUser'].forEach(function (id) {
     var inp = $(id); if (!inp) return;
     inp.addEventListener('focus', function () { loginMk.classList.remove('shy'); });
@@ -1747,14 +1794,15 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
   }
   $('loginUser').addEventListener('blur', function () { loginMk.classList.remove('shy'); });
 
-  /* ---------- Maskot: beranda (menoleh saat geser, melipat saat kapsul) ---------- */
-  var homeMk = $('homeMascot'), homeMkTO = 0;
-  function mkTurn(dir) {
-    if (!homeMk) return;
-    var grp = homeMk.querySelector('.m-grp');
-    grp.style.transform = dir ? 'rotate(' + (dir * 7) + 'deg)' : '';
-    clearTimeout(homeMkTO);
-    homeMkTO = setTimeout(function () { grp.style.transform = ''; }, 420);
+  /* ---------- Maskot: beranda (mengikuti arah seret secara langsung, melipat saat kapsul) ---------- */
+  var homeMk = $('homeMascot'), homeMkGrp = homeMk ? homeMk.querySelector('.m-grp') : null, homeMkCur = 0, homeMkSettleT = 0;
+  function mkTrack(ratio) {
+    if (!homeMkGrp) return;
+    var deg = Math.max(-11, Math.min(11, ratio * 11));
+    homeMkCur = deg;
+    homeMkGrp.style.transform = deg ? 'rotate(' + deg.toFixed(1) + 'deg)' : '';
+    clearTimeout(homeMkSettleT);
+    homeMkSettleT = setTimeout(function () { if (homeMkGrp) homeMkGrp.style.transform = ''; homeMkCur = 0; }, 260);
   }
   function mkFold(on) { if (homeMk) homeMk.classList.toggle('folded', !!on); if ($('homeMascotBox')) $('homeMascotBox').classList.toggle('folded', !!on); }
   /* ---------- Navigasi ---------- */
@@ -4555,14 +4603,14 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
   function carLayout() {
     cRaf = 0;
     var w = car.clientWidth; if (!w || curMode === 'compact') return;
-    var mid = car.scrollLeft + w / 2, best = 0, bd = 1e9;
+    var mid = car.scrollLeft + w / 2, best = 0, bd = 1e9, bestOff = 0;
     cards.forEach(function (c, i) {
-      var d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid);
+      var off = c.offsetLeft + c.offsetWidth / 2 - mid, d = Math.abs(off);
       c.style.setProperty('--d', (d / c.offsetWidth).toFixed(3));
-      if (d < bd) { bd = d; best = i; }
+      if (d < bd) { bd = d; best = i; bestOff = off; }
     });
+    if (cards.length) mkTrack(-bestOff / (cards[best].offsetWidth * .55 || 1));
     if (best !== cenIdx) {
-      if (cenIdx > -1) mkTurn(best > cenIdx ? 1 : -1);
       cenIdx = best;
       cards.forEach(function (c, i) { c.classList.toggle('is-center', i === best); c.setAttribute('aria-current', String(i === best)); });
       Array.prototype.forEach.call(dotsEl.children, function (d, i) { d.className = i === best ? 'on' : ''; });
