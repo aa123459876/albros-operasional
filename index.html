@@ -273,6 +273,8 @@ button:disabled { opacity: .55; cursor: default; }
 .overlay { position: fixed; inset: 0; z-index: 40; background: rgba(10,10,9,.6); display: grid; place-items: center; padding: 16px; animation: fade .15s ease-out; }
 .overlay.sheet-wrap { place-items: end center; padding: 0; }
 #ovPick { z-index: 41; }
+#ovRtEksForm { z-index: 41; }
+#ovRtCal { z-index: 41; }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 .dialog { width: 100%; max-width: 380px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; animation: pop .18s ease-out; }
 .dialog.sheet { max-width: 560px; max-height: 92vh; max-height: 92dvh; overflow-y: auto; border-radius: 18px 18px 0 0; padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); animation: rise .22s ease-out; }
@@ -656,6 +658,26 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
 .sc-adj:active { opacity: .7; }
 .scli.gudang { border-color: rgba(255, 184, 92, .55); animation: scGlow 2.6s ease-in-out infinite; }
 .gbadge { display: inline-block; margin-top: 6px; font-size: 11px; font-weight: 700; letter-spacing: .03em; color: #ffb85c; background: color-mix(in srgb, #ffb85c 16%, transparent); border: 1px solid rgba(255, 184, 92, .4); border-radius: 999px; padding: 2px 8px; }
+
+/* Rekap Transaksi */
+.rt-row { position: relative; display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 2px 10px; padding: 12px 14px; border: 1px solid rgba(255, 255, 255, .08); border-radius: 14px; background: var(--surface); }
+.rt-row + .rt-row { margin-top: 8px; }
+.rt-n { font-family: var(--font-mono); font-size: 12px; color: var(--fg-3); }
+.rt-name { grid-column: 2; font-weight: 600; overflow-wrap: anywhere; }
+.rt-flag { grid-column: 2; display: inline-block; margin-top: 4px; width: fit-content; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; color: #ffb85c; background: color-mix(in srgb, #ffb85c 14%, transparent); border: 1px solid rgba(255, 184, 92, .35); }
+.rt-row.done .rt-flag { color: #5fe0c4; background: color-mix(in srgb, #5fe0c4 14%, transparent); border-color: rgba(95, 224, 196, .35); }
+.rt-row.done { border-color: rgba(95, 224, 196, .3); }
+.rt-amt { grid-column: 3; grid-row: 1 / 3; align-self: center; text-align: right; font-family: var(--font-mono); }
+.rt-amt b { display: block; font-size: 16px; }
+.rt-amt small { display: block; color: var(--fg-2); font-size: 12px; margin-top: 2px; }
+#rtPrintArea { position: fixed; top: 0; left: -9999px; width: 210mm; height: 297mm; background: #fff; overflow: hidden; }
+.rtp { position: absolute; font-family: Arial, Helvetica, sans-serif; font-size: 10.5pt; color: #000; white-space: nowrap; }
+@page { size: A4; margin: 0; }
+@media print {
+  body * { visibility: hidden !important; }
+  #rtPrintArea, #rtPrintArea * { visibility: visible !important; }
+  #rtPrintArea { position: absolute !important; left: 0 !important; top: 0 !important; }
+}
 @keyframes scwave { 0% { transform: none; } 35% { transform: translateX(8px) scale(1.01); } 100% { transform: none; } }
 .sc-acts { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
 .sc-del { margin-top: 28px; }
@@ -771,6 +793,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
   <symbol id="i-cash" viewBox="0 0 24 24"><rect x="3" y="6.5" width="18" height="11" rx="2.5"/><circle cx="12" cy="12" r="2.6"/></symbol>
   <symbol id="i-lcheck" viewBox="0 0 24 24"><path d="m4 6.5 1.6 1.6L8.5 5M4 12.5l1.6 1.6 2.9-3.1M4 18.5l1.6 1.6 2.9-3.1M11.5 7h8.5M11.5 13h8.5M11.5 19h8.5"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 8.5V4h10v4.5M7 17h10v4H7v-4ZM4.5 8.5h15a1.5 1.5 0 0 1 1.5 1.5v6h-4M4.5 8.5A1.5 1.5 0 0 0 3 10v6h4"/></symbol>
 </svg>
 
 <!-- Login -->
@@ -884,6 +907,14 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
         <span class="cc-sub">Checklist laporan ekspedisi</span>
         <span class="cc-meta" id="mSc"></span>
         <span class="pillg cc-go" style="--g1:#5ad7ff;--g2:#b6ff6a">Buka</span>
+      </button>
+      <button class="ccard" type="button" data-go="rtHome" style="--g1:#ff9ad5;--g2:#ffd27a">
+        <span class="cc-icons"><span class="cic" style="--n:0"><svg class="ic" aria-hidden="true"><use href="#i-print"/></svg></span><span class="cic" style="--n:1"><svg class="ic" aria-hidden="true"><use href="#i-cash"/></svg></span><span class="cic" style="--n:2"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></span></span>
+        <span class="cc-ico1"><svg class="ic" aria-hidden="true"><use href="#i-print"/></svg></span>
+        <strong>Rekap Transaksi</strong>
+        <span class="cc-sub">Rekap bukti transfer untuk dicetak</span>
+        <span class="cc-meta" id="mRt"></span>
+        <span class="pillg cc-go" style="--g1:#ff9ad5;--g2:#ffd27a">Buka</span>
       </button>
       </div>
       <span class="swh r" id="swhR" aria-hidden="true"><svg viewBox="0 0 44 40" aria-hidden="true"><path d="M5 8l9 12-9 12"/><path d="M17 8l9 12-9 12"/><path d="M29 8l9 12-9 12"/></svg></span>
@@ -1238,6 +1269,33 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     </div>
     <button class="btn-reset sc-del" type="button" id="scDel">Hapus checklist ini</button>
   </section>
+
+  <!-- Rekap Transaksi: tempel data + daftar -->
+  <section id="vRtHome" hidden>
+    <p class="lead">Tempel baris data dari Excel (termasuk baris judul kolom dan TOTAL boleh ikut tertempel). Sistem memilah pangkalan yang sudah lunas, mengelompokkan per ekspedisi dan tanggal LO, lalu menyiapkan form "DATA BONGKAR" siap cetak.</p>
+    <p class="ban bad" id="rtMissing" hidden>Rekap Transaksi belum dipasang di database. Jalankan file 09-rekap.sql di Supabase (lihat panduan).</p>
+    <textarea class="pstext" id="rtText" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Tempel di sini (salin dari Excel, termasuk baris judul kolom)"></textarea>
+    <div class="sc-prev" id="rtPrev" hidden></div>
+    <div class="actions">
+      <button class="btn" type="button" id="rtClear">Kosongkan</button>
+      <button class="btn primary" type="button" id="rtProses" disabled>Proses data</button>
+    </div>
+    <button class="btn-reset" type="button" id="rtEksBtn" style="margin-top:8px">Kelola ekspedisi (driver &amp; kernet)</button>
+    <h3 class="sub" id="rtListHead" hidden>Rekap tersimpan</h3>
+    <ul class="stack" id="lRtList"></ul>
+  </section>
+
+  <!-- Rekap Transaksi: detail / form DATA BONGKAR -->
+  <section id="vRtDetail" hidden>
+    <div class="sc-head" id="rtHead"></div>
+    <ul class="sc-rows rt-rows" id="rtRows"></ul>
+    <div class="sc-acts">
+      <button class="btn" type="button" id="rtCalBtn">Kalibrasi cetak</button>
+      <button class="btn primary" type="button" id="rtPrintBtn">Cetak</button>
+    </div>
+    <button class="btn-reset" type="button" id="rtMarkBtn">Tandai sudah dicetak</button>
+    <button class="btn-reset sc-del" type="button" id="rtDel">Hapus rekap ini</button>
+  </section>
 </div>
 
 <button class="jump" id="jumpBtn" type="button" hidden>
@@ -1444,6 +1502,63 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
   </form>
 </div>
 
+<!-- Kelola ekspedisi (Rekap Transaksi) -->
+<div class="overlay sheet-wrap" id="ovRtEks" hidden>
+  <div class="dialog sheet" role="dialog" aria-modal="true" aria-labelledby="reTitle">
+    <h2 id="reTitle">Kelola Ekspedisi</h2>
+    <p class="hint">Dipakai untuk mendeteksi ekspedisi dari kolom SPPBE saat ditempel, dan mengisi Driver &amp; Kernet secara otomatis di form.</p>
+    <ul class="picklist" id="lRtEks"></ul>
+    <div class="actions">
+      <button class="btn" type="button" data-close>Tutup</button>
+      <button class="btn primary" type="button" id="rtEksAdd">Tambah ekspedisi</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tambah / ubah ekspedisi -->
+<div class="overlay" id="ovRtEksForm" hidden>
+  <form class="dialog" id="rtEksForm" role="dialog" aria-modal="true" aria-labelledby="refTitle">
+    <h2 id="refTitle">Ekspedisi</h2>
+    <label for="reNama">Nama (tampil di form sebagai SPBE)</label>
+    <input class="field text" id="reNama" type="text" autocomplete="off" placeholder="Contoh: Fajar">
+    <label for="rePola">Kata kunci di kolom SPPBE</label>
+    <input class="field text" id="rePola" type="text" autocomplete="off" placeholder="Contoh: FAJAR">
+    <label for="reDriver">Driver</label>
+    <input class="field text" id="reDriver" type="text" autocomplete="off" placeholder="Nama driver">
+    <label for="reKernet">Kernet</label>
+    <input class="field text" id="reKernet" type="text" autocomplete="off" placeholder="Nama kernet">
+    <p class="err" id="reErr" role="alert"></p>
+    <div class="actions">
+      <button class="btn" type="button" id="reDel" style="margin-right:auto" hidden>Hapus</button>
+      <button class="btn" type="button" data-close>Batal</button>
+      <button class="btn primary" type="submit">Simpan</button>
+    </div>
+  </form>
+</div>
+
+<!-- Kalibrasi posisi cetak (Rekap Transaksi) -->
+<div class="overlay" id="ovRtCal" hidden>
+  <form class="dialog" id="rtCalForm" role="dialog" aria-modal="true" aria-labelledby="rcTitle">
+    <h2 id="rcTitle">Kalibrasi posisi cetak</h2>
+    <p class="hint">Posisi awal hanya perkiraan. Cetak satu kali ke kertas kosong, bandingkan dengan form asli, lalu geser angka di bawah sampai pas. Pengaturan ini tersimpan di perangkat ini saja.</p>
+    <label for="rcSlot">Dicetak di bagian mana pada kertas</label>
+    <div class="seg" role="radiogroup" aria-labelledby="rcSlot" id="rcSlotSeg">
+      <button type="button" role="radio" aria-checked="true" data-slot="atas">Bagian atas</button>
+      <button type="button" role="radio" aria-checked="false" data-slot="bawah">Bagian bawah</button>
+    </div>
+    <label for="rcX">Geser kanan/kiri (mm, boleh minus)</label>
+    <input class="field" id="rcX" type="number" step="0.5" autocomplete="off">
+    <label for="rcY">Geser atas/bawah (mm, boleh minus)</label>
+    <input class="field" id="rcY" type="number" step="0.5" autocomplete="off">
+    <label for="rcRow">Tinggi tiap baris tabel (mm)</label>
+    <input class="field" id="rcRow" type="number" step="0.1" autocomplete="off">
+    <div class="actions">
+      <button class="btn" type="button" data-close>Tutup</button>
+      <button class="btn primary" type="button" id="rcTest">Cetak percobaan</button>
+    </div>
+  </form>
+</div>
+
 <!-- Konfirmasi nonaktifkan -->
 <div class="overlay" id="ovDeact" hidden>
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dcTitle">
@@ -1514,6 +1629,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
 
 <div class="toast" id="toast" hidden role="status"></div>
 <div class="wm" aria-hidden="true">©Mr.vin</div>
+<div id="rtPrintArea" aria-hidden="true"></div>
 
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -1628,6 +1744,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     rebuild();
     scheduleRender();
     scLoad();
+    rtLoad();
   }
 
   /* ---------- Realtime ---------- */
@@ -1651,6 +1768,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
       channel.on('postgres_changes', { event: '*', schema: 'public', table: t }, function (payload) { applyChange(t, payload); });
     });
     scSubscribe();
+    rtSubscribe();
     channel.subscribe(function (status) {
       if (status === 'SUBSCRIBED') {
         setLive('on');
@@ -1663,7 +1781,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
   }
   function unsubscribe() {
     if (channel && sb) { try { sb.removeChannel(channel); } catch (e) {} }
-    channel = null; everSubscribed = false; scReset();
+    channel = null; everSubscribed = false; scReset(); rtReset();
   }
   document.addEventListener('visibilitychange', function () {
     if (!document.hidden && sb && !$('appRoot').hidden) loadAll().catch(function () {});
@@ -1836,9 +1954,9 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
   function mkFold(on) { if (homeMk) homeMk.classList.toggle('folded', !!on); if ($('homeMascotBox')) $('homeMascotBox').classList.toggle('folded', !!on); }
   /* ---------- Navigasi ---------- */
   var view = 'home', curId = null;
-  var VIEWS = { home: 'vHome', pmList: 'vPmList', pjList: 'vPjList', detail: 'vDetail', pjDetail: 'vDetail', hasil: 'vHasil', daftar: 'vDaftar', psHome: 'vPsHome', psList: 'vPsList', psDetail: 'vPsDetail', psAlias: 'vPsAlias', psPaste: 'vPsPaste', psBayar: 'vPsBayar', psSaldo: 'vPsSaldo', psSaldoDet: 'vPsSaldoDet', psEdit: 'vPsEdit', rkHome: 'vRkHome', rkInput: 'vRkInput', rkData: 'vRkData', rkHasil: 'vRkHasil', scHome: 'vScHome', scPad: 'vScPad' };
-  var SECTIONS = ['vHome', 'vPmList', 'vPjList', 'vDetail', 'vHasil', 'vDaftar', 'vPsHome', 'vPsList', 'vPsDetail', 'vPsAlias', 'vPsPaste', 'vPsBayar', 'vPsSaldo', 'vPsSaldoDet', 'vPsEdit', 'vRkHome', 'vRkInput', 'vRkData', 'vRkHasil', 'vScHome', 'vScPad'];
-  var PARENT = { pmList: 'home', pjList: 'home', detail: 'pmList', pjDetail: 'pjList', hasil: 'home', daftar: 'home', psHome: 'home', psList: 'psHome', psDetail: 'psList', psAlias: 'psHome', psPaste: 'psHome', psBayar: 'psHome', psSaldo: 'psHome', psSaldoDet: 'psSaldo', psEdit: 'psDetail', rkHome: 'home', rkInput: 'rkHome', rkData: 'rkHome', rkHasil: 'rkHome', scHome: 'home', scPad: 'scHome' };
+  var VIEWS = { home: 'vHome', pmList: 'vPmList', pjList: 'vPjList', detail: 'vDetail', pjDetail: 'vDetail', hasil: 'vHasil', daftar: 'vDaftar', psHome: 'vPsHome', psList: 'vPsList', psDetail: 'vPsDetail', psAlias: 'vPsAlias', psPaste: 'vPsPaste', psBayar: 'vPsBayar', psSaldo: 'vPsSaldo', psSaldoDet: 'vPsSaldoDet', psEdit: 'vPsEdit', rkHome: 'vRkHome', rkInput: 'vRkInput', rkData: 'vRkData', rkHasil: 'vRkHasil', scHome: 'vScHome', scPad: 'vScPad', rtHome: 'vRtHome', rtDetail: 'vRtDetail' };
+  var SECTIONS = ['vHome', 'vPmList', 'vPjList', 'vDetail', 'vHasil', 'vDaftar', 'vPsHome', 'vPsList', 'vPsDetail', 'vPsAlias', 'vPsPaste', 'vPsBayar', 'vPsSaldo', 'vPsSaldoDet', 'vPsEdit', 'vRkHome', 'vRkInput', 'vRkData', 'vRkHasil', 'vScHome', 'vScPad', 'vRtHome', 'vRtDetail'];
+  var PARENT = { pmList: 'home', pjList: 'home', detail: 'pmList', pjDetail: 'pjList', hasil: 'home', daftar: 'home', psHome: 'home', psList: 'psHome', psDetail: 'psList', psAlias: 'psHome', psPaste: 'psHome', psBayar: 'psHome', psSaldo: 'psHome', psSaldoDet: 'psSaldo', psEdit: 'psDetail', rkHome: 'home', rkInput: 'rkHome', rkData: 'rkHome', rkHasil: 'rkHome', scHome: 'home', scPad: 'scHome', rtHome: 'home', rtDetail: 'rtHome' };
   function isDetail(v) { return v === 'detail' || v === 'pjDetail'; }
   function cur() { return view === 'pjDetail' ? LMAP[curId] : PMAP[curId]; }
   var CHEV = '<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
@@ -1878,6 +1996,8 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     if (v === 'rkHome') { small = 'Altan'; title = 'Rekonsiliasi'; }
     if (v === 'scHome') { small = 'Altan'; title = 'Scratchpad'; }
     if (v === 'scPad') { small = 'Scratchpad'; title = 'Checklist'; scBuilt = null; }
+    if (v === 'rtHome') { small = 'Altan'; title = 'Rekap Transaksi'; }
+    if (v === 'rtDetail') { small = 'Rekap Transaksi'; title = 'Rekap'; rtBuilt = null; }
     if (v === 'rkInput') { small = 'Rekonsiliasi'; title = 'Input data'; rkInputInit(mode === 'pop'); }
     if (v === 'rkData') { small = 'Rekonsiliasi'; title = 'Data masuk'; }
     if (v === 'rkHasil') { small = 'Rekonsiliasi'; title = 'Hasil rekonsiliasi'; }
@@ -1922,6 +2042,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     $('homeDate').textContent = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' }) + '.';
     carShow();
     scMeta();
+    rtMeta();
     var aktif = countAktif(), ina = DB.pangkalan.length - aktif;
     var nh = DB.hasil.filter(function (x) { return PMAP[x.pangkalan_id] && PMAP[x.pangkalan_id].aktif; }).length;
     var nj = loanList().length;
@@ -1952,6 +2073,8 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     }
     if (view === 'scHome') renderScList();
     if (view === 'scPad') renderScPad();
+    if (view === 'rtHome') renderRtList();
+    if (view === 'rtDetail') renderRtDetail();
     if (!$('ovPick').hidden) renderPick();
   }
 
@@ -2839,7 +2962,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
   });
 
   /* ---------- Overlay ---------- */
-  var ORDER = ['ovFreeze', 'ovBackup', 'ovPsBayar', 'ovPsLunas', 'ovPsLogin', 'ovDone', 'ovDeact', 'ovHapus', 'ovPick', 'ovConfirm', 'ovReset', 'ovInput', 'ovHasil', 'ovPang', 'ovPinjam', 'ovScAdj'];
+  var ORDER = ['ovFreeze', 'ovBackup', 'ovPsBayar', 'ovPsLunas', 'ovPsLogin', 'ovDone', 'ovDeact', 'ovHapus', 'ovPick', 'ovConfirm', 'ovReset', 'ovInput', 'ovHasil', 'ovPang', 'ovPinjam', 'ovScAdj', 'ovRtEks', 'ovRtCal'];
   function openOv(id) { $(id).hidden = false; }
   function closeOv(id) { $(id).hidden = true; if (id === 'ovConfirm') pendingCopy = null; }
   Array.prototype.forEach.call(document.querySelectorAll('[data-close]'), function (b) {
@@ -5062,6 +5185,377 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     scAssemble(); scBuilt = null; toast('Checklist dihapus');
     if (curState.d > 0) history.back(); else go('scHome', null, 'replace');
   });
+
+  /* ---------- Rekap Transaksi ---------- */
+  var RT = { eks: [], grup: [] };
+  var RTR = { eks: [], grup: [], baris: [] };
+  var rtReady = false, rtMissing = false, rtChan = null, rtEver = false, rtRaf = 0, rtBusy = false, rtBuilt = null, rtDraft = null;
+
+  function rtNum(s) { s = (s == null ? '' : String(s)).replace(/[, ]/g, ''); var n = parseFloat(s); return isNaN(n) ? 0 : n; }
+  function rtDate(s) {
+    s = (s || '').trim();
+    if (!s || /^0000-00-00$/.test(s)) return null;
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s); if (m) return s;
+    m = /^(\d{2})-(\d{2})-(\d{4})$/.exec(s); if (m) return m[3] + '-' + m[2] + '-' + m[1];
+    return null;
+  }
+  function rtFmtDate(iso) { if (!iso) return ''; var p = iso.split('-'); return p[2] + '.' + p[1] + '.' + p[0].slice(2); }
+  function rtFmtRp(n) { return (n || 0).toLocaleString('id-ID'); }
+  function rtSplitLine(line) {
+    var parts = line.split('\t');
+    if (parts.length < 8) parts = line.split(/ {2,}/);
+    return parts.map(function (s) { return s.trim(); });
+  }
+  function rtMatchEks(sppbe) {
+    var s = (sppbe || '').toUpperCase();
+    for (var i = 0; i < RT.eks.length; i++) { var e = RT.eks[i]; if (e.pola && s.indexOf(e.pola.toUpperCase()) > -1) return e; }
+    return null;
+  }
+  function rtParse(text) {
+    var lines = text.split(/\r?\n/), rows = [];
+    lines.forEach(function (line) {
+      var parts = rtSplitLine(line);
+      if (!/^\d+$/.test(parts[0] || '')) return;
+      if (parts.length < 10) return;
+      rows.push({
+        tanggal: rtDate(parts[1]), sppbe: parts[4] || '', pangkalan: (parts[5] || '').trim(),
+        tglLo: rtDate(parts[3]), qtyOrder: rtNum(parts[8]), qtyDeal: rtNum(parts[9]),
+        jmlRp: rtNum(parts[10]), tglTf: rtDate(parts[11])
+      });
+    });
+    var groups = {}, order = [];
+    rows.forEach(function (r) {
+      if (!r.pangkalan) return;
+      var eks = rtMatchEks(r.sppbe);
+      var eksKey = eks ? eks.id : ('?' + norm(r.sppbe)), eksNama = eks ? eks.nama : (r.sppbe || 'Ekspedisi');
+      var key = eksKey + '|' + (r.tglLo || '?');
+      if (!groups[key]) { groups[key] = { eksId: eks ? eks.id : null, eksNama: eksNama, driver: eks ? eks.driver : '', kernet: eks ? eks.kernet : '', tglLo: r.tglLo, tglKirim: r.tanggal, qtyTotal: 0, rows: [] }; order.push(key); }
+      var g = groups[key];
+      g.qtyTotal += r.qtyOrder;
+      if (!g.tglKirim && r.tanggal) g.tglKirim = r.tanggal;
+      if (r.qtyDeal > 0) g.rows.push({ pangkalan: r.pangkalan, jmlBongkar: r.qtyDeal, transfer: r.jmlRp, tglTf: r.tglTf });
+    });
+    return order.map(function (k) { return groups[k]; });
+  }
+
+  function rtAssemble() {
+    var byGrup = {};
+    RTR.baris.forEach(function (b) { (byGrup[b.grup_id] = byGrup[b.grup_id] || []).push(b); });
+    Object.keys(byGrup).forEach(function (k) { byGrup[k].sort(function (a, b) { return a.urut - b.urut; }); });
+    RT.grup = RTR.grup.map(function (g) {
+      var rows = byGrup[g.id] || [];
+      return { id: g.id, eksId: g.ekspedisi_id, eksNama: g.ekspedisi_nama, tglLo: g.tgl_lo, tglKirim: g.tgl_kirim, qtyTotal: g.qty_total, driver: g.driver, kernet: g.kernet, headerDicetak: g.header_dicetak, created: g.created_at || '', rows: rows };
+    }).sort(function (a, b) { return a.created < b.created ? 1 : a.created > b.created ? -1 : 0; });
+    RT.eks = RTR.eks.slice().sort(function (a, b) { return (a.urut || 0) - (b.urut || 0); });
+  }
+  function rtFindGrup(id) { for (var i = 0; i < RT.grup.length; i++) if (RT.grup[i].id === id) return RT.grup[i]; return null; }
+
+  async function rtLoad() {
+    try {
+      var a = await fetchAll('rekap_ekspedisi', 'urut', true), b = await fetchAll('rekap_grup', 'created_at', false), c = await fetchAll('rekap_baris', 'urut', true);
+      RTR.eks = a; RTR.grup = b; RTR.baris = c; rtMissing = false; rtReady = true; rtAssemble();
+    } catch (e) { rtMissing = true; rtReady = false; console.error(e); }
+    var mb = $('rtMissing'); if (mb) mb.hidden = !rtMissing;
+    rtMeta(); rtRefresh();
+  }
+  function rtApply(table, payload) {
+    var map = { rekap_ekspedisi: 'eks', rekap_grup: 'grup', rekap_baris: 'baris' };
+    var arr = RTR[map[table]], id = payload.eventType === 'DELETE' ? payload.old.id : payload.new.id, i = -1, k;
+    for (k = 0; k < arr.length; k++) if (arr[k].id === id) { i = k; break; }
+    if (payload.eventType === 'DELETE') {
+      if (i > -1) arr.splice(i, 1);
+      if (table === 'rekap_grup') RTR.baris = RTR.baris.filter(function (b) { return b.grup_id !== id; });
+    } else if (i > -1) arr[i] = Object.assign(arr[i], payload.new); else arr.push(payload.new);
+    rtAssemble(); rtMeta(); rtSoon();
+  }
+  function rtSubscribe() {
+    if (rtChan || !sb) return;
+    rtChan = sb.channel('altan-rekap');
+    ['rekap_ekspedisi', 'rekap_grup', 'rekap_baris'].forEach(function (t) {
+      rtChan.on('postgres_changes', { event: '*', schema: 'public', table: t }, function (payload) { rtApply(t, payload); });
+    });
+    rtChan.subscribe(function (status) { if (status === 'SUBSCRIBED') { if (rtEver) rtLoad(); rtEver = true; } });
+  }
+  function rtReset() {
+    if (rtChan && sb) { try { sb.removeChannel(rtChan); } catch (e) {} }
+    rtChan = null; rtEver = false; rtReady = false; rtMissing = false; RTR.eks = []; RTR.grup = []; RTR.baris = []; RT.eks = []; RT.grup = [];
+  }
+  function rtSoon() { if (!rtRaf) rtRaf = requestAnimationFrame(function () { rtRaf = 0; rtRefresh(); }); }
+  function rtRefresh() {
+    if (view === 'rtHome') renderRtList();
+    if (view === 'rtDetail') renderRtDetail();
+  }
+  function rtMeta() {
+    var m = $('mRt'); if (!m) return;
+    m.textContent = rtMissing ? '' : rtReady ? (RT.grup.length ? RT.grup.length + ' rekap' : 'Belum ada rekap') : '';
+  }
+
+  async function rtMergeGroup(g) {
+    var existing = null;
+    for (var i = 0; i < RT.grup.length; i++) {
+      var gr = RT.grup[i], sameEks = g.eksId ? gr.eksId === g.eksId : norm(gr.eksNama) === norm(g.eksNama);
+      if (sameEks && gr.tglLo === g.tglLo) { existing = gr; break; }
+    }
+    var grupId;
+    if (!existing) {
+      grupId = scUid();
+      var rowIns = { id: grupId, ekspedisi_id: g.eksId, ekspedisi_nama: g.eksNama, tgl_lo: g.tglLo, tgl_kirim: g.tglKirim, qty_total: g.qtyTotal, driver: g.driver, kernet: g.kernet, header_dicetak: false };
+      var r = await sb.from('rekap_grup').insert(rowIns);
+      if (r.error) throw r.error;
+      RTR.grup.push(Object.assign({ created_at: new Date().toISOString() }, rowIns));
+    } else {
+      grupId = existing.id;
+      if (!existing.headerDicetak) {
+        var patch = { qty_total: g.qtyTotal };
+        if (g.tglKirim) patch.tgl_kirim = g.tglKirim;
+        if (g.driver) patch.driver = g.driver;
+        if (g.kernet) patch.kernet = g.kernet;
+        var ru = await sb.from('rekap_grup').update(patch).eq('id', grupId);
+        if (ru.error) throw ru.error;
+        var rec = null; for (var k = 0; k < RTR.grup.length; k++) if (RTR.grup[k].id === grupId) { rec = RTR.grup[k]; break; }
+        if (rec) Object.assign(rec, patch);
+      }
+    }
+    var curRows = RTR.baris.filter(function (b) { return b.grup_id === grupId; });
+    var maxU = 0; curRows.forEach(function (b) { if (b.urut > maxU) maxU = b.urut; });
+    for (var j = 0; j < g.rows.length; j++) {
+      var row = g.rows[j], ex = null;
+      for (var m = 0; m < curRows.length; m++) if (norm(curRows[m].pangkalan) === norm(row.pangkalan)) { ex = curRows[m]; break; }
+      if (ex) {
+        if (!ex.dicetak) {
+          var patch2 = { jml_bongkar: row.jmlBongkar, transfer: row.transfer, tgl_tf: row.tglTf };
+          var r2 = await sb.from('rekap_baris').update(patch2).eq('id', ex.id);
+          if (r2.error) throw r2.error;
+          Object.assign(ex, patch2);
+        }
+      } else {
+        maxU += 1;
+        var nb = { id: scUid(), grup_id: grupId, urut: maxU, pangkalan: row.pangkalan, jml_bongkar: row.jmlBongkar, transfer: row.transfer, tgl_tf: row.tglTf, dicetak: false };
+        var r3 = await sb.from('rekap_baris').insert(nb);
+        if (r3.error) throw r3.error;
+        RTR.baris.push(nb); curRows.push(nb);
+      }
+    }
+    return grupId;
+  }
+
+  function rtPreview() {
+    var t = $('rtText').value, box = $('rtPrev');
+    if (!t.trim()) { box.hidden = true; rtDraft = null; $('rtProses').disabled = true; return; }
+    var groups = rtParse(t);
+    rtDraft = groups;
+    var withRows = groups.filter(function (g) { return g.rows.length > 0; });
+    box.hidden = false; box.textContent = '';
+    if (!groups.length) {
+      box.appendChild(el('div', 'ban bad', 'Tidak ada baris data yang terbaca. Pastikan menempel apa adanya dari Excel (termasuk kolom No di paling kiri).'));
+      $('rtProses').disabled = true; return;
+    }
+    groups.forEach(function (g) {
+      var d = el('div', 'rt-prevgrp');
+      d.appendChild(el('strong', '', g.eksNama + ' · LO ' + (g.tglLo ? rtFmtDate(g.tglLo) : '?')));
+      d.appendChild(el('span', 'pm', g.rows.length + ' pangkalan lunas dari ' + (g.qtyTotal || 0) + ' tbg pesanan'));
+      box.appendChild(d);
+    });
+    if (!withRows.length) box.appendChild(el('div', 'ban warn', 'Belum ada pangkalan yang lunas (Qt Deal) pada data ini.'));
+    $('rtProses').disabled = !withRows.length;
+  }
+
+  function renderRtList() {
+    var ul = $('lRtList'); if (!ul) return;
+    ul.textContent = '';
+    $('rtListHead').hidden = !RT.grup.length;
+    RT.grup.forEach(function (g) {
+      var done = g.rows.filter(function (r) { return r.dicetak; }).length, n = g.rows.length;
+      var belum = n > 0 && (done < n || !g.headerDicetak);
+      var li = el('li'), b = el('button', 'scli' + (belum ? ' gudang' : '')), l = el('span');
+      l.appendChild(el('strong', '', g.eksNama + ' · LO ' + (g.tglLo ? rtFmtDate(g.tglLo) : '?')));
+      l.appendChild(el('span', 'pm', n + ' pangkalan lunas · ' + done + ' dari ' + n + ' sudah dicetak'));
+      if (belum) l.appendChild(el('span', 'gbadge', 'Ada yang belum dicetak'));
+      b.type = 'button'; b.appendChild(l);
+      b.addEventListener('click', function () { go('rtDetail', g.id); });
+      li.appendChild(b); ul.appendChild(li);
+    });
+  }
+
+  function renderRtDetail() {
+    if (!rtReady) { if (rtMissing) go('rtHome', null, 'replace'); return; }
+    var g = rtFindGrup(curId);
+    if (!g) { if (curState.d > 0) history.back(); else go('rtHome', null, 'replace'); return; }
+    rtBuilt = g.id;
+    var hd = $('rtHead'); hd.textContent = '';
+    hd.appendChild(el('strong', '', g.eksNama + ' · LO ' + (g.tglLo ? rtFmtDate(g.tglLo) : '?')));
+    hd.appendChild(el('p', '', 'Kirim ' + (g.tglKirim ? rtFmtDate(g.tglKirim) : '?') + ' · Qty ' + (g.qtyTotal || 0) + ' tbg'));
+    hd.appendChild(el('p', '', 'Driver ' + (g.driver || '-') + ' · Kernet ' + (g.kernet || '-')));
+    if (g.headerDicetak) hd.appendChild(el('span', 'gbadge', 'Header sudah dicetak'));
+    var ul = $('rtRows'); ul.textContent = '';
+    g.rows.forEach(function (r, i) {
+      var li = el('li', 'rt-row' + (r.dicetak ? ' done' : ''));
+      li.appendChild(el('span', 'rt-n', String(i + 1)));
+      li.appendChild(el('span', 'rt-name', r.pangkalan));
+      li.appendChild(el('span', 'rt-flag', r.dicetak ? 'Sudah dicetak' : 'Baru, belum dicetak'));
+      var amt = el('span', 'rt-amt'), b1 = el('b', '', r.jml_bongkar + ' tbg'), s1 = el('small', '', 'Rp ' + rtFmtRp(r.transfer) + (r.tgl_tf ? ' · ' + rtFmtDate(r.tgl_tf) : ''));
+      amt.appendChild(b1); amt.appendChild(s1); li.appendChild(amt);
+      ul.appendChild(li);
+    });
+    var anyNew = g.rows.some(function (r) { return !r.dicetak; }) || !g.headerDicetak;
+    $('rtMarkBtn').hidden = !anyNew || !g.rows.length;
+    $('rtPrintBtn').disabled = !g.rows.length;
+  }
+
+  $('rtText').addEventListener('input', rtPreview);
+  $('rtClear').addEventListener('click', function () { $('rtText').value = ''; rtPreview(); $('rtText').focus(); });
+  $('rtProses').addEventListener('click', async function () {
+    if (!rtDraft || rtBusy) return;
+    if (!rtReady) { toast('Database Rekap Transaksi belum siap. Jalankan 09-rekap.sql lalu muat ulang.', true); return; }
+    var withRows = rtDraft.filter(function (g) { return g.rows.length > 0; });
+    if (!withRows.length) return;
+    rtBusy = true; var btn = $('rtProses'); btn.disabled = true; btn.textContent = 'Menyimpan…';
+    var lastId = null, errCount = 0;
+    for (var i = 0; i < withRows.length; i++) {
+      try { lastId = await rtMergeGroup(withRows[i]); } catch (e) { console.error(e); errCount++; }
+    }
+    rtAssemble(); $('rtText').value = ''; rtPreview();
+    rtBusy = false; btn.textContent = 'Proses data';
+    if (errCount) toast('Sebagian data gagal disimpan. Periksa koneksi lalu tempel ulang.', true);
+    else { toast(withRows.length + ' rekap diperbarui'); if (withRows.length === 1 && lastId) go('rtDetail', lastId); else renderRtList(); }
+  });
+
+  $('rtCalBtn').addEventListener('click', openRtCal);
+  $('rtPrintBtn').addEventListener('click', rtDoPrint);
+  scTwoTap($('rtMarkBtn'), 'rtmark', 'Tandai sudah dicetak', 'Ketuk lagi untuk menandai', async function () {
+    var g = rtFindGrup(curId); if (!g) return;
+    var toMark = g.rows.filter(function (r) { return !r.dicetak; });
+    try {
+      for (var i = 0; i < toMark.length; i++) {
+        var r = await sb.from('rekap_baris').update({ dicetak: true }).eq('id', toMark[i].id);
+        if (r.error) throw r.error;
+        var rec = null; for (var k = 0; k < RTR.baris.length; k++) if (RTR.baris[k].id === toMark[i].id) { rec = RTR.baris[k]; break; }
+        if (rec) rec.dicetak = true;
+      }
+      if (!g.headerDicetak) {
+        var rh = await sb.from('rekap_grup').update({ header_dicetak: true }).eq('id', g.id);
+        if (rh.error) throw rh.error;
+        var gr = null; for (var m = 0; m < RTR.grup.length; m++) if (RTR.grup[m].id === g.id) { gr = RTR.grup[m]; break; }
+        if (gr) gr.header_dicetak = true;
+      }
+      rtAssemble(); renderRtDetail(); toast('Ditandai sudah dicetak');
+    } catch (e) { console.error(e); toast('Gagal menandai. Periksa koneksi.', true); }
+  });
+  scTwoTap($('rtDel'), 'rtdel', 'Hapus rekap ini', 'Ketuk lagi untuk menghapus', async function () {
+    var gid = curId, r = await sb.from('rekap_grup').delete().eq('id', gid);
+    if (r.error) { toast('Gagal menghapus. Periksa koneksi.', true); return; }
+    RTR.grup = RTR.grup.filter(function (g) { return g.id !== gid; }); RTR.baris = RTR.baris.filter(function (b) { return b.grup_id !== gid; });
+    rtAssemble(); toast('Rekap dihapus');
+    if (curState.d > 0) history.back(); else go('rtHome', null, 'replace');
+  });
+
+  /* Kelola ekspedisi */
+  var reEditId = null;
+  function renderRtEksList() {
+    var ul = $('lRtEks'); ul.textContent = '';
+    if (!RT.eks.length) { ul.appendChild(el('li', 'none', 'Belum ada ekspedisi.')); return; }
+    RT.eks.forEach(function (e) {
+      var li = el('li'), b = el('button', null); b.type = 'button';
+      b.appendChild(el('span', null, e.nama + ' (' + e.pola + ')'));
+      b.appendChild(el('span', 'pm', 'Driver ' + (e.driver || '-') + ' · Kernet ' + (e.kernet || '-')));
+      b.addEventListener('click', function () { openRtEksForm(e); });
+      li.appendChild(b); ul.appendChild(li);
+    });
+  }
+  function openRtEksForm(e) {
+    reEditId = e ? e.id : null;
+    $('refTitle').textContent = e ? 'Ubah ekspedisi' : 'Tambah ekspedisi';
+    $('reNama').value = e ? e.nama : ''; $('rePola').value = e ? e.pola : '';
+    $('reDriver').value = e ? (e.driver || '') : ''; $('reKernet').value = e ? (e.kernet || '') : '';
+    $('reErr').textContent = ''; $('reDel').hidden = !e;
+    openOv('ovRtEksForm');
+  }
+  $('rtEksBtn').addEventListener('click', function () { renderRtEksList(); openOv('ovRtEks'); });
+  $('rtEksAdd').addEventListener('click', function () { openRtEksForm(null); });
+  $('rtEksForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var nama = $('reNama').value.trim(), pola = $('rePola').value.trim();
+    if (!nama || !pola) { $('reErr').textContent = 'Isi nama dan kata kunci.'; return; }
+    var driver = $('reDriver').value.trim(), kernet = $('reKernet').value.trim();
+    try {
+      if (reEditId) {
+        var r = await sb.from('rekap_ekspedisi').update({ nama: nama, pola: pola, driver: driver, kernet: kernet }).eq('id', reEditId).select().single();
+        if (r.error) throw r.error;
+        var rec = null; for (var k = 0; k < RTR.eks.length; k++) if (RTR.eks[k].id === reEditId) { rec = RTR.eks[k]; break; }
+        if (rec) Object.assign(rec, r.data); else RTR.eks.push(r.data);
+      } else {
+        var maxU = 0; RTR.eks.forEach(function (x) { if ((x.urut || 0) > maxU) maxU = x.urut; });
+        var r2 = await sb.from('rekap_ekspedisi').insert({ nama: nama, pola: pola, driver: driver, kernet: kernet, urut: maxU + 1 }).select().single();
+        if (r2.error) throw r2.error;
+        RTR.eks.push(r2.data);
+      }
+      rtAssemble(); closeOv('ovRtEksForm'); renderRtEksList(); toast('Ekspedisi disimpan');
+    } catch (err) { console.error(err); $('reErr').textContent = 'Gagal menyimpan. Periksa koneksi.'; }
+  });
+  $('reDel').addEventListener('click', async function () {
+    if (!reEditId) return;
+    var r = await sb.from('rekap_ekspedisi').delete().eq('id', reEditId);
+    if (r.error) { toast('Gagal menghapus. Periksa koneksi.', true); return; }
+    RTR.eks = RTR.eks.filter(function (x) { return x.id !== reEditId; });
+    rtAssemble(); closeOv('ovRtEksForm'); renderRtEksList(); toast('Ekspedisi dihapus');
+  });
+
+  /* Kalibrasi & cetak */
+  var RT_CAL_KEY = 'altan-rekap-cal';
+  function rtCalLoad() {
+    var def = { slot: 'atas', x: 0, y: 0, row: 7 };
+    try { var v = JSON.parse(localStorage.getItem(RT_CAL_KEY) || 'null'); if (v) return Object.assign(def, v); } catch (e) {}
+    return def;
+  }
+  function rtCalSave(c) { try { localStorage.setItem(RT_CAL_KEY, JSON.stringify(c)); } catch (e) {} }
+  function rcSetSlot(v) {
+    Array.prototype.forEach.call($('rcSlotSeg').querySelectorAll('button'), function (b) { b.setAttribute('aria-checked', String(b.getAttribute('data-slot') === v)); });
+  }
+  Array.prototype.forEach.call($('rcSlotSeg').querySelectorAll('[data-slot]'), function (b) {
+    b.addEventListener('click', function () { rcSetSlot(b.getAttribute('data-slot')); });
+  });
+  function openRtCal() {
+    var c = rtCalLoad();
+    rcSetSlot(c.slot); $('rcX').value = c.x; $('rcY').value = c.y; $('rcRow').value = c.row;
+    openOv('ovRtCal');
+  }
+  function rtCalRead() {
+    var sb2 = $('rcSlotSeg').querySelector('[aria-checked="true"]');
+    return { slot: sb2 ? sb2.getAttribute('data-slot') : 'atas', x: parseFloat($('rcX').value) || 0, y: parseFloat($('rcY').value) || 0, row: parseFloat($('rcRow').value) || 7 };
+  }
+  $('rcTest').addEventListener('click', function () { rtCalSave(rtCalRead()); rtDoPrint(); });
+
+  function rtDoPrint() {
+    var g = rtFindGrup(curId); if (!g) return;
+    var c = rtCalLoad();
+    var area = $('rtPrintArea'); area.innerHTML = '';
+    var baseY = c.slot === 'bawah' ? 148 : 12;
+    function put(xmm, ymm, text) {
+      if (text === '' || text == null) return;
+      var s = document.createElement('span');
+      s.className = 'rtp';
+      s.style.left = (xmm + c.x) + 'mm';
+      s.style.top = (baseY + ymm + c.y) + 'mm';
+      s.textContent = text;
+      area.appendChild(s);
+    }
+    if (!g.headerDicetak) {
+      put(55, 18, g.tglLo ? rtFmtDate(g.tglLo) : '');
+      put(118, 18, g.qtyTotal ? String(g.qtyTotal) : '');
+      put(165, 10, g.eksNama || '');
+      put(68, 26, g.tglKirim ? rtFmtDate(g.tglKirim) : '');
+      put(125, 26, g.driver || '');
+      put(172, 26, g.kernet || '');
+    }
+    g.rows.forEach(function (r, i) {
+      if (r.dicetak) return;
+      var y = 40 + i * c.row;
+      put(18, y, String(i + 1)); put(28, y, r.pangkalan); put(96, y, String(r.jml_bongkar)); put(112, y, rtFmtRp(r.transfer)); put(160, y, r.tgl_tf ? rtFmtDate(r.tgl_tf) : '');
+    });
+    if (!area.children.length) { toast('Tidak ada yang perlu dicetak (semua sudah ditandai tercetak).', true); return; }
+    window.print();
+  }
+  window.addEventListener('afterprint', function () { var a = $('rtPrintArea'); if (a) a.innerHTML = ''; });
 
   /* ---------- Mulai ---------- */
   async function boot() {
