@@ -671,7 +671,28 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
 .rt-amt b { display: block; font-size: 16px; }
 .rt-amt small { display: block; color: var(--fg-2); font-size: 12px; margin-top: 2px; }
 #rtPrintArea { position: fixed; top: 0; left: -9999px; width: 210mm; height: 297mm; background: #fff; overflow: hidden; }
-.rtp { position: absolute; font-family: Arial, Helvetica, sans-serif; font-size: 10.5pt; color: #000; white-space: nowrap; }
+.rtform { position: relative; width: 210mm; height: 148.5mm; padding: 9mm 12mm; box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; }
+#rtPrintArea.slot-bawah .rtform { margin-top: 148.5mm; }
+.rtf-title { text-align: center; font-size: 15pt; font-weight: 700; margin: 0 0 6mm; }
+.rtf-hd { margin-bottom: 4mm; }
+.rtf-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 1mm 2mm; font-size: 10pt; margin-bottom: 2.4mm; }
+.rtf-lbl { font-weight: 600; white-space: nowrap; }
+.rtf-val { min-width: 20mm; border-bottom: 1px dotted #000; padding: 0 2mm; }
+.rtf-mid, .rtf-right { margin-left: 6mm; white-space: nowrap; }
+.rtf-u { margin-left: 1mm; }
+.rtf-tbl { width: 100%; border-collapse: collapse; font-size: 9.5pt; table-layout: fixed; }
+.rtf-tbl th, .rtf-tbl td { border: 1px solid #000; padding: .8mm 1.5mm; text-align: left; height: 5.6mm; overflow: hidden; white-space: nowrap; }
+.rtf-tbl th:nth-child(1), .rtf-tbl td:nth-child(1) { width: 7mm; text-align: center; }
+.rtf-tbl th:nth-child(3), .rtf-tbl td:nth-child(3) { width: 19mm; text-align: right; }
+.rtf-tbl th:nth-child(4), .rtf-tbl td:nth-child(4) { width: 25mm; text-align: right; }
+.rtf-tbl th:nth-child(5), .rtf-tbl td:nth-child(5) { width: 18mm; }
+.rtf-tbl th:nth-child(6), .rtf-tbl td:nth-child(6) { width: 15mm; }
+.rtf-sudah td { color: transparent !important; }
+/* Cetakan penyesuaian: judul/label/garis disembunyikan, hanya isi baru yang kelihatan */
+.rtform.chrome-off .rtf-title, .rtform.chrome-off .rtf-lbl, .rtform.chrome-off .rtf-u { visibility: hidden; }
+.rtform.chrome-off .rtf-val { border-bottom-color: transparent; }
+.rtform.chrome-off .rtf-tbl, .rtform.chrome-off .rtf-tbl th, .rtform.chrome-off .rtf-tbl td { border-color: transparent !important; }
+.rtform.chrome-off .rtf-tbl th { color: transparent; }
 @page { size: A4; margin: 0; }
 @media print {
   body * { visibility: hidden !important; }
@@ -1536,25 +1557,19 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
   </form>
 </div>
 
-<!-- Kalibrasi posisi cetak (Rekap Transaksi) -->
+<!-- Posisi cetak (Rekap Transaksi) -->
 <div class="overlay" id="ovRtCal" hidden>
   <form class="dialog" id="rtCalForm" role="dialog" aria-modal="true" aria-labelledby="rcTitle">
-    <h2 id="rcTitle">Kalibrasi posisi cetak</h2>
-    <p class="hint">Posisi awal hanya perkiraan. Cetak satu kali ke kertas kosong, bandingkan dengan form asli, lalu geser angka di bawah sampai pas. Pengaturan ini tersimpan di perangkat ini saja.</p>
+    <h2 id="rcTitle">Posisi cetak</h2>
+    <p class="hint">Satu lembar kertas memuat 2 form (atas &amp; bawah) seperti kertas DATA BONGKAR biasa. Form dicetak lengkap dengan garis dan judulnya sendiri — tidak perlu kertas khusus. Saat ada penyesuaian nanti, kertas yang sama dimasukkan lagi dan hanya baris/kolom yang baru yang ikut tercetak.</p>
     <label for="rcSlot">Dicetak di bagian mana pada kertas</label>
     <div class="seg" role="radiogroup" aria-labelledby="rcSlot" id="rcSlotSeg">
       <button type="button" role="radio" aria-checked="true" data-slot="atas">Bagian atas</button>
       <button type="button" role="radio" aria-checked="false" data-slot="bawah">Bagian bawah</button>
     </div>
-    <label for="rcX">Geser kanan/kiri (mm, boleh minus)</label>
-    <input class="field" id="rcX" type="number" step="0.5" autocomplete="off">
-    <label for="rcY">Geser atas/bawah (mm, boleh minus)</label>
-    <input class="field" id="rcY" type="number" step="0.5" autocomplete="off">
-    <label for="rcRow">Tinggi tiap baris tabel (mm)</label>
-    <input class="field" id="rcRow" type="number" step="0.1" autocomplete="off">
     <div class="actions">
       <button class="btn" type="button" data-close>Tutup</button>
-      <button class="btn primary" type="button" id="rcTest">Cetak percobaan</button>
+      <button class="btn primary" type="button" id="rcTest">Simpan</button>
     </div>
   </form>
 </div>
@@ -5500,11 +5515,11 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     rtAssemble(); closeOv('ovRtEksForm'); renderRtEksList(); toast('Ekspedisi dihapus');
   });
 
-  /* Kalibrasi & cetak */
+  /* Posisi cetak & cetak */
   var RT_CAL_KEY = 'altan-rekap-cal';
   function rtCalLoad() {
-    var def = { slot: 'atas', x: 0, y: 0, row: 7 };
-    try { var v = JSON.parse(localStorage.getItem(RT_CAL_KEY) || 'null'); if (v) return Object.assign(def, v); } catch (e) {}
+    var def = { slot: 'atas' };
+    try { var v = JSON.parse(localStorage.getItem(RT_CAL_KEY) || 'null'); if (v && v.slot) return Object.assign(def, v); } catch (e) {}
     return def;
   }
   function rtCalSave(c) { try { localStorage.setItem(RT_CAL_KEY, JSON.stringify(c)); } catch (e) {} }
@@ -5515,47 +5530,74 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     b.addEventListener('click', function () { rcSetSlot(b.getAttribute('data-slot')); });
   });
   function openRtCal() {
-    var c = rtCalLoad();
-    rcSetSlot(c.slot); $('rcX').value = c.x; $('rcY').value = c.y; $('rcRow').value = c.row;
+    rcSetSlot(rtCalLoad().slot);
     openOv('ovRtCal');
   }
   function rtCalRead() {
     var sb2 = $('rcSlotSeg').querySelector('[aria-checked="true"]');
-    return { slot: sb2 ? sb2.getAttribute('data-slot') : 'atas', x: parseFloat($('rcX').value) || 0, y: parseFloat($('rcY').value) || 0, row: parseFloat($('rcRow').value) || 7 };
+    return { slot: sb2 ? sb2.getAttribute('data-slot') : 'atas' };
   }
-  $('rcTest').addEventListener('click', function () { rtCalSave(rtCalRead()); rtDoPrint(); });
+  $('rcTest').addEventListener('click', function () { rtCalSave(rtCalRead()); closeOv('ovRtCal'); toast('Posisi cetak disimpan'); });
 
+  /* Form "DATA BONGKAR" dibangun sendiri (judul, label, garis tabel) supaya tidak bergantung
+     pada kertas cetakan lama yang posisinya mudah meleset. Cetakan pertama suatu rekap
+     menampilkan form lengkap; cetakan berikutnya (penyesuaian) menyembunyikan judul/garis/
+     label serta baris & kepala yang sudah pernah tercetak, jadi kertas yang sama bisa
+     dimasukkan lagi tanpa dobel cetak. */
+  function rtBuildForm(g) {
+    var wrap = el('div', 'rtform' + (g.headerDicetak ? ' chrome-off' : ''));
+    wrap.appendChild(el('h2', 'rtf-title', 'DATA BONGKAR'));
+    var hd = el('div', 'rtf-hd');
+    function hrow(lbl1, val1, lbl2, val2, unit2, lbl3, val3) {
+      var r = el('div', 'rtf-row');
+      r.appendChild(el('span', 'rtf-lbl', lbl1)); r.appendChild(el('span', 'rtf-val', val1 || ''));
+      if (lbl2) { r.appendChild(el('span', 'rtf-lbl rtf-mid', lbl2)); r.appendChild(el('span', 'rtf-val rtf-mid', val2 || '')); if (unit2) r.appendChild(el('span', 'rtf-u', unit2)); }
+      if (lbl3) { r.appendChild(el('span', 'rtf-lbl rtf-right', lbl3)); r.appendChild(el('span', 'rtf-val rtf-right', val3 || '')); }
+      return r;
+    }
+    var hdDone = g.headerDicetak;
+    hd.appendChild(hrow('NO SA/tanggal :', '', 'Qty :', '', 'tbg', 'SPBE:', hdDone ? '' : (g.eksNama || '')));
+    hd.appendChild(hrow('NO LO/tanggal :', hdDone ? '' : (g.tglLo ? rtFmtDate(g.tglLo) : ''), 'Qty :', hdDone ? '' : (g.qtyTotal ? String(g.qtyTotal) : ''), 'tbg'));
+    hd.appendChild(hrow('Tanggal Pengiriman :', hdDone ? '' : (g.tglKirim ? rtFmtDate(g.tglKirim) : ''), 'Driver:', hdDone ? '' : (g.driver || ''), '', 'Kernet :', hdDone ? '' : (g.kernet || '')));
+    wrap.appendChild(hd);
+    var tbl = document.createElement('table'); tbl.className = 'rtf-tbl';
+    var thead = document.createElement('thead'), htr = document.createElement('tr');
+    ['No', 'Nama Pangkalan', 'Jml Bongkar', 'Transfer', 'Tgl. TF', 'Retur', 'KETERANGAN'].forEach(function (h) {
+      var th = document.createElement('th'); th.textContent = h; htr.appendChild(th);
+    });
+    thead.appendChild(htr); tbl.appendChild(thead);
+    var tbody = document.createElement('tbody');
+    for (var i = 0; i < 11; i++) {
+      var r = g.rows[i], tr = document.createElement('tr');
+      if (r && r.dicetak) tr.className = 'rtf-sudah';
+      var tdNo = document.createElement('td'); tdNo.textContent = String(i + 1); tr.appendChild(tdNo);
+      ['pangkalan', 'bongkar', 'transfer', 'tgltf', 'retur', 'ket'].forEach(function (col) {
+        var td = document.createElement('td');
+        if (r) {
+          if (col === 'pangkalan') td.textContent = r.pangkalan;
+          else if (col === 'bongkar') td.textContent = String(r.jml_bongkar);
+          else if (col === 'transfer') td.textContent = rtFmtRp(r.transfer);
+          else if (col === 'tgltf') td.textContent = r.tgl_tf ? rtFmtDate(r.tgl_tf) : '';
+        }
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    }
+    tbl.appendChild(tbody); wrap.appendChild(tbl);
+    return wrap;
+  }
   function rtDoPrint() {
     var g = rtFindGrup(curId); if (!g) return;
+    if (!g.rows.length) { toast('Belum ada baris untuk dicetak.', true); return; }
+    var adaBaru = g.rows.some(function (r) { return !r.dicetak; }) || !g.headerDicetak;
+    if (!adaBaru) { toast('Semua baris di rekap ini sudah ditandai tercetak.', true); return; }
     var c = rtCalLoad();
     var area = $('rtPrintArea'); area.innerHTML = '';
-    var baseY = c.slot === 'bawah' ? 148 : 12;
-    function put(xmm, ymm, text) {
-      if (text === '' || text == null) return;
-      var s = document.createElement('span');
-      s.className = 'rtp';
-      s.style.left = (xmm + c.x) + 'mm';
-      s.style.top = (baseY + ymm + c.y) + 'mm';
-      s.textContent = text;
-      area.appendChild(s);
-    }
-    if (!g.headerDicetak) {
-      put(55, 18, g.tglLo ? rtFmtDate(g.tglLo) : '');
-      put(118, 18, g.qtyTotal ? String(g.qtyTotal) : '');
-      put(165, 10, g.eksNama || '');
-      put(68, 26, g.tglKirim ? rtFmtDate(g.tglKirim) : '');
-      put(125, 26, g.driver || '');
-      put(172, 26, g.kernet || '');
-    }
-    g.rows.forEach(function (r, i) {
-      if (r.dicetak) return;
-      var y = 40 + i * c.row;
-      put(18, y, String(i + 1)); put(28, y, r.pangkalan); put(96, y, String(r.jml_bongkar)); put(112, y, rtFmtRp(r.transfer)); put(160, y, r.tgl_tf ? rtFmtDate(r.tgl_tf) : '');
-    });
-    if (!area.children.length) { toast('Tidak ada yang perlu dicetak (semua sudah ditandai tercetak).', true); return; }
+    area.className = 'slot-' + c.slot;
+    area.appendChild(rtBuildForm(g));
     window.print();
   }
-  window.addEventListener('afterprint', function () { var a = $('rtPrintArea'); if (a) a.innerHTML = ''; });
+  window.addEventListener('afterprint', function () { var a = $('rtPrintArea'); if (a) { a.innerHTML = ''; a.className = ''; } });
 
   /* ---------- Mulai ---------- */
   async function boot() {
