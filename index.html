@@ -687,7 +687,6 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
 .rtf-tbl th:nth-child(4), .rtf-tbl td:nth-child(4) { width: 25mm; text-align: right; }
 .rtf-tbl th:nth-child(5), .rtf-tbl td:nth-child(5) { width: 18mm; }
 .rtf-tbl th:nth-child(6), .rtf-tbl td:nth-child(6) { width: 15mm; }
-.rtf-sudah td { color: transparent !important; }
 /* Cetakan penyesuaian: judul/label/garis disembunyikan, hanya isi baru yang kelihatan */
 .rtform.chrome-off .rtf-title, .rtform.chrome-off .rtf-lbl, .rtform.chrome-off .rtf-u { visibility: hidden; }
 .rtform.chrome-off .rtf-val { border-bottom-color: transparent; }
@@ -5235,7 +5234,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
       rows.push({
         tanggal: rtDate(parts[1]), sppbe: parts[4] || '', pangkalan: (parts[5] || '').trim(),
         tglLo: rtDate(parts[3]), qtyOrder: rtNum(parts[8]), qtyDeal: rtNum(parts[9]),
-        jmlRp: rtNum(parts[10]), tglTf: rtDate(parts[11])
+        jmlRp: rtNum(parts[10]), tglTf: rtDate(parts[11]), bayar: rtNum(parts[12]), sisa: rtNum(parts[13])
       });
     });
     var groups = {}, order = [];
@@ -5246,9 +5245,11 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
       var key = eksKey + '|' + (r.tglLo || '?');
       if (!groups[key]) { groups[key] = { eksId: eks ? eks.id : null, eksNama: eksNama, driver: eks ? eks.driver : '', kernet: eks ? eks.kernet : '', tglLo: r.tglLo, tglKirim: r.tanggal, qtyTotal: 0, rows: [] }; order.push(key); }
       var g = groups[key];
-      g.qtyTotal += r.qtyOrder;
+      g.qtyTotal += r.qtyDeal;
       if (!g.tglKirim && r.tanggal) g.tglKirim = r.tanggal;
-      if (r.qtyDeal > 0) g.rows.push({ pangkalan: r.pangkalan, jmlBongkar: r.qtyDeal, transfer: r.jmlRp, tglTf: r.tglTf });
+      // Ikut masuk rekap selama sudah ada Qt Deal, lunas atau belum (lunas/belum dilihat dari Bayar & Sisa).
+      // Nominal transfer baru ditampilkan di cetakan kalau Tgl TF sudah terisi (lihat rtBuildForm).
+      if (r.qtyDeal > 0) g.rows.push({ pangkalan: r.pangkalan, jmlBongkar: r.qtyDeal, transfer: r.bayar, tglTf: r.tglTf, sisa: r.sisa });
     });
     return order.map(function (k) { return groups[k]; });
   }
@@ -5264,6 +5265,8 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     RT.eks = RTR.eks.slice().sort(function (a, b) { return (a.urut || 0) - (b.urut || 0); });
   }
   function rtFindGrup(id) { for (var i = 0; i < RT.grup.length; i++) if (RT.grup[i].id === id) return RT.grup[i]; return null; }
+  // Masih ada yang baru untuk dicetak: nama/jumlah belum dicetak, ATAU transfernya baru ada tapi belum ikut dicetak.
+  function rtPending(r) { return !r.dicetak || !!(r.tgl_tf && !r.tf_dicetak); }
 
   async function rtLoad() {
     try {
@@ -5337,15 +5340,20 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
       var row = g.rows[j], ex = null;
       for (var m = 0; m < curRows.length; m++) if (norm(curRows[m].pangkalan) === norm(row.pangkalan)) { ex = curRows[m]; break; }
       if (ex) {
-        if (!ex.dicetak) {
-          var patch2 = { jml_bongkar: row.jmlBongkar, transfer: row.transfer, tgl_tf: row.tglTf };
+        // Nama pangkalan & jumlah bongkar dibekukan sendiri (dicetak), terpisah dari
+        // transfer & Tgl TF (tf_dicetak) — supaya pangkalan yang menyusul transfernya
+        // belakangan tetap kebagian cetak nominalnya walau namanya sudah lebih dulu tercetak.
+        var patch2 = {};
+        if (!ex.dicetak) { patch2.jml_bongkar = row.jmlBongkar; }
+        if (!ex.tf_dicetak) { patch2.transfer = row.transfer; patch2.tgl_tf = row.tglTf; patch2.sisa = row.sisa; }
+        if (Object.keys(patch2).length) {
           var r2 = await sb.from('rekap_baris').update(patch2).eq('id', ex.id);
           if (r2.error) throw r2.error;
           Object.assign(ex, patch2);
         }
       } else {
         maxU += 1;
-        var nb = { id: scUid(), grup_id: grupId, urut: maxU, pangkalan: row.pangkalan, jml_bongkar: row.jmlBongkar, transfer: row.transfer, tgl_tf: row.tglTf, dicetak: false };
+        var nb = { id: scUid(), grup_id: grupId, urut: maxU, pangkalan: row.pangkalan, jml_bongkar: row.jmlBongkar, transfer: row.transfer, tgl_tf: row.tglTf, sisa: row.sisa, dicetak: false, tf_dicetak: false };
         var r3 = await sb.from('rekap_baris').insert(nb);
         if (r3.error) throw r3.error;
         RTR.baris.push(nb); curRows.push(nb);
@@ -5404,15 +5412,17 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     if (g.headerDicetak) hd.appendChild(el('span', 'gbadge', 'Header sudah dicetak'));
     var ul = $('rtRows'); ul.textContent = '';
     g.rows.forEach(function (r, i) {
-      var li = el('li', 'rt-row' + (r.dicetak ? ' done' : ''));
+      var pending = rtPending(r), lunas = (r.transfer || 0) > 0 && (r.sisa || 0) <= 0;
+      var li = el('li', 'rt-row' + (pending ? '' : ' done'));
       li.appendChild(el('span', 'rt-n', String(i + 1)));
       li.appendChild(el('span', 'rt-name', r.pangkalan));
-      li.appendChild(el('span', 'rt-flag', r.dicetak ? 'Sudah dicetak' : 'Baru, belum dicetak'));
-      var amt = el('span', 'rt-amt'), b1 = el('b', '', r.jml_bongkar + ' tbg'), s1 = el('small', '', 'Rp ' + rtFmtRp(r.transfer) + (r.tgl_tf ? ' · ' + rtFmtDate(r.tgl_tf) : ''));
+      var flagTxt = !r.dicetak ? 'Baru, belum dicetak' : (r.tgl_tf && !r.tf_dicetak) ? 'Transfer baru, siap dicetak' : (lunas ? 'Sudah dicetak · Lunas' : r.tgl_tf ? 'Sudah dicetak · Belum lunas' : 'Sudah dicetak · Menunggu transfer');
+      li.appendChild(el('span', 'rt-flag', flagTxt));
+      var amt = el('span', 'rt-amt'), b1 = el('b', '', r.jml_bongkar + ' tbg'), s1 = el('small', '', r.tgl_tf ? ('Rp ' + rtFmtRp(r.transfer) + ' · ' + rtFmtDate(r.tgl_tf)) : 'Belum ada transfer');
       amt.appendChild(b1); amt.appendChild(s1); li.appendChild(amt);
       ul.appendChild(li);
     });
-    var anyNew = g.rows.some(function (r) { return !r.dicetak; }) || !g.headerDicetak;
+    var anyNew = !g.headerDicetak || g.rows.some(rtPending);
     $('rtMarkBtn').hidden = !anyNew || !g.rows.length;
     $('rtPrintBtn').disabled = !g.rows.length;
   }
@@ -5439,13 +5449,17 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
   $('rtPrintBtn').addEventListener('click', rtDoPrint);
   scTwoTap($('rtMarkBtn'), 'rtmark', 'Tandai sudah dicetak', 'Ketuk lagi untuk menandai', async function () {
     var g = rtFindGrup(curId); if (!g) return;
-    var toMark = g.rows.filter(function (r) { return !r.dicetak; });
+    var toMark = g.rows.filter(rtPending);
     try {
       for (var i = 0; i < toMark.length; i++) {
-        var r = await sb.from('rekap_baris').update({ dicetak: true }).eq('id', toMark[i].id);
+        var row = toMark[i], patch = {};
+        if (!row.dicetak) patch.dicetak = true;
+        if (row.tgl_tf && !row.tf_dicetak) patch.tf_dicetak = true;
+        if (!Object.keys(patch).length) continue;
+        var r = await sb.from('rekap_baris').update(patch).eq('id', row.id);
         if (r.error) throw r.error;
-        var rec = null; for (var k = 0; k < RTR.baris.length; k++) if (RTR.baris[k].id === toMark[i].id) { rec = RTR.baris[k]; break; }
-        if (rec) rec.dicetak = true;
+        var rec = null; for (var k = 0; k < RTR.baris.length; k++) if (RTR.baris[k].id === row.id) { rec = RTR.baris[k]; break; }
+        if (rec) Object.assign(rec, patch);
       }
       if (!g.headerDicetak) {
         var rh = await sb.from('rekap_grup').update({ header_dicetak: true }).eq('id', g.id);
@@ -5569,15 +5583,17 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     var tbody = document.createElement('tbody');
     for (var i = 0; i < 11; i++) {
       var r = g.rows[i], tr = document.createElement('tr');
-      if (r && r.dicetak) tr.className = 'rtf-sudah';
-      var tdNo = document.createElement('td'); tdNo.textContent = String(i + 1); tr.appendChild(tdNo);
+      // showId: nama/jml bongkar baru ditampilkan kalau belum pernah dicetak.
+      // showTf: transfer/Tgl TF baru ditampilkan kalau sudah ada Tgl TF tapi belum ikut dicetak.
+      var showId = !!(r && !r.dicetak), showTf = !!(r && r.tgl_tf && !r.tf_dicetak);
+      var tdNo = document.createElement('td'); tdNo.textContent = (r && (showId || showTf)) ? String(i + 1) : ''; tr.appendChild(tdNo);
       ['pangkalan', 'bongkar', 'transfer', 'tgltf', 'retur', 'ket'].forEach(function (col) {
         var td = document.createElement('td');
         if (r) {
-          if (col === 'pangkalan') td.textContent = r.pangkalan;
-          else if (col === 'bongkar') td.textContent = String(r.jml_bongkar);
-          else if (col === 'transfer') td.textContent = rtFmtRp(r.transfer);
-          else if (col === 'tgltf') td.textContent = r.tgl_tf ? rtFmtDate(r.tgl_tf) : '';
+          if (col === 'pangkalan' && showId) td.textContent = r.pangkalan;
+          else if (col === 'bongkar' && showId) td.textContent = String(r.jml_bongkar);
+          else if (col === 'transfer' && showTf) td.textContent = rtFmtRp(r.transfer);
+          else if (col === 'tgltf' && showTf) td.textContent = rtFmtDate(r.tgl_tf);
         }
         tr.appendChild(td);
       });
@@ -5589,7 +5605,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
   function rtDoPrint() {
     var g = rtFindGrup(curId); if (!g) return;
     if (!g.rows.length) { toast('Belum ada baris untuk dicetak.', true); return; }
-    var adaBaru = g.rows.some(function (r) { return !r.dicetak; }) || !g.headerDicetak;
+    var adaBaru = g.rows.some(rtPending) || !g.headerDicetak;
     if (!adaBaru) { toast('Semua baris di rekap ini sudah ditandai tercetak.', true); return; }
     var c = rtCalLoad();
     var area = $('rtPrintArea'); area.innerHTML = '';
