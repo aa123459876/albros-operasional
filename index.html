@@ -687,11 +687,15 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
 .rtf-tbl th:nth-child(4), .rtf-tbl td:nth-child(4) { width: 25mm; text-align: right; }
 .rtf-tbl th:nth-child(5), .rtf-tbl td:nth-child(5) { width: 18mm; }
 .rtf-tbl th:nth-child(6), .rtf-tbl td:nth-child(6) { width: 15mm; }
-/* Cetakan penyesuaian: judul/label/garis disembunyikan, hanya isi baru yang kelihatan */
-.rtform.chrome-off .rtf-title, .rtform.chrome-off .rtf-lbl, .rtform.chrome-off .rtf-u { visibility: hidden; }
+/* Cetakan penyesuaian: judul/label/garis disembunyikan, hanya isi baru yang kelihatan.
+   Selector diberi awalan #rtPrintArea + !important supaya menang dari aturan
+   "#rtPrintArea * { visibility: visible !important; }" di @media print (ID lebih spesifik dari class). */
+#rtPrintArea .rtform.chrome-off .rtf-title,
+#rtPrintArea .rtform.chrome-off .rtf-lbl,
+#rtPrintArea .rtform.chrome-off .rtf-u { visibility: hidden !important; }
 .rtform.chrome-off .rtf-val { border-bottom-color: transparent; }
 .rtform.chrome-off .rtf-tbl, .rtform.chrome-off .rtf-tbl th, .rtform.chrome-off .rtf-tbl td { border-color: transparent !important; }
-.rtform.chrome-off .rtf-tbl th { color: transparent; }
+#rtPrintArea .rtform.chrome-off .rtf-tbl th { color: transparent !important; }
 @page { size: A4; margin: 0; }
 @media print {
   body * { visibility: hidden !important; }
