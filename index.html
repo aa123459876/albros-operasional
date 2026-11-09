@@ -1570,6 +1570,12 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
       <button type="button" role="radio" aria-checked="true" data-slot="atas">Bagian atas</button>
       <button type="button" role="radio" aria-checked="false" data-slot="bawah">Bagian bawah</button>
     </div>
+    <label for="rcDy" style="margin-top:12px">Geser penyesuaian naik/turun (mm)</label>
+    <p class="hint">Kertas yang dimasukkan ulang jarang pas 100%. Kalau hasil penyesuaian tadi kurang turun/naik, isi angka di sini lalu cetak ulang. Positif = geser ke bawah, negatif = ke atas.</p>
+    <input type="number" id="rcDy" step="0.5" value="0" inputmode="decimal">
+    <label for="rcRot" style="margin-top:12px">Koreksi miring kertas (derajat)</label>
+    <p class="hint">Kalau tulisan makin melenceng ke baris bawah (kertas masuk agak miring), isi sedikit angka di sini. Searah jarum jam pakai angka positif.</p>
+    <input type="number" id="rcRot" step="0.05" value="0" inputmode="decimal">
     <div class="actions">
       <button class="btn" type="button" data-close>Tutup</button>
       <button class="btn primary" type="button" id="rcTest">Simpan</button>
@@ -5536,7 +5542,7 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
   /* Posisi cetak & cetak */
   var RT_CAL_KEY = 'altan-rekap-cal';
   function rtCalLoad() {
-    var def = { slot: 'atas' };
+    var def = { slot: 'atas', dy: 0, rot: 0 };
     try { var v = JSON.parse(localStorage.getItem(RT_CAL_KEY) || 'null'); if (v && v.slot) return Object.assign(def, v); } catch (e) {}
     return def;
   }
@@ -5548,12 +5554,15 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     b.addEventListener('click', function () { rcSetSlot(b.getAttribute('data-slot')); });
   });
   function openRtCal() {
-    rcSetSlot(rtCalLoad().slot);
+    var c = rtCalLoad();
+    rcSetSlot(c.slot);
+    $('rcDy').value = c.dy || 0;
+    $('rcRot').value = c.rot || 0;
     openOv('ovRtCal');
   }
   function rtCalRead() {
     var sb2 = $('rcSlotSeg').querySelector('[aria-checked="true"]');
-    return { slot: sb2 ? sb2.getAttribute('data-slot') : 'atas' };
+    return { slot: sb2 ? sb2.getAttribute('data-slot') : 'atas', dy: parseFloat($('rcDy').value) || 0, rot: parseFloat($('rcRot').value) || 0 };
   }
   $('rcTest').addEventListener('click', function () { rtCalSave(rtCalRead()); closeOv('ovRtCal'); toast('Posisi cetak disimpan'); });
 
@@ -5614,7 +5623,13 @@ body[data-area="app"] .pstext, body[data-area="app"] .field { border-radius: 14p
     var c = rtCalLoad();
     var area = $('rtPrintArea'); area.innerHTML = '';
     area.className = 'slot-' + c.slot;
-    area.appendChild(rtBuildForm(g));
+    var form = rtBuildForm(g);
+    // Nudge hanya dipakai saat penyesuaian (kertas dimasukkan ulang); cetakan pertama di kertas kosong tidak perlu digeser.
+    if (g.headerDicetak && (c.dy || c.rot)) {
+      form.style.transformOrigin = 'top center';
+      form.style.transform = 'translateY(' + (c.dy || 0) + 'mm) rotate(' + (c.rot || 0) + 'deg)';
+    }
+    area.appendChild(form);
     window.print();
   }
   window.addEventListener('afterprint', function () { var a = $('rtPrintArea'); if (a) { a.innerHTML = ''; a.className = ''; } });
